@@ -28,6 +28,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev:all": "bash ../start-local.sh",
+    "sync:tickets": "bash ../sync-tickets.sh",
     "start:staging": "env-cmd -f .env_staging react-scripts start",
     "build": "react-scripts build",
     "build:staging": "env-cmd -f .env_staging react-scripts build",
