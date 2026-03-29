@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Zoopla Property Tracker",
+  "version": "1.0",
+  "permissions": ["storage", "identity"],
+  "host_permissions": [
+    "https://hometruth.ohtplayground.com/*",
+    "https://www.zoopla.co.uk/*"
+  ],
+  "externally_connectable": {
+    "matches": ["https://hometruth.ohtplayground.com/*"]
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["auth.html", "auth.js", "popup.css"],
+      "matches": ["https://hometruth.ohtplayground.com/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.zoopla.co.uk/*"],
+      "js": ["zoopla.js"]
+    }
+  ]
+}
