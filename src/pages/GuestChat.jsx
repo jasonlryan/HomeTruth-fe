@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 // Reusable assistant bubble that renders Markdown safely.
 function AssistantBubble({ text }) {
   return (
-    <div className="bg-[#EDEDED] p-3 rounded-xl max-w-[70%] text-start whitespace-pre-wrap">
+    <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] text-start whitespace-pre-wrap">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -18,7 +18,7 @@ function AssistantBubble({ text }) {
               {...props}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 underline break-words"
+              className="text-ht-cyan underline break-words"
             >
               {children}
             </a>
@@ -198,7 +198,7 @@ export default function GuestChat() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <MessageCircle className="w-8 h-8 text-sky-500" />
+            <MessageCircle className="w-8 h-8 text-ht-cyan" />
             <h1 className="text-xl font-semibold text-gray-800">
               HomeTruth Assistant
             </h1>
@@ -249,7 +249,7 @@ export default function GuestChat() {
                   {message.type === 'user' ? (
                     <>
                       <div className="flex justify-end">
-                        <div className="bg-customActiveText p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
+                        <div className="bg-ht-cyan p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
                           {message.content}
                         </div>
                       </div>
@@ -298,7 +298,7 @@ export default function GuestChat() {
             {/* Loading indicator */}
             {loading && (
               <div className="flex justify-start mt-2 items-start space-x-2">
-                <div className="bg-[#EDEDED] p-3 rounded-xl max-w-[70%] whitespace-pre-wrap flex flex-col items-end space-y-2">
+                <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] whitespace-pre-wrap flex flex-col items-end space-y-2">
                   <span className="typing-dots inline-flex space-x-1">
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -322,13 +322,13 @@ export default function GuestChat() {
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     placeholder="Type your message here..."
-                    className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ht-cyan focus:border-transparent"
                     disabled={loading}
                   />
                   <button
                     type="submit"
                     disabled={loading || !question.trim()}
-                    className="bg-customActiveText hover:bg-sky-500 text-white rounded-xl px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="bg-ht-cyan hover:bg-ht-cyan-light text-white rounded-xl px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                       <svg
                 width="18"
@@ -360,13 +360,13 @@ export default function GuestChat() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => navigate("/register")}
-              className="bg-customActiveText hover:bg-sky-500 text-white px-6 py-3 rounded-lg font-medium transition"
+              className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg font-medium transition"
             >
               Sign Up for Free
             </button>
             <button
               onClick={() => navigate("/pro-features")}
-              className="bg-white hover:bg-gray-50 text-customActiveText border-2 border-sky-500 px-6 py-3 rounded-lg font-medium transition"
+              className="bg-white hover:bg-gray-50 text-ht-cyan border-2 border-ht-cyan px-6 py-3 rounded-lg font-medium transition"
             >
               Explore Pro Features
             </button>
@@ -388,7 +388,7 @@ export default function GuestChat() {
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Save className="w-8 h-8 text-blue-500" />
+                <Save className="w-8 h-8 text-ht-cyan" />
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Save to Notes
@@ -400,7 +400,7 @@ export default function GuestChat() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => navigate("/register")}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition flex-1"
+                  className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg font-medium transition flex-1"
                 >
                   Register Now
                 </button>
@@ -419,7 +419,7 @@ export default function GuestChat() {
                     setShowRegisterModal(false);
                     navigate("/login");
                   }}
-                  className="text-blue-500 hover:text-blue-600 ml-1"
+                  className="text-ht-cyan hover:text-ht-cyan-light ml-1"
                 >
                   Sign in
                 </button>

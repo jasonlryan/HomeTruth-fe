@@ -9,7 +9,7 @@ const GUEST_MESSAGE_COUNT_KEY = "guest_chat_message_count";
 const GUEST_CHAT_MESSAGES_TO_RESTORE = "guest_chat_messages_to_restore";
 
 const MessageIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00c0f9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ht-cyan)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
   </svg>
 );
@@ -80,9 +80,9 @@ export default function AiAssistant() {
   }, []);
 
   const suggestions = [
-    { text: "What is leasehold?", color: "#c084fc" },
-    { text: "Should i remortgage?", color: "#c084fc" },
-    { text: "How much stamp duty will I pay?", color: "#c084fc" },
+    { text: "What is leasehold?", color: "var(--ht-purple-light)" },
+    { text: "Should i remortgage?", color: "var(--ht-purple-light)" },
+    { text: "How much stamp duty will I pay?", color: "var(--ht-purple-light)" },
   ];
 
   const persistConversationForRedirect = () => {
@@ -166,11 +166,11 @@ export default function AiAssistant() {
   };
 
   return (
-    <div className="chat-system-font flex justify-center py-10 px-5 bg-[#f3f7fa] mx-auto">
-      <div className="bg-white rounded-xl shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-[#eef2f6] w-full max-w-[720px] p-6 flex flex-col hover:border-[#00c0f9] hover:shadow-[0_20px_40px_rgba(0,192,249,0.1)] transition-all duration-300 ease-in-out group">
+    <div className="chat-system-font flex justify-center py-10 px-5 bg-gray-50 mx-auto">
+      <div className="bg-white rounded-xl shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-slate-100 w-full max-w-[720px] p-6 flex flex-col hover:border-ht-cyan hover:shadow-lg transition-all duration-300 ease-in-out group">
         <div className="flex items-center gap-2.5 mb-5">
           <MessageIcon />
-          <span className="text-[17px] font-medium text-[#334155]">HomeTruth Assistant</span>
+          <span className="text-[17px] font-medium text-slate-700">HomeTruth Assistant</span>
         </div>
 
         <div className="flex flex-col gap-3 min-h-[180px] mb-5">
@@ -180,11 +180,11 @@ export default function AiAssistant() {
               className={
                 msg.type === "ai"
                   ? "max-w-[85%] self-start"
-                  : "max-w-[80%] py-3 px-[18px] text-[14px] leading-relaxed bg-[#00c0f9] text-white rounded-tl-xl rounded-tr-xl rounded-br-[4px] rounded-bl-xl self-end font-medium"
+                  : "max-w-[80%] py-3 px-[18px] text-[14px] leading-relaxed bg-ht-cyan text-white rounded-tl-xl rounded-tr-xl rounded-br-[4px] rounded-bl-xl self-end font-medium"
               }
             >
               {msg.type === "ai" ? (
-                <div className="chat-system-font bg-[#EDEDED] text-gray-800 p-3 rounded-xl text-[14px] leading-relaxed text-left">
+                <div className="chat-system-font bg-gray-100 text-gray-800 p-3 rounded-xl text-[14px] leading-relaxed text-left">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -193,7 +193,7 @@ export default function AiAssistant() {
                           {...props}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 underline break-words"
+                          className="text-ht-cyan underline break-words"
                         >
                           {props.children || props.href}
                         </a>
@@ -237,20 +237,20 @@ export default function AiAssistant() {
           ))}
 
           {limitReached && (
-            <div className="max-w-[100%] py-3 px-[18px] bg-[#fef3c7] text-[#92400e] rounded-xl self-start text-[14px]">
+            <div className="max-w-[100%] py-3 px-[18px] bg-amber-100 text-amber-800 rounded-xl self-start text-[14px]">
               <p className="mb-3">To continue chatting with HomeTruth, please log in or register for unlimited chats.</p>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={goToLogin}
-                  className="bg-[#00c0f9] text-white border-none py-2 px-4 rounded-lg font-medium cursor-pointer hover:bg-[#00a0d1] transition"
+                  className="bg-ht-cyan text-white border-none py-2 px-4 rounded-lg font-medium cursor-pointer hover:bg-ht-cyan-light transition"
                 >
                   Log In
                 </button>
                 <button
                   type="button"
                   onClick={goToRegister}
-                  className="bg-white text-[#00c0f9] border-2 border-[#00c0f9] py-2 px-4 rounded-lg font-medium cursor-pointer hover:bg-[#f0f9ff] transition"
+                  className="bg-white text-ht-cyan border-2 border-ht-cyan py-2 px-4 rounded-lg font-medium cursor-pointer hover:bg-sky-50 transition"
                 >
                   Register
                 </button>
@@ -260,11 +260,11 @@ export default function AiAssistant() {
 
           {loading && (
             <div className="max-w-[85%] self-start">
-              <div className="bg-[#EDEDED] p-3 rounded-xl">
+              <div className="bg-gray-100 p-3 rounded-xl">
                 <div className="flex gap-1 py-2">
-                  <div className="w-[7px] h-[7px] bg-[#cbd5e1] rounded-full animate-bounce [animation-delay:-0.32s]" />
-                  <div className="w-[7px] h-[7px] bg-[#cbd5e1] rounded-full animate-bounce [animation-delay:-0.16s]" />
-                  <div className="w-[7px] h-[7px] bg-[#cbd5e1] rounded-full animate-bounce" />
+                  <div className="w-[7px] h-[7px] bg-slate-300 rounded-full animate-bounce [animation-delay:-0.32s]" />
+                  <div className="w-[7px] h-[7px] bg-slate-300 rounded-full animate-bounce [animation-delay:-0.16s]" />
+                  <div className="w-[7px] h-[7px] bg-slate-300 rounded-full animate-bounce" />
                 </div>
               </div>
             </div>
@@ -274,14 +274,14 @@ export default function AiAssistant() {
         {!limitReached && (
           <>
             <div className="text-center mb-5 mt-2.5">
-              <span className="text-[13px] text-[#94a3b8] mb-2.5 block">Try asking:</span>
+              <span className="text-[13px] text-slate-400 mb-2.5 block">Try asking:</span>
               <div className="flex flex-wrap justify-center gap-2.5">
                 {suggestions.map((s, i) => (
                   <button
                     key={i}
                     type="button"
                     className="border-none text-white py-2 px-[18px] rounded-full text-[13px] font-medium cursor-pointer transition-all duration-200 hover:-translate-y-px hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: hoveredIndex === i ? "#00c0f9" : s.color }}
+                    style={{ backgroundColor: hoveredIndex === i ? "var(--ht-cyan)" : s.color }}
                     onClick={() => handleSuggestionClick(s.text)}
                     onMouseEnter={() => setHoveredIndex(i)}
                     onMouseLeave={() => setHoveredIndex(null)}
@@ -296,7 +296,7 @@ export default function AiAssistant() {
             <form onSubmit={handleSubmit} className="flex gap-2.5 items-center">
               <div className="relative flex-1">
                 <input
-                  className="w-full bg-white border border-[#e2e8f0] rounded-lg py-3.5 px-4 text-[14px] text-[#334155] outline-none transition-colors duration-200 focus:border-[#00c0f9] placeholder:text-[#94a3b8] disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-lg py-3.5 px-4 text-[14px] text-slate-700 outline-none transition-colors duration-200 focus:border-ht-cyan placeholder:text-slate-400 disabled:opacity-50"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="Ask any property question..."
@@ -304,7 +304,7 @@ export default function AiAssistant() {
                 />
               </div>
               <button
-                className="bg-[#00c0f9] border-none w-11 h-11 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[#00a0d1] hover:scale-[1.02] disabled:bg-[#cbd5e1] disabled:cursor-not-allowed disabled:transform-none"
+                className="bg-ht-cyan border-none w-11 h-11 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-ht-cyan-light hover:scale-[1.02] disabled:bg-slate-300 disabled:cursor-not-allowed disabled:transform-none"
                 type="submit"
               >
                 <SendIcon />

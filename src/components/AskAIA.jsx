@@ -87,7 +87,7 @@ export default function AiAssistant({ suggestions = [] }) {
                   fontFamily: "Material Symbols Outlined",
                   fontVariationSettings: `'FILL' ${msg.saved ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`,
                   fontSize: "24px",
-                  color: msg.saved ? "#2563eb" : "inherit"
+                  color: msg.saved ? "var(--ht-cyan)" : "inherit"
                 }}
               >
                 bookmark
@@ -111,12 +111,12 @@ export default function AiAssistant({ suggestions = [] }) {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-myblue"
+          className="flex-1 border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ht-cyan"
           placeholder="Ask a question..."
         />
         <button
           type="submit"
-          className="bg-myblue hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
+          className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-lg text-sm"
         >
           Send
         </button>
