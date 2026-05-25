@@ -196,9 +196,9 @@ export default function KnowledgeBaseAdmin() {
   // Show nothing while checking or if not admin
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -1065,11 +1065,11 @@ export default function KnowledgeBaseAdmin() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] px-8 py-8">
+    <div className="min-h-screen bg-gray-50 px-8 py-8">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-purple-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-ht-purple flex items-center justify-center">
             <span className="material-symbols-outlined text-white text-xl">database</span>
           </div>
           <div>
@@ -1082,7 +1082,7 @@ export default function KnowledgeBaseAdmin() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleAddKnowledge}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="bg-ht-purple hover:bg-ht-purple-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-base">add</span>
             Add Knowledge
@@ -1106,7 +1106,7 @@ export default function KnowledgeBaseAdmin() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           {/* Form Header */}
           <div className="flex items-center gap-3 mb-6">
-            <span className="material-symbols-outlined text-purple-600 text-2xl">upload</span>
+            <span className="material-symbols-outlined text-ht-purple text-2xl">upload</span>
             <h2 className="text-xl font-semibold text-gray-900">Add New Knowledge</h2>
           </div>
 
@@ -1120,7 +1120,7 @@ export default function KnowledgeBaseAdmin() {
                 <button
                   type="button"
                   onClick={handleAddUrlField}
-                  className="text-xs text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded transition-colors flex items-center gap-1"
+                  className="text-xs text-ht-purple hover:text-ht-purple-light bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded transition-colors flex items-center gap-1"
                 >
                   <span className="material-symbols-outlined text-sm">add</span>
                   Add URL
@@ -1134,7 +1134,7 @@ export default function KnowledgeBaseAdmin() {
                       value={url}
                       onChange={(e) => handleUrlInputChange(index, e.target.value)}
                       placeholder="https://example.com/article"
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
                     />
                     {urlInputs.length > 1 && (
                       <button
@@ -1190,7 +1190,7 @@ export default function KnowledgeBaseAdmin() {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., First-time Buyer Checklist"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
               />
             </div>
 
@@ -1212,7 +1212,7 @@ export default function KnowledgeBaseAdmin() {
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Enter the knowledge content here..."
                 rows={8}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple resize-none"
               />
             </div>
 
@@ -1227,7 +1227,7 @@ export default function KnowledgeBaseAdmin() {
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="e.g., Buying Process, Legal, Financial, Property Types"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
               />
             </div>
 
@@ -1243,7 +1243,7 @@ export default function KnowledgeBaseAdmin() {
                   onChange={(e) => setDocumentId(e.target.value)}
                   placeholder="e.g., lease_agreement_001"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
                 />
               </div>
               <div>
@@ -1254,7 +1254,7 @@ export default function KnowledgeBaseAdmin() {
                   value={priority}
                   onChange={(e) => setPriority(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple bg-white"
                 >
                   <option value="Normal">Normal</option>
                   <option value="High">High</option>
@@ -1274,7 +1274,7 @@ export default function KnowledgeBaseAdmin() {
                 onChange={(e) => setSource(e.target.value)}
                 placeholder="e.g., Government Website, Legal Firm, Internal"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
               />
             </div>
 
@@ -1292,7 +1292,7 @@ export default function KnowledgeBaseAdmin() {
                     disabled={tags.includes(tag)}
                     className={`px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-1 ${
                       tags.includes(tag)
-                        ? "bg-purple-100 text-purple-700 cursor-not-allowed"
+                        ? "bg-purple-50 text-ht-purple cursor-not-allowed"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
@@ -1312,7 +1312,7 @@ export default function KnowledgeBaseAdmin() {
                     }
                   }}
                   placeholder="Add tag and press Enter"
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
                 />
                 <button
                   onClick={handleAddCustomTag}
@@ -1327,7 +1327,7 @@ export default function KnowledgeBaseAdmin() {
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-purple-50 text-ht-purple rounded-full text-xs font-medium"
                     >
                       {tag}
                       <button
@@ -1361,7 +1361,7 @@ export default function KnowledgeBaseAdmin() {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2.5 bg-ht-cyan hover:bg-ht-cyan-light text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -1422,7 +1422,7 @@ export default function KnowledgeBaseAdmin() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-purple-600 text-2xl">folder</span>
+                  <span className="material-symbols-outlined text-ht-purple text-2xl">folder</span>
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">Document Library</h2>
                     <p className="text-sm text-gray-600 mt-1">
@@ -1477,7 +1477,7 @@ export default function KnowledgeBaseAdmin() {
                   />
                   <button
                     onClick={handleSearch}
-                    className="bg-blue-400 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                    className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
                   >
                     Search
                   </button>
@@ -1512,7 +1512,7 @@ export default function KnowledgeBaseAdmin() {
               {documentsLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading documents...</p>
                   </div>
                 </div>
@@ -1537,7 +1537,7 @@ export default function KnowledgeBaseAdmin() {
                       setIsSearching(false);
                       setFilteredDocuments([]);
                     }}
-                    className="mt-4 text-sm text-blue-600 hover:text-blue-700 underline"
+                    className="mt-4 text-sm text-ht-cyan hover:text-ht-cyan-light underline"
                   >
                     Clear search
                   </button>
@@ -1553,7 +1553,7 @@ export default function KnowledgeBaseAdmin() {
                   {/* Search Results Indicator */}
                   {isSearching && filteredDocuments.length > 0 && (
                     <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-                      <p className="text-sm text-blue-700">
+                      <p className="text-sm text-ht-cyan">
                         Found {filteredDocuments.length} document{filteredDocuments.length !== 1 ? 's' : ''} matching "{searchQuery}"
                       </p>
                       <button
@@ -1562,7 +1562,7 @@ export default function KnowledgeBaseAdmin() {
                           setIsSearching(false);
                           setFilteredDocuments([]);
                         }}
-                        className="text-sm text-blue-600 hover:text-blue-700 underline"
+                        className="text-sm text-ht-cyan hover:text-ht-cyan-light underline"
                       >
                         Clear search
                       </button>
@@ -1644,7 +1644,7 @@ export default function KnowledgeBaseAdmin() {
                                     href={doc.source_url.startsWith("http") ? doc.source_url : `https://${doc.source_url}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline truncate max-w-xs"
+                                    className="text-ht-cyan hover:underline truncate max-w-xs"
                                     title={doc.source_url}
                                   >
                                     {doc.source_url.replace(/^https?:\/\//, "").replace(/^www\./, "")}
@@ -1735,7 +1735,7 @@ export default function KnowledgeBaseAdmin() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-purple-600 text-2xl">database</span>
+                  <span className="material-symbols-outlined text-ht-purple text-2xl">database</span>
                   <h2 className="text-xl font-semibold text-gray-900">Knowledge Base Stats</h2>
                 </div>
                 <div className="flex items-center gap-3">
@@ -1769,7 +1769,7 @@ export default function KnowledgeBaseAdmin() {
               {statsLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading statistics...</p>
                   </div>
                 </div>
@@ -1789,11 +1789,11 @@ export default function KnowledgeBaseAdmin() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     {/* Total Records */}
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                      <div className="text-3xl font-bold text-blue-700 mb-2">
+                      <div className="text-3xl font-bold text-ht-cyan mb-2">
                         {stats.totalRecords.toLocaleString()}
                       </div>
-                      <div className="text-sm text-blue-600 font-medium">Total Records</div>
-                      <div className="text-xs text-blue-500 mt-1">Combined across all namespaces</div>
+                      <div className="text-sm text-ht-cyan font-medium">Total Records</div>
+                      <div className="text-xs text-ht-cyan-light mt-1">Combined across all namespaces</div>
                     </div>
 
                     {/* General Namespace */}
@@ -1886,7 +1886,7 @@ export default function KnowledgeBaseAdmin() {
                   {previewLoading ? (
                     <div className="flex items-center justify-center py-12">
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple mx-auto mb-4"></div>
                         <p className="text-gray-600">Loading preview...</p>
                       </div>
                     </div>
@@ -1926,7 +1926,7 @@ export default function KnowledgeBaseAdmin() {
                             />
                           )}
                           <div style={{ display: 'none' }} className="p-4 text-center text-gray-500">
-                            Failed to load preview. <a href={previewContent.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Open in new tab</a>
+                            Failed to load preview. <a href={previewContent.url} target="_blank" rel="noopener noreferrer" className="text-ht-cyan hover:underline">Open in new tab</a>
                           </div>
                         </div>
                       )}
@@ -1938,7 +1938,7 @@ export default function KnowledgeBaseAdmin() {
                             download={previewContent.filename}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-ht-purple text-white rounded-lg hover:bg-ht-purple-light transition-colors"
                           >
                             <span className="material-symbols-outlined text-base">download</span>
                             Download {previewContent.filename}
@@ -1965,7 +1965,7 @@ export default function KnowledgeBaseAdmin() {
                                     href={previewContent.metadata.source_url.startsWith("http") ? previewContent.metadata.source_url : `https://${previewContent.metadata.source_url}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline truncate max-w-md"
+                                    className="text-ht-cyan hover:underline truncate max-w-md"
                                   >
                                     {previewContent.metadata.source_url}
                                   </a>
@@ -1982,7 +1982,7 @@ export default function KnowledgeBaseAdmin() {
                                   <span className="font-medium text-gray-700 w-32">Tags:</span>
                                   <div className="flex flex-wrap gap-2">
                                     {previewContent.metadata.tags.map((tag, idx) => (
-                                      <span key={idx} className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
+                                      <span key={idx} className="px-2 py-1 bg-purple-50 text-ht-purple rounded text-xs">
                                         {tag}
                                       </span>
                                     ))}
