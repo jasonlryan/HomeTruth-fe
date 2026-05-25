@@ -108,12 +108,6 @@ code {
   font-family: var(--font-base);
 }
 
-/* Backward-compatible class used by legacy chat wrappers */
-.font-inter,
-.font-inter * {
-  font-family: var(--system-chat-font-stack);
-}
-
 /* Shared chat font utility for all chat experiences */
 .font-chat,
 .font-chat *,

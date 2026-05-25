@@ -13,7 +13,6 @@ module.exports = {
         brand: brandFont,
         chat: chatFont,
         sans: brandFont,
-        inter: chatFont,
       },
       colors: {
         ht: {
