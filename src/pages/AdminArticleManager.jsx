@@ -274,8 +274,8 @@ export default function AdminArticleManager() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple"></div>
       </div>
     );
   }
@@ -283,7 +283,7 @@ export default function AdminArticleManager() {
   // ---------- FORM VIEW ----------
   if (view === "form") {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] px-8 py-8">
+      <div className="min-h-screen bg-gray-50 px-8 py-8">
         <button
           onClick={() => setView("list")}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
@@ -294,7 +294,7 @@ export default function AdminArticleManager() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
           <div className="flex items-center gap-3 mb-6">
-            <FileText className="text-purple-600" size={24} />
+            <FileText className="text-ht-purple" size={24} />
             <h2 className="text-xl font-semibold text-gray-900">
               {editingId ? "Edit Article" : "Create New Article"}
             </h2>
@@ -311,7 +311,7 @@ export default function AdminArticleManager() {
                 value={formData.title}
                 onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
                 placeholder="Enter article title"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
               />
             </div>
 
@@ -326,7 +326,7 @@ export default function AdminArticleManager() {
                   value={formData.author}
                   onChange={(e) => setFormData((p) => ({ ...p, author: e.target.value }))}
                   placeholder="Author name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
                 />
               </div>
               <div>
@@ -334,7 +334,7 @@ export default function AdminArticleManager() {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData((p) => ({ ...p, category: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple bg-white"
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c.value} value={c.value}>
@@ -354,7 +354,7 @@ export default function AdminArticleManager() {
                 placeholder="Short preview text (max ~300 chars)"
                 rows={3}
                 maxLength={300}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple resize-none"
               />
               <p className="text-xs text-gray-400 mt-1">{formData.excerpt.length}/300</p>
             </div>
@@ -419,7 +419,7 @@ export default function AdminArticleManager() {
                 value={formData.tags}
                 onChange={(e) => setFormData((p) => ({ ...p, tags: e.target.value }))}
                 placeholder="e.g. homebuying, mortgage, uk (comma-separated)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ht-purple"
               />
             </div>
 
@@ -448,7 +448,7 @@ export default function AdminArticleManager() {
               <button
                 onClick={() => handleSubmit(true)}
                 disabled={submitting}
-                className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2.5 bg-ht-purple hover:bg-ht-purple-light text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
                 <Send size={16} />
                 {submitting ? "Publishing..." : "Publish"}
@@ -469,7 +469,7 @@ export default function AdminArticleManager() {
 
   // ---------- LIST VIEW ----------
   return (
-    <div className="min-h-screen bg-[#F5F7FA] px-8 py-8">
+    <div className="min-h-screen bg-gray-50 px-8 py-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
@@ -488,7 +488,7 @@ export default function AdminArticleManager() {
         </div>
         <button
           onClick={openCreateForm}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          className="bg-ht-purple hover:bg-ht-purple-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
         >
           <Plus size={16} />
           New Article
@@ -506,7 +506,7 @@ export default function AdminArticleManager() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search articles..."
-              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ht-purple"
             />
           </div>
           <select
@@ -515,7 +515,7 @@ export default function AdminArticleManager() {
               setCategoryFilter(e.target.value);
               setPagination((p) => ({ ...p, page: 1 }));
             }}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-ht-purple"
           >
             <option value="">All Categories</option>
             {CATEGORIES.map((c) => (
@@ -530,7 +530,7 @@ export default function AdminArticleManager() {
               setStatusFilter(e.target.value);
               setPagination((p) => ({ ...p, page: 1 }));
             }}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-ht-purple"
           >
             <option value="">All Statuses</option>
             <option value="draft">Draft</option>
@@ -538,7 +538,7 @@ export default function AdminArticleManager() {
           </select>
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+            className="px-4 py-2 bg-ht-purple hover:bg-ht-purple-light text-white rounded-lg text-sm font-medium transition-colors"
           >
             Search
           </button>
@@ -549,7 +549,7 @@ export default function AdminArticleManager() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {listLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-600"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-ht-purple"></div>
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-16">
@@ -605,7 +605,7 @@ export default function AdminArticleManager() {
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-full capitalize">
+                        <span className="px-2 py-1 text-xs font-medium bg-sky-50 text-ht-cyan rounded-full capitalize">
                           {article.category}
                         </span>
                       </td>
@@ -627,7 +627,7 @@ export default function AdminArticleManager() {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => openEditForm(article.id)}
-                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-ht-cyan hover:bg-sky-50 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Edit3 size={16} />

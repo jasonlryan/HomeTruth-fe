@@ -7,9 +7,9 @@ export default function AdminProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -26,7 +26,7 @@ export default function AdminProtectedRoute({ children }) {
   if (userRole !== "admin") {
     // User is authenticated but not an admin - redirect to dashboard or show access denied
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center px-8">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-red-600 text-3xl">block</span>
@@ -37,7 +37,7 @@ export default function AdminProtectedRoute({ children }) {
           </p>
           <button
             onClick={() => window.location.href = "/dashboard"}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
+            className="bg-ht-purple hover:bg-ht-purple-light text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
           >
             Go to Dashboard
           </button>
@@ -49,4 +49,3 @@ export default function AdminProtectedRoute({ children }) {
   // User is authenticated and is an admin
   return children || <Outlet />;
 }
-
