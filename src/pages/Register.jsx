@@ -133,7 +133,7 @@ export default function Register() {
               {/* First Name */}
               <div className="w-full">
                 <label className="block text-black text-lg sm:text-xl mb-2">First Name</label>
-                <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full">
+                <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full">
                   <input
                     type="text"
                     value={firstName}
@@ -148,7 +148,7 @@ export default function Register() {
               {/* Last Name */}
               <div className="w-full">
                 <label className="block text-black text-lg sm:text-xl mb-2">Last Name</label>
-                <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full">
+                <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full">
                   <input
                     type="text"
                     value={lastName}
@@ -166,7 +166,7 @@ export default function Register() {
               {/* Email */}
               <div className="w-full">
                 <label className="block text-black text-lg sm:text-xl mb-2">Email</label>
-                <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full">
+                <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full">
                   <input
                     type="email"
                     value={email}
@@ -181,7 +181,7 @@ export default function Register() {
               {/* Home Address */}
               <div className="w-full">
                 <label className="block text-black text-lg sm:text-xl mb-2">Home Address (optional)</label>
-                <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full">
+                <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full">
                   <input
                     type="text"
                     value={homeAddress}
@@ -196,7 +196,7 @@ export default function Register() {
             {/* Password */}
             <div className="w-full">
               <label className="block text-black text-lg sm:text-xl mb-2">Password</label>
-              <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full relative">
+              <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -220,7 +220,7 @@ export default function Register() {
             {/* Confirm Password */}
             <div className="w-full">
               <label className="block text-black text-lg sm:text-xl mb-2">Confirm Password</label>
-              <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full relative">
+              <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirm}
@@ -248,7 +248,7 @@ export default function Register() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-customActiveText hover:bg-sky-600 mt-8 text-white py-4 sm:py-6 md:py-8 px-8 sm:px-16 md:px-32 lg:px-44 rounded-2xl text-lg sm:text-xl md:text-2xl font-medium transition-colors"
+                className="bg-ht-cyan hover:bg-ht-cyan-light mt-8 text-white py-4 sm:py-6 md:py-8 px-8 sm:px-16 md:px-32 lg:px-44 rounded-2xl text-lg sm:text-xl md:text-2xl font-medium transition-colors"
               >
                 Join Now
               </button>
@@ -261,7 +261,7 @@ export default function Register() {
               Already have an account?{" "}
               <button 
                 onClick={() => navigate("/login")}
-                className="font-bold text-black hover:text-blue-600 transition-colors"
+                className="font-bold text-black hover:text-ht-cyan transition-colors"
               >
                 Sign in
               </button>

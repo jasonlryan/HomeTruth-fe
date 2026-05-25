@@ -84,7 +84,7 @@ export default function ComingSoon() {
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="bg-customActiveText hover:bg-[#1e4fc7] text-white px-12 py-4 rounded-md font-medium transition text-base md:text-lg"
+              className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-12 py-4 rounded-md font-medium transition text-base md:text-lg"
             >
               Join The Waitlist
             </button>
@@ -111,12 +111,12 @@ export default function ComingSoon() {
                 placeholder="Enter your email"
                 required
                 disabled={isLoading}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2960EC] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-ht-cyan disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-customActiveText  text-white px-6 py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-ht-cyan text-white px-6 py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Submitting..." : "Submit"}
               </button>
@@ -142,11 +142,11 @@ export default function ComingSoon() {
             {/* Left Column - Text */}
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold text-black">
-                The <span className="text-orange-500">Home Truth</span> Platform.
+                The <span className="text-ht-orange">Home Truth</span> Platform.
               </h2>
               <div className="space-y-4 text-gray-700">
                 <p className="text-lg leading-relaxed">
-                  We are building The Truth Platform, your single source of property truth. With complete clarity about your home: its history, its current state, its potential, you make better decisions. You maximize value. You stay ahead of problems. You own your home with confidence. <span className="text-orange-500 font-semibold">HomeTruth</span> puts you in control.
+                  We are building The Truth Platform, your single source of property truth. With complete clarity about your home: its history, its current state, its potential, you make better decisions. You maximize value. You stay ahead of problems. You own your home with confidence. <span className="text-ht-orange font-semibold">HomeTruth</span> puts you in control.
                 </p>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function ComingSoon() {
           {/* Header */}
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-4 inline-flex items-center gap-2">
-              Your <span className="text-orange-500">Trusted</span> Advisor
+              Your <span className="text-ht-orange">Trusted</span> Advisor
               <img
                 src="/assets/comingSoon/arcticons_ai.svg"
                 alt="Assistant icon"
@@ -191,7 +191,7 @@ export default function ComingSoon() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
               A helper guiding you through every aspect of homeownership. You stay in control, always.
             </p>
-            <span className="inline-block bg-[#E6ECFF] text-[#2960EC] px-6 py-3 rounded-md font-medium">
+            <span className="inline-block bg-blue-50 text-ht-cyan px-6 py-3 rounded-md font-medium">
               Available to all members
             </span>
           </div>
@@ -258,7 +258,7 @@ export default function ComingSoon() {
                   placeholder="Your email adress"
                   required
                   disabled={isLoading}
-                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2960EC] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-ht-cyan disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="submit"
@@ -268,7 +268,7 @@ export default function ComingSoon() {
                     }
                   }}
                   disabled={isLoading}
-                  className="bg-customActiveText hover:customActive text-white px-6 py-3 rounded-lg font-bold transition whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg font-bold transition whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Joining..." : "Join Us"}
                 </button>
@@ -348,7 +348,7 @@ export default function ComingSoon() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#1e293b] relative">
+      <footer className="bg-ht-dark relative">
         {/* Light gray gradient line at top */}
         <div className="h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
         <div className="py-8 text-center">

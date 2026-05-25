@@ -89,7 +89,7 @@ export default function WelcomePage() {
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8">
             <button
               onClick={handleGetStarted}
-              className="bg-customActiveText hover:bg-sky-500 text-white px-12 py-4 rounded-lg text-lg font-medium transition-colors w-full sm:w-96"
+              className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-12 py-4 rounded-lg text-lg font-medium transition-colors w-full sm:w-96"
             >
               Get Started
             </button>

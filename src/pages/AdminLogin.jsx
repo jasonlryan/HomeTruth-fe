@@ -151,7 +151,7 @@ export default function AdminLogin() {
             {/* Email Input */}
             <div className="w-full">
               <label className="block text-black text-lg sm:text-xl mb-2">Email</label>
-              <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full">
+              <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full">
                 <input
                   type="email"
                   value={email}
@@ -169,7 +169,7 @@ export default function AdminLogin() {
             {/* Password Input */}
             <div className="w-full">
               <label className="block text-black text-lg sm:text-xl mb-2">Password</label>
-              <div className="border-b-2 border-gray-300 focus-within:border-blue-500 transition-colors w-full relative">
+              <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -201,7 +201,7 @@ export default function AdminLogin() {
                 id="rememberMe"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                className="w-4 h-4 text-ht-cyan bg-gray-100 border-gray-300 rounded focus:ring-ht-cyan focus:ring-2"
               />
               <label htmlFor="rememberMe" className="ml-2 text-gray-700 cursor-pointer">
                 Remember me
@@ -214,7 +214,7 @@ export default function AdminLogin() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-customActiveText hover:bg-sky-600 mt-8 text-white py-4 sm:py-6 md:py-8 px-8 sm:px-16 md:px-32 lg:px-44 rounded-2xl text-lg sm:text-xl md:text-2xl font-medium transition-colors"
+                className="bg-ht-cyan hover:bg-ht-cyan-light mt-8 text-white py-4 sm:py-6 md:py-8 px-8 sm:px-16 md:px-32 lg:px-44 rounded-2xl text-lg sm:text-xl md:text-2xl font-medium transition-colors"
               >
                 Sign In
               </button>
@@ -227,7 +227,7 @@ export default function AdminLogin() {
               Not an Administrator?{" "}
               <button 
                 onClick={() => navigate("/login")}
-                className="font-bold text-black hover:text-blue-600 transition-colors"
+                className="font-bold text-black hover:text-ht-cyan transition-colors"
               >
                 Regular Sign In
               </button>
