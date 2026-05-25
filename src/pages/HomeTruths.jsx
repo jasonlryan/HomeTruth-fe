@@ -89,7 +89,7 @@ export default function HomeTruths() {
               }}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 activeCategory === cat.value
-                  ? "bg-[#00bfff] text-white shadow-sm"
+                  ? "bg-ht-cyan text-white shadow-sm"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -103,7 +103,7 @@ export default function HomeTruths() {
       <section className="max-w-7xl mx-auto px-6 py-8">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#00bfff]"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-ht-cyan"></div>
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-20">
@@ -131,7 +131,7 @@ export default function HomeTruths() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50">
-                      <span className="text-4xl text-[#00bfff]/30 font-bold">HT</span>
+                      <span className="text-4xl text-ht-cyan opacity-30 font-bold">HT</span>
                     </div>
                   )}
                 </div>
@@ -139,11 +139,11 @@ export default function HomeTruths() {
                 {/* Content */}
                 <div className="p-5">
                   {/* Category Badge */}
-                  <span className="inline-block px-2.5 py-0.5 text-xs font-medium bg-blue-50 text-[#00bfff] rounded-full capitalize mb-3">
+                  <span className="inline-block px-2.5 py-0.5 text-xs font-medium bg-blue-50 text-ht-cyan rounded-full capitalize mb-3">
                     {article.category}
                   </span>
 
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#00bfff] transition-colors">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-ht-cyan transition-colors">
                     {article.title}
                   </h3>
 

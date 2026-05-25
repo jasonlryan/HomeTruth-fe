@@ -59,7 +59,7 @@ const Resources = () => {
 
                         <div className="flex flex-wrap gap-3 pt-2">
                             <span className="bg-[#f0f7ff] text-[#1e2e5c] px-5 py-2.5 rounded-full text-sm font-medium border border-[#e0f0fe]">
-                                Dynamic index: reads everything in <span className="text-blue-500 font-semibold">public/resources</span>
+                                Dynamic index: reads everything in <span className="text-ht-cyan font-semibold">public/resources</span>
                             </span>
                             <span className="bg-white text-gray-500 px-5 py-2.5 rounded-full text-sm font-medium border border-gray-200">
                                 Ready to share or link in-product
@@ -69,7 +69,7 @@ const Resources = () => {
 
                     <div className="w-full lg:w-[480px] bg-[#f8fbff] rounded-[2rem] p-6 flex flex-col justify-center space-y-4 border border-[#eef5ff]">
                         <div className="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-gray-50 group cursor-pointer hover:shadow-md transition-all">
-                            <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-blue-600 shrink-0">
+                            <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-ht-cyan shrink-0">
                                 <span className="material-symbols-outlined text-[22px]">description</span>
                             </div>
                             <div>
@@ -79,7 +79,7 @@ const Resources = () => {
                         </div>
 
                         <div className="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-gray-100/50 group cursor-pointer hover:shadow-md transition-all">
-                            <div className="w-12 h-12 bg-[#f5f3ff] rounded-xl flex items-center justify-center text-purple-600 shrink-0">
+                            <div className="w-12 h-12 bg-[#f5f3ff] rounded-xl flex items-center justify-center text-ht-purple shrink-0">
                                 <span className="material-symbols-outlined text-[22px]">arrow_forward</span>
                             </div>
                             <div>
@@ -125,8 +125,8 @@ const Resources = () => {
     after:h-[4px]
     after:rounded-b-xl
     after:bg-gradient-to-r
-    after:from-[#00c0f9]
-    after:to-[#c4b5fd]
+    after:from-ht-cyan
+    after:to-ht-purple-light
   "
                             >
                                 <div>
@@ -145,14 +145,14 @@ const Resources = () => {
                                 </div>
 
                                 <div className="flex items-center gap-3 mt-auto">
-                                    <button className="bg-[#00bfff] hover:bg-blue-400 text-white px-5 py-2 rounded-lg font-medium text-sm flex items-center gap-1.5 transition-all shadow-sm shadow-blue-100">
+                                    <button className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-5 py-2 rounded-lg font-medium text-sm flex items-center gap-1.5 transition-all shadow-sm shadow-blue-100">
                                         Open explainer
                                         <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                                     </button>
 
                                     <div className="flex items-center bg-[#eff6ff] px-3 py-1.5 rounded-lg border border-blue-1">
                                         <span className="text-xs text-[#1e2e5c] font-bold tracking-wider flex items-center gap-1.5">
-                                            HTML <span className="w-1 h-1 bg-blue-400/30 rounded-full"></span> PUBLIC
+                                            HTML <span className="w-1 h-1 bg-ht-cyan rounded-full"></span> PUBLIC
                                         </span>
                                     </div>
                                 </div>

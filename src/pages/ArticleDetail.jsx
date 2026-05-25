@@ -55,7 +55,7 @@ export default function ArticleDetail() {
           {/* Back Link */}
           <Link
             to="/home-truths"
-            className="inline-flex items-center gap-2 text-[#00bfff] hover:text-blue-600 text-sm font-medium mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-ht-cyan hover:text-ht-cyan-light text-sm font-medium mb-8 transition-colors"
           >
             <ArrowLeft size={16} />
             Back to Home Truths
@@ -63,7 +63,7 @@ export default function ArticleDetail() {
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#00bfff]"></div>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-ht-cyan"></div>
             </div>
           ) : error || !article ? (
             <div className="text-center py-20">
@@ -73,7 +73,7 @@ export default function ArticleDetail() {
               </p>
               <Link
                 to="/home-truths"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00bfff] text-white rounded-lg font-medium hover:bg-blue-500 transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-ht-cyan text-white rounded-lg font-medium hover:bg-ht-cyan-light transition-colors"
               >
                 <ArrowLeft size={16} />
                 Browse all articles
@@ -93,7 +93,7 @@ export default function ArticleDetail() {
               )}
 
               {/* Category Badge */}
-              <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-50 text-[#00bfff] rounded-full capitalize mb-4">
+              <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-50 text-ht-cyan rounded-full capitalize mb-4">
                 {article.category}
               </span>
 
@@ -134,10 +134,10 @@ export default function ArticleDetail() {
                 className="article-body prose prose-lg max-w-none
                   prose-headings:text-gray-900 prose-headings:font-bold
                   prose-p:text-gray-700 prose-p:leading-relaxed
-                  prose-a:text-[#00bfff] prose-a:underline hover:prose-a:text-blue-600
+                  prose-a:text-ht-cyan prose-a:underline hover:prose-a:text-ht-cyan-light
                   prose-strong:text-gray-900
                   prose-li:text-gray-800 prose-li:leading-relaxed
-                  prose-blockquote:border-l-[#00bfff] prose-blockquote:bg-blue-50/50 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+                  prose-blockquote:border-l-ht-cyan prose-blockquote:bg-blue-50/50 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
                   prose-img:rounded-lg prose-img:shadow-sm
                   prose-code:text-sm prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
                   prose-hr:border-gray-200"
@@ -148,7 +148,7 @@ export default function ArticleDetail() {
               <div className="mt-12 pt-6 border-t border-gray-200">
                 <Link
                   to="/home-truths"
-                  className="inline-flex items-center gap-2 text-[#00bfff] hover:text-blue-600 text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-2 text-ht-cyan hover:text-ht-cyan-light text-sm font-medium transition-colors"
                 >
                   <ArrowLeft size={16} />
                   Back to all articles

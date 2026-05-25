@@ -41,7 +41,7 @@ export default function Navbar() {
             <Link
               key={link.label}
               to={link.path}
-              className="hover:text-myblue font-medium transition-colors duration-200"
+              className="hover:text-ht-cyan font-medium transition-colors duration-200"
             >
               {link.label}
             </Link>
@@ -49,14 +49,14 @@ export default function Navbar() {
 
           <Link
             to="/pro-features"
-            className="border-2 border-[#00bfff] text-[#00bfff] hover:bg-[#00bfff] hover:text-white px-2 py-1 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+            className="border-2 border-ht-cyan text-ht-cyan hover:bg-ht-cyan hover:text-white px-2 py-1 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
           >
             Explore Pro Features
           </Link>
 
           <Link
             to="/login"
-            className="bg-[#00bfff] hover:bg-blue-[#00bfff] text-white px-4 py-1.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+            className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-1.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
           >
             Log in
           </Link>
@@ -65,7 +65,7 @@ export default function Navbar() {
         {/* Mobile Hamburger Button */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="hamburger-btn lg:hidden text-gray-600 hover:text-myblue transition-colors focus:outline-none p-2 rounded-md hover:bg-gray-50"
+          className="hamburger-btn lg:hidden text-gray-600 hover:text-ht-cyan transition-colors focus:outline-none p-2 rounded-md hover:bg-gray-50"
           aria-label="Toggle menu"
         >
           <span className="material-symbols-outlined text-3xl">
@@ -86,10 +86,10 @@ export default function Navbar() {
                 key={link.label}
                 to={link.path}
                 onClick={() => setIsMenuOpen(false)}
-                className="w-full text-left px-4 py-4 text-lg font-semibold text-gray-700 hover:bg-blue-50 hover:text-myblue rounded-xl transition-all flex items-center justify-between group"
+                className="w-full text-left px-4 py-4 text-lg font-semibold text-gray-700 hover:bg-blue-50 hover:text-ht-cyan rounded-xl transition-all flex items-center justify-between group"
               >
                 {link.label}
-                <span className="material-symbols-outlined text-gray-300 group-hover:text-myblue transition-transform group-hover:translate-x-1">
+                <span className="material-symbols-outlined text-gray-300 group-hover:text-ht-cyan transition-transform group-hover:translate-x-1">
                   chevron_right
                 </span>
               </Link>
@@ -100,7 +100,7 @@ export default function Navbar() {
                   navigate("/pro-features");
                   setIsMenuOpen(false);
                 }}
-                className="w-full border-2 border-[#00bfff] text-[#00bfff] py-4 rounded-xl font-medium text-lg hover:bg-blue-50 transition-all active:scale-[0.98]"
+                className="w-full border-2 border-ht-cyan text-ht-cyan py-4 rounded-xl font-medium text-lg hover:bg-blue-50 transition-all active:scale-[0.98]"
               >
                 Explore Pro Features
               </button>
@@ -109,7 +109,7 @@ export default function Navbar() {
                   navigate("/login");
                   setIsMenuOpen(false);
                 }}
-                className="w-full bg-[#00bfff] text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-500 transition-all active:scale-[0.98]"
+                className="w-full bg-ht-cyan text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-ht-cyan-light transition-all active:scale-[0.98]"
               >
                 Log in
               </button>
