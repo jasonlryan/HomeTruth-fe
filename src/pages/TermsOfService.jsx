@@ -46,35 +46,35 @@ export default function TermsOfService() {
                 Table of Contents
               </h2>
               <nav className="space-y-2">
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 1 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 1 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   1. Your Account & Responsibilities
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 2 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 2 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   2. Our Services
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 3 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 3 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   3. Subscription Plans & Payments
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 4 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 4 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   4. Your Content & Data Privacy
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 5 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 5 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   5. Guidance & Third-Party Services Disclaimer
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 6 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 6 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   6. Termination
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 7 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 7 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   7. Changes to These Terms
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${activeSection === 8 ? "bg-customActiveText text-white" : "text-black text-sm hover:bg-gray-100"
+                <div className={`p-2 rounded-lg transition-colors ${activeSection === 8 ? "bg-ht-cyan text-white" : "text-black text-sm hover:bg-gray-100"
                   }`}>
                   8. Governing Law
                 </div>
@@ -90,7 +90,7 @@ export default function TermsOfService() {
 
             {/* Welcome Section */}
             <div id="welcome" className="mb-12">
-              <h2 className="text-base font-bold text-customActiveText mb-4">
+              <h2 className="text-base font-bold text-ht-cyan mb-4">
                 Welcome to HomeTruth!
               </h2>
               <p className="text-gray-700 text-xl max-w-6xl leading-relaxed">
@@ -144,8 +144,8 @@ export default function TermsOfService() {
 
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">
@@ -155,8 +155,8 @@ export default function TermsOfService() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">
@@ -166,8 +166,8 @@ export default function TermsOfService() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">
@@ -177,8 +177,8 @@ export default function TermsOfService() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">
@@ -188,8 +188,8 @@ export default function TermsOfService() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">
@@ -199,8 +199,8 @@ export default function TermsOfService() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">
@@ -210,8 +210,8 @@ export default function TermsOfService() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-customActive rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-customActiveText text-sm font-bold">&gt;</span>
+                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-ht-cyan text-sm font-bold">&gt;</span>
                   </div>
                   <div>
                     <p className="text-black text-sm leading-relaxed">

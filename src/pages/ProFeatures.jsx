@@ -99,7 +99,7 @@ export default function ProFeatures() {
 
       <section className="bg-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-16 text-[#1a1a1a]">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-16 text-ht-black">
             What You Get with Pro
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-10">
@@ -115,15 +115,15 @@ export default function ProFeatures() {
                     className="w-14 h-14 object-contain"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-[#1a1a1a] mb-3 text-center">
+                <h3 className="text-lg font-bold text-ht-black mb-3 text-center">
                   {feature.title}
                 </h3>
-                <p className="text-[#666666] text-[13px] leading-relaxed text-center px-2">
+                <p className="text-ht-mid-grey text-[13px] leading-relaxed text-center px-2">
                   {feature.description}
                 </p>
 
                 {feature.subText && (
-                  <p className="mt-3 text-[#999999] text-[11px] font-medium uppercase tracking-widest text-center">
+                  <p className="mt-3 text-ht-mid-grey text-[11px] font-medium uppercase tracking-widest text-center">
                     {feature.subText}
                   </p>
                 )}
@@ -131,7 +131,7 @@ export default function ProFeatures() {
                 {feature.extras && (
                   <div className="mt-4 flex flex-col gap-1">
                     {feature.extras.map((extra, i) => (
-                      <p key={i} className="text-[#999999] text-[12px] text-center italic">
+                      <p key={i} className="text-ht-mid-grey text-[12px] text-center italic">
                         {extra}
                       </p>
                     ))}
@@ -145,21 +145,21 @@ export default function ProFeatures() {
 
       <section className="bg-white py-16 text-center px-4">
         <div className="max-w-4xl mx-auto">
-          <h3 className="text-[20px] md:text-[22px] font-medium text-[#00c0f9] mb-4">
+          <h3 className="text-[20px] md:text-[22px] font-medium text-ht-cyan mb-4">
             Upgrade for £8/month per property
           </h3>
-          <p className="text-sm text-[#666666] mb-8">
+          <p className="text-sm text-ht-mid-grey mb-8">
             Everything you need to feel confident, organised, and informed about your property.
           </p>
           <div className="flex justify-center gap-4">
             <button
               onClick={handleStartFree}
-              className="border border-[#00c0f9] text-[#00c0f9] px-6 py-2 rounded-md font-medium text-sm hover:bg-sky-50 transition-colors"
+              className="border border-ht-cyan text-ht-cyan px-6 py-2 rounded-md font-medium text-sm hover:bg-sky-50 transition-colors"
             >
               Start Free
             </button>
             <button
-              className="bg-[#00c0f9] text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-[#00b0e6] transition-colors flex items-center gap-2"
+              className="bg-ht-cyan text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-ht-cyan-light transition-colors flex items-center gap-2"
             >
               Upgrade to Pro
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +170,7 @@ export default function ProFeatures() {
         </div>
       </section>
 
-      <section className="bg-[#F4F9FF] py-12 md:py-16">
+      <section className="bg-gray-50 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-6">
           {/* Header */}
           <div className="flex flex-col items-center justify-center text-center mb-10 relative w-fit mx-auto">

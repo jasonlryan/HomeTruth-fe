@@ -10,7 +10,7 @@ const CheckIcon = () => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M14 24.8994C15.3789 24.8994 16.7443 24.6278 18.0182 24.1001C19.2921 23.5725 20.4496 22.799 21.4246 21.824C22.3996 20.849 23.1731 19.6915 23.7007 18.4176C24.2284 17.1437 24.5 15.7783 24.5 14.3994C24.5 13.0205 24.2284 11.6552 23.7007 10.3812C23.1731 9.10732 22.3996 7.94981 21.4246 6.97479C20.4496 5.99978 19.2921 5.22635 18.0182 4.69868C16.7443 4.171 15.3789 3.89941 14 3.89941C11.2152 3.89941 8.54451 5.00566 6.57538 6.97479C4.60625 8.94392 3.5 11.6146 3.5 14.3994C3.5 17.1842 4.60625 19.8549 6.57538 21.824C8.54451 23.7932 11.2152 24.8994 14 24.8994ZM13.7293 18.6461L19.5627 11.6461L17.7707 10.1527L12.754 16.1716L10.1582 13.5746L8.5085 15.2242L12.0085 18.7242L12.9115 19.6272L13.7293 18.6461Z"
-      fill="#7098FE"
+      fill="var(--ht-cyan)"
     />
     <path
       d="M19.562 11.6457L13.7286 18.6457L12.9108 19.6268L12.0078 18.7238L8.50781 15.2238L10.1575 13.5742L12.7533 16.1712L17.77 10.1523L19.562 11.6457Z"
@@ -52,7 +52,7 @@ export default function PricingPlans() {
                 ))}
               </ul>
             </div>
-            <button className="mt-10 bg-myblue text-white w-full py-3 rounded-md text-sm font-medium hover:bg-fuchsia-700 transition">
+            <button className="mt-10 bg-ht-cyan text-white w-full py-3 rounded-md text-sm font-medium hover:bg-ht-cyan-light transition">
               Create Free Account
             </button>
           </div>
@@ -80,7 +80,7 @@ export default function PricingPlans() {
                 £50 <span className="font-medium text-base">/ month</span>
               </p>
             </div>
-            <button className="mt-10 bg-myblue text-white w-full py-3 rounded-md text-sm font-medium hover:bg-fuchsia-700 transition">
+            <button className="mt-10 bg-ht-cyan text-white w-full py-3 rounded-md text-sm font-medium hover:bg-ht-cyan-light transition">
               Upgrade Plan
             </button>
           </div>

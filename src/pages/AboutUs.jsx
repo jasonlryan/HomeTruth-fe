@@ -76,14 +76,14 @@ export default function AboutUs() {
       <section className=" md:py-16 bg-white flex items-center">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-4xl">
-            <span className="text-[#00c0f9] text-sm font-bold uppercase tracking-[0.2em] mb-6 block">
+            <span className="text-ht-cyan text-sm font-bold uppercase tracking-[0.2em] mb-6 block">
               OUR MISSION
             </span>
-            <h2 className="text-[32px] md:text-medium font-bold text-[#1a1a1a] leading-[1.2] mb-10">
+            <h2 className="text-[32px] md:text-medium font-bold text-ht-black leading-[1.2] mb-10">
               We help people make better property decisions <br className="hidden md:block" />
               by giving them real answers.
             </h2>
-            <div className="space-y-8 text-[#666666] text-lg md:text-xl leading-relaxed max-w-3xl">
+            <div className="space-y-8 text-ht-mid-grey text-lg md:text-xl leading-relaxed max-w-3xl">
               <p>
                 Specific to their property. Specific to their situation. Specific to their goals.
               </p>
@@ -133,61 +133,61 @@ export default function AboutUs() {
       {/* What We Believe Section */}
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-2xl font-medium text-[#1a1a1a] mb-10 text-left">
+          <h2 className="text-2xl font-medium text-ht-black mb-10 text-left">
             What We Believe
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
             {/* Belief 1 */}
-            <div className="bg-white p-6 rounded-lg border border-[#f0f0f0] border-l-4 border-l-[#00c0f9] flex flex-col gap-3 shadow-sm">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 border-l-4 border-l-ht-cyan flex flex-col gap-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <img src="/assets/AboutUs/Vector (5).svg" alt="" className="w-7 h-7 object-contain" />
-                <h3 className="text-base text-[#1a1a1a]">Real Answers Over Easy Answers</h3>
+                <h3 className="text-base text-ht-black">Real Answers Over Easy Answers</h3>
               </div>
-              <p className="text-[#666666] text-sm leading-relaxed">
+              <p className="text-ht-mid-grey text-sm leading-relaxed">
                 We don't tell you what you want to hear. We tell you what you need to know.
               </p>
             </div>
 
             {/* Belief 2 */}
-            <div className="bg-white p-6 rounded-lg border border-[#f0f0f0] border-l-4 border-l-[#fd6916] flex flex-col gap-3 shadow-sm">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 border-l-4 border-l-ht-orange flex flex-col gap-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <img src="/assets/AboutUs/Vector (1).svg" alt="" className="w-7 h-7 object-contain" />
-                <h3 className="text-base text-[#1a1a1a]">Clarity Over Complexity</h3>
+                <h3 className="text-base text-ht-black">Clarity Over Complexity</h3>
               </div>
-              <p className="text-[#666666] text-sm leading-relaxed">
+              <p className="text-ht-mid-grey text-sm leading-relaxed">
                 Property is complicated. Our answers aren't.
               </p>
             </div>
 
             {/* Belief 3 */}
-            <div className="bg-white p-6 rounded-lg border border-[#f0f0f0] border-l-4 border-l-[#c084fc] flex flex-col gap-3 shadow-sm">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 border-l-4 border-l-ht-purple-light flex flex-col gap-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <img src="/assets/AboutUs/Vector (2).svg" alt="" className="w-7 h-7 object-contain" />
-                <h3 className="text-base text-[#1a1a1a]">Proactive Over Reactive</h3>
+                <h3 className="text-base text-ht-black">Proactive Over Reactive</h3>
               </div>
-              <p className="text-[#666666] text-sm leading-relaxed">
+              <p className="text-ht-mid-grey text-sm leading-relaxed">
                 We tell you what's coming before it becomes a crisis.
               </p>
             </div>
 
             {/* Belief 4 */}
-            <div className="bg-white p-6 rounded-lg border border-[#f0f0f0] border-l-4 border-l-[#22c55e] flex flex-col gap-3 shadow-sm">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 border-l-4 border-l-ht-green flex flex-col gap-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <img src="/assets/AboutUs/Vector (6).svg" alt="" className="w-7 h-7 object-contain" />
-                <h3 className="text-base text-[#1a1a1a]">Evidence Over Opinion</h3>
+                <h3 className="text-base text-ht-black">Evidence Over Opinion</h3>
               </div>
-              <p className="text-[#666666] text-sm leading-relaxed">
+              <p className="text-ht-mid-grey text-sm leading-relaxed">
                 Our guidance is based on your property's actual data, not guesses.
               </p>
             </div>
 
             {/* Belief 5 */}
-            <div className="bg-white p-6 rounded-lg border border-[#f0f0f0] border-l-4 border-l-[#00c0f9] flex flex-col gap-3 shadow-sm">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 border-l-4 border-l-ht-cyan flex flex-col gap-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <img src="/assets/AboutUs/Vector.svg" alt="" className="w-7 h-7 object-contain" />
-                <h3 className="text-base text-[#1a1a1a]">Accessible Over Exclusive</h3>
+                <h3 className="text-base text-ht-black">Accessible Over Exclusive</h3>
               </div>
-              <p className="text-[#666666] text-sm leading-relaxed">
+              <p className="text-ht-mid-grey text-sm leading-relaxed">
                 Good property intelligence shouldn't be only for people who can afford advisors.
               </p>
             </div>
@@ -198,54 +198,54 @@ export default function AboutUs() {
       {/* How We're Different Section */}
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-2xl text-[#1a1a1a] mb-12 text-left">
+          <h2 className="text-2xl text-ht-black mb-12 text-left">
             How We're Different
           </h2>
           <div className="space-y-0">
             {/* Row 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-[#f0f0f0]">
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-gray-100">
               <div className="flex flex-col items-start gap-3 mb-6 md:mb-0">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00c0f9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-cyan)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <circle cx="12" cy="12" r="3" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-[#1a1a1a]">Specific, not generic</span>
+                <span className="text-sm font-medium text-ht-black">Specific, not generic</span>
               </div>
-              <p className="text-[#666666] text-base leading-relaxed">
+              <p className="text-ht-mid-grey text-base leading-relaxed">
                 Every answer is about your property, your situation, your data. Not someone else's experience on a forum.
               </p>
             </div>
 
             {/* Row 2 */}
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-[#f0f0f0]">
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-gray-100">
               <div className="flex flex-col items-start gap-3 mb-6 md:mb-0">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fd6916" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-orange)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-[#1a1a1a]">Proactive, not reactive</span>
+                <span className="text-sm font-medium text-ht-black">Proactive, not reactive</span>
               </div>
-              <p className="text-[#666666] text-base leading-relaxed">
+              <p className="text-ht-mid-grey text-base leading-relaxed">
                 We tell you what's coming up before you have to ask. The best guidance arrives before the problem does.
               </p>
             </div>
 
             {/* Row 3 */}
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-[#f0f0f0]">
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-gray-100">
               <div className="flex flex-col items-start gap-3 mb-6 md:mb-0">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c084fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-purple-light)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-[#1a1a1a]">Real answers, not opinions</span>
+                <span className="text-sm font-medium text-ht-black">Real answers, not opinions</span>
               </div>
-              <p className="text-[#666666] text-base leading-relaxed">
+              <p className="text-ht-mid-grey text-base leading-relaxed">
                 Our guidance is grounded in your property's actual history and data. Not what worked for someone else's house.
               </p>
             </div>
@@ -254,14 +254,14 @@ export default function AboutUs() {
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8">
               <div className="flex flex-col items-start gap-3">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
                     <polyline points="17 6 23 6 23 12" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-[#1a1a1a]">Gets better over time</span>
+                <span className="text-sm font-medium text-ht-black">Gets better over time</span>
               </div>
-              <p className="text-[#666666] text-base leading-relaxed">
+              <p className="text-ht-mid-grey text-base leading-relaxed">
                 The more you use HomeTruth, the more it understands your property. Your records grow, and so does the quality of your guidance.
               </p>
             </div>
@@ -323,9 +323,9 @@ export default function AboutUs() {
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 relative">
                    
-                    <div className="absolute inset-0 w-12 h-12 bg-customActive rounded-full"></div>
+                    <div className="absolute inset-0 w-12 h-12 bg-sky-50 rounded-full"></div>
                   
-                    <div className="relative w-8 h-8 bg-customActiveText rounded-full flex items-center justify-center">
+                    <div className="relative w-8 h-8 bg-ht-cyan rounded-full flex items-center justify-center">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
@@ -345,9 +345,9 @@ export default function AboutUs() {
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 relative">
                    
-                    <div className="absolute inset-0 w-12 h-12 bg-customActive rounded-full"></div>
+                    <div className="absolute inset-0 w-12 h-12 bg-sky-50 rounded-full"></div>
                   
-                    <div className="relative w-8 h-8 bg-customActiveText rounded-full flex items-center justify-center">
+                    <div className="relative w-8 h-8 bg-ht-cyan rounded-full flex items-center justify-center">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
@@ -390,33 +390,33 @@ export default function AboutUs() {
       </section> */}
 
       {/* Why This Matters Section */}
-      <section className="py-16 md:py-24 bg-white bg-[#f9fafb]">
+      <section className="py-16 md:py-24 bg-white bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-2xl font-medium text-[#1a1a1a] mb-16 text-left">
+          <h2 className="text-2xl font-medium text-ht-black mb-16 text-left">
             Why This Matters
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <span className="text-[40px] md:text-[54px] font-bold text-[#fd6916] leading-none mb-4 block">63%</span>
-              <p className="text-[#666666] text-xs md:text-sm leading-relaxed px-2">
+              <span className="text-[40px] md:text-[54px] font-bold text-ht-orange leading-none mb-4 block">63%</span>
+              <p className="text-ht-mid-grey text-xs md:text-sm leading-relaxed px-2">
                 of first-time buyers regret their purchase
               </p>
             </div>
             <div className="text-center">
-              <span className="text-[40px] md:text-[54px] font-bold text-[#00c0f9] leading-none mb-4 block">42%</span>
-              <p className="text-[#666666] text-xs md:text-sm leading-relaxed px-2">
+              <span className="text-[40px] md:text-[54px] font-bold text-ht-cyan leading-none mb-4 block">42%</span>
+              <p className="text-ht-mid-grey text-xs md:text-sm leading-relaxed px-2">
                 say costs were higher than expected
               </p>
             </div>
             <div className="text-center">
-              <span className="text-[40px] md:text-[54px] font-bold text-[#c084fc] leading-none mb-4 block">£40K</span>
-              <p className="text-[#666666] text-xs md:text-sm leading-relaxed px-2">
+              <span className="text-[40px] md:text-[54px] font-bold text-ht-purple-light leading-none mb-4 block">£40K</span>
+              <p className="text-ht-mid-grey text-xs md:text-sm leading-relaxed px-2">
                 potential penalties landlords face for non-compliance
               </p>
             </div>
             <div className="text-center">
-              <span className="text-[40px] md:text-[54px] font-bold text-[#22c55e] leading-none mb-4 block">37%</span>
-              <p className="text-[#666666] text-xs md:text-sm leading-relaxed px-2">
+              <span className="text-[40px] md:text-[54px] font-bold text-ht-green leading-none mb-4 block">37%</span>
+              <p className="text-ht-mid-grey text-xs md:text-sm leading-relaxed px-2">
                 rise in maintenance costs since 2020
               </p>
             </div>
@@ -425,7 +425,7 @@ export default function AboutUs() {
       </section>
 
       {/* New Gradient CTA Section */}
-      <section className="w-full bg-gradient-to-r from-[#fd6916] via-[#e27687] to-[#c084fc] py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
+      <section className="w-full bg-gradient-to-r from-ht-orange via-ht-purple to-ht-cyan py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
         <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
           Start Making Better Property Decisions
         </h2>
@@ -434,7 +434,7 @@ export default function AboutUs() {
         </p>
 
         <button
-          className="bg-white text-[#fd6916] rounded-lg py-3 px-8 text-base font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-px hover:shadow-lg"
+          className="bg-white text-ht-orange rounded-lg py-3 px-8 text-base font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-px hover:shadow-lg"
           onClick={() => window.location.href = '/register'}
         >
           Get Started Free

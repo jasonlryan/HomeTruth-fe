@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
         </h2>
         <p>
           At{" "}
-          <a href="/" className="font-semibold text-customActiveText hover:underline">
+          <a href="/" className="font-semibold text-ht-cyan hover:underline">
             HomeTruth
           </a>
           , we are committed to being your trusted Personal Property Assistant,
@@ -184,7 +184,7 @@ export default function PrivacyPolicyPage() {
           VII. Regulatory Compliance
         </h2>
         <p>
-          <a href="/" className="font-semibold text-customActiveText hover:underline">
+          <a href="/" className="font-semibold text-ht-cyan hover:underline">
             HomeTruth
           </a>{" "}
           is fully committed to complying with all relevant data protection

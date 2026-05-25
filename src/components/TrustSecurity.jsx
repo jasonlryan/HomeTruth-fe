@@ -18,7 +18,7 @@ export default function TrustSecurity() {
   ];
 
   return (
-    <section className="bg-[#F4F9FF] py-12 md:py-16">
+    <section className="bg-gray-50 py-12 md:py-16">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col items-center justify-center text-center mb-10">

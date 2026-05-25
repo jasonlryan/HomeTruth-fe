@@ -34,7 +34,7 @@ export default function PremiumFeatures() {
               className="relative bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition"
             >
               {/* PRO label */}
-              <div className="absolute top-4 right-4 bg-primary text-white text-xs px-2 py-0.5 rounded-full">
+              <div className="absolute top-4 right-4 bg-ht-cyan text-white text-xs px-2 py-0.5 rounded-full">
                 PRO
               </div>
 
@@ -51,7 +51,7 @@ export default function PremiumFeatures() {
 
               <p className="text-sm text-lightGrey mb-6">{feature.description}</p>
 
-              <button className="bg-primary hover:bg-[#4a30d6] text-white text-sm px-4 py-2 rounded-md font-medium transition">
+              <button className="bg-ht-cyan hover:bg-ht-cyan-light text-white text-sm px-4 py-2 rounded-md font-medium transition">
                 Unlock with Pro
               </button>
             </div>

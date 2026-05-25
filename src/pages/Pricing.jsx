@@ -18,7 +18,7 @@ export default function Pricing() {
             ],
             buttonText: "Start Free",
             buttonVariant: "outline",
-            priceColor: "text-[#00c0f9]",
+            priceColor: "text-ht-cyan",
         },
         {
             name: "Pro",
@@ -36,7 +36,7 @@ export default function Pricing() {
             ],
             buttonText: "Start Free",
             buttonVariant: "solid",
-            priceColor: "text-[#fd6916]",
+            priceColor: "text-ht-orange",
             popular: true,
         },
         {
@@ -55,7 +55,7 @@ export default function Pricing() {
             ],
             buttonText: "Get in Touch",
             buttonVariant: "outline",
-            priceColor: "text-[#c084fc]",
+            priceColor: "text-ht-purple-light",
         },
     ];
 
@@ -96,23 +96,23 @@ export default function Pricing() {
             </section>
 
             {/* Pricing Cards Section */}
-            <section className="bg-[#f9fafb] py-16 px-6 border-t-[3px] border-[#00c0f9]">
+            <section className="bg-gray-50 py-16 px-6 border-t-[3px] border-ht-cyan">
                 <div className="max-w-6xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-12">
                         {plans.map((plan, index) => (
                             <div
                                 key={index}
-                                className={`relative flex flex-col bg-white rounded-md p-6 shadow-sm transition-all duration-300 ${plan.popular ? "border-2 border-[#fd6916]" : "border border-gray-100"
+                                className={`relative flex flex-col bg-white rounded-md p-6 shadow-sm transition-all duration-300 ${plan.popular ? "border-2 border-ht-orange" : "border border-gray-100"
                                     }`}
                             >
                                 {plan.popular && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#fd6916] text-white text-[10px] uppercase font-bold px-5 py-1.5 rounded-full whitespace-nowrap z-20">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-ht-orange text-white text-[10px] uppercase font-bold px-5 py-1.5 rounded-full whitespace-nowrap z-20">
                                         Most Popular
                                     </div>
                                 )}
 
                                 <div className="mb-6">
-                                    <h3 className="text-[#1a1a1a] font-bold text-lg mb-4">{plan.name}</h3>
+                                    <h3 className="text-ht-black font-bold text-lg mb-4">{plan.name}</h3>
                                     <div className="flex flex-col mb-4">
                                         <div className="flex items-baseline gap-1">
                                             <span className={`text-4xl font-bold ${plan.priceColor}`}>{plan.price}</span>
@@ -135,7 +135,7 @@ export default function Pricing() {
                                 <div className="flex-grow mb-8 border-t border-gray-100">
                                     {plan.features.map((feature, idx) => (
                                         <div key={idx} className="flex items-center gap-3 py-3 border-b border-gray-50">
-                                            <svg className="w-4 h-4 text-[#22c55e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 text-ht-green shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                                             </svg>
                                             <span className="text-gray-600 text-[13px]">{feature}</span>
@@ -145,8 +145,8 @@ export default function Pricing() {
 
                                 <button
                                     className={`w-full py-2.5 rounded-md text-[13px] font-bold transition-all duration-200 ${plan.buttonVariant === "solid"
-                                        ? "bg-[#fd6916] text-white hover:bg-[#e65a0c]"
-                                        : "bg-white text-[#fd6916] border border-[#fd6916] hover:bg-orange-50"
+                                        ? "bg-ht-orange text-white hover:bg-ht-orange-light"
+                                        : "bg-white text-ht-orange border border-ht-orange hover:bg-orange-50"
                                         }`}
                                 >
                                     {plan.buttonText}
@@ -158,14 +158,14 @@ export default function Pricing() {
             </section>
 
             {/* Buying a Property Section */}
-            <section className="py-20 bg-[#f3f7fd]">
+            <section className="py-20 bg-gray-50">
                 <div className="max-w-4xl mx-auto px-6 text-center">
-                    <h2 className="text-2xl md:text-3xl font-medium text-[#1a1a1a] mb-6">Buying a Property?</h2>
+                    <h2 className="text-2xl md:text-3xl font-medium text-ht-black mb-6">Buying a Property?</h2>
                     <p className="text-gray-600 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
                         Request a HomeTruth Report on any property you're viewing. See the verified
                         maintenance history, past issues, and what to watch out for. Make your offer with confidence.
                     </p>
-                    <button className="bg-[#fd6916] text-white py-3.5 px-10 rounded-lg font-medium shadow-md hover:bg-[#e65a0c] transition-all">
+                    <button className="bg-ht-orange text-white py-3.5 px-10 rounded-lg font-medium shadow-md hover:bg-ht-orange-light transition-all">
                         £29 One-Time Report
                     </button>
                 </div>
@@ -174,12 +174,12 @@ export default function Pricing() {
             {/* Common Questions Section */}
             <section className="py-24 bg-white">
                 <div className="max-w-3xl mx-auto px-6">
-                    <h2 className="text-[28px] font-medium text-[#1a1a1a] mb-12">Common Questions</h2>
+                    <h2 className="text-[28px] font-medium text-ht-black mb-12">Common Questions</h2>
                     <div className="divide-y divide-gray-100">
                         {faqs.map((faq, index) => (
                             <div key={index} className="py-4">
                                 <button
-                                    className="w-full flex justify-between items-center py-4 text-left font-medium text-[#1a1a1a]"
+                                    className="w-full flex justify-between items-center py-4 text-left font-medium text-ht-black"
                                     onClick={() => setOpenFaq(openFaq === index ? null : index)}
                                 >
                                     <span className="text-base">{faq.question}</span>
@@ -204,7 +204,7 @@ export default function Pricing() {
             </section>
 
             {/* Final Gradient CTA Section */}
-            <section className="w-full bg-gradient-to-r from-[#fd6916] via-[#e27687] to-[#c084fc] py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
+            <section className="w-full bg-gradient-to-r from-ht-orange via-ht-purple to-ht-cyan py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
                 <h2 className="text-2xl md:text-2xl font-medium text-white mb-4 tracking-tight">
                     Start Making Better Property Decisions
                 </h2>

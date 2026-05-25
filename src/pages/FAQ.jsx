@@ -110,7 +110,7 @@ export default function FAQ() {
           </p>
           <a
             href="mailto:admin@hometruth.io"
-            className="inline-block bg-customActiveText hover:bg-sky-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="inline-block bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
             Contact us
           </a>

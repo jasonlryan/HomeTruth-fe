@@ -4,8 +4,8 @@ export default function WhoWeHelp() {
     const sections = [
         {
             title: "First-Time Buyers",
-            color: "text-[#fd6916]",
-            borderColor: "border-l-[#fd6916]",
+            color: "text-ht-orange",
+            borderColor: "border-l-ht-orange",
             items: [
                 "Know what questions to ask before you buy",
                 "Understand what maintenance actually costs",
@@ -14,8 +14,8 @@ export default function WhoWeHelp() {
         },
         {
             title: "Homeowners",
-            color: "text-[#00c0f9]",
-            borderColor: "border-l-[#00c0f9]",
+            color: "text-ht-cyan",
+            borderColor: "border-l-ht-cyan",
             items: [
                 "Track what you've done to maximise your property's value",
                 "Stay on top of maintenance before small problems become expensive",
@@ -24,8 +24,8 @@ export default function WhoWeHelp() {
         },
         {
             title: "Landlords",
-            color: "text-[#c084fc]",
-            borderColor: "border-l-[#c084fc]",
+            color: "text-ht-purple-light",
+            borderColor: "border-l-ht-purple-light",
             items: [
                 "Stay compliant with changing regulations",
                 "Document everything for protection",
@@ -35,10 +35,10 @@ export default function WhoWeHelp() {
     ];
 
     return (
-        <section className="py-20 px-5 bg-[#f9fafb] font-sans text-center">
+        <section className="py-20 px-5 bg-gray-50 font-sans text-center">
             <div className="mb-12">
-                <h2 className="text-[28px] font-semibold text-[#1a1a1a] mb-3">Who We Help</h2>
-                <p className="text-base text-[#666666] max-w-[600px] mx-auto">
+                <h2 className="text-[28px] font-semibold text-ht-black mb-3">Who We Help</h2>
+                <p className="text-base text-ht-mid-grey max-w-[600px] mx-auto">
                     HomeTruth is for everyone making property decisions
                 </p>
             </div>
@@ -47,12 +47,12 @@ export default function WhoWeHelp() {
                 {sections.map((section, idx) => (
                     <div
                         key={idx}
-                        className={`bg-white p-8 rounded-xl text-left shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#f0f0f0] border-l-4 ${section.borderColor} transition-all duration-200 ease-in-out flex flex-col gap-5 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]`}
+                        className={`bg-white p-8 rounded-xl text-left shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 border-l-4 ${section.borderColor} transition-all duration-200 ease-in-out flex flex-col gap-5 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]`}
                     >
-                        <h3 className="text-[18px] font-bold text-[#1a1a1a] mb-2">{section.title}</h3>
+                        <h3 className="text-[18px] font-bold text-ht-black mb-2">{section.title}</h3>
                         <ul className="list-none p-0 m-0 flex flex-col gap-4">
                             {section.items.map((item, i) => (
-                                <li key={i} className="flex items-start gap-3 text-sm text-[#4a4a4a] leading-relaxed">
+                                <li key={i} className="flex items-start gap-3 text-sm text-gray-700 leading-relaxed">
                                     <span className={`font-bold shrink-0 mt-[1px] ${section.color}`}>→</span>
                                     {item}
                                 </li>
