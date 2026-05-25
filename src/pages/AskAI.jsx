@@ -30,7 +30,7 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
   const displayText = isStreaming && streamingText ? streamingText : text;
 
   return (
-    <div className="chat-system-font bg-[#EDEDED] p-3 rounded-xl max-w-[70%] text-start whitespace-pre-wrap relative">
+    <div className="chat-system-font bg-gray-100 p-3 rounded-xl max-w-[70%] text-start whitespace-pre-wrap relative">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -39,7 +39,7 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
               {...props}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 underline break-words"
+              className="text-ht-cyan underline break-words"
             >
               {props.children || props.href}
             </a>
@@ -1026,7 +1026,7 @@ export default function AskAI() {
                 placeholder="Search Chats"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full text-sm pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-indigo-300"
+                className="w-full text-sm pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-ht-cyan"
               />
             </div>
           </div>
@@ -1034,7 +1034,7 @@ export default function AskAI() {
           <div className="flex-1 overflow-y-auto px-4 space-y-2 scroll-smooth ">
             {isLoadingSessions ? (
               <div className="flex flex-col items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mb-2"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan mb-2"></div>
                 <p className="text-gray-500 text-sm">Loading sessions...</p>
               </div>
             ) : sessions.length === 0 ? (
@@ -1053,8 +1053,8 @@ export default function AskAI() {
                   <div
                     key={s.id}
                     className={`group relative rounded-lg p-4 cursor-pointer transition-colors ${s.id === currentSessionId
-                      ? "bg-indigo-50"
-                      : "bg-white hover:bg-indigo-100"
+                      ? "bg-sky-50"
+                      : "bg-white hover:bg-sky-50"
                       }`}
                     onClick={() => handleSessionSelect(s.id)}
                   >
@@ -1089,7 +1089,7 @@ export default function AskAI() {
                       </div>
                       {!s.saved && s.questions.length > 0 && (
                         <button
-                          className="text-xs text-customActiveText hover:underline leading-tight"
+                          className="text-xs text-ht-cyan hover:underline leading-tight"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleSaveSession(s.id);
@@ -1164,7 +1164,7 @@ export default function AskAI() {
               <div
                 className={`text-sm rounded-lg px-3 py-1 ${sessions.filter((s) => s.saved).length >= 3
                   ? "bg-red-100 text-red-600"
-                  : "bg-indigo-50 text-customActiveText"
+                  : "bg-sky-50 text-ht-cyan"
                   }`}
               >
                 {sessions.filter((s) => s.saved).length}/3 Saved
@@ -1175,7 +1175,7 @@ export default function AskAI() {
 
             <button
               onClick={handleNewSession}
-              className="bg-customActiveText hover:bg-sky-500 text-white px-4 py-2 rounded-lg text-sm"
+              className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-lg text-sm"
             >
               New session
             </button>
@@ -1240,7 +1240,7 @@ export default function AskAI() {
                       disabled={questionLimitReached}
                       className={`absolute top-1/2 right-3 -translate-y-1/2 h-8 w-8 rounded-full text-white flex items-center justify-center ${questionLimitReached
                         ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-customActiveText"
+                        : "bg-ht-cyan"
                         }`}
                     >
                       →
@@ -1257,7 +1257,7 @@ export default function AskAI() {
                         toggleSearchWeb();
                       }}
                       className={`relative flex items-center justify-between text-sm px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer select-none border-2 min-w-[140px] ${searchWeb
-                        ? "bg-customActiveText border-customActiveText text-white hover:bg-customActiveText hover:border-customActiveText shadow-md"
+                        ? "bg-ht-cyan border-ht-cyan text-white hover:bg-ht-cyan-light hover:border-ht-cyan-light shadow-md"
                         : "bg-white border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
                         }`}
                       style={{ WebkitTapHighlightColor: 'transparent' }}
@@ -1290,17 +1290,17 @@ export default function AskAI() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-4 mb-4 shrink-0">
+              <div className="bg-gradient-to-r from-sky-50 to-gray-50 border border-sky-100 rounded-xl p-4 mb-4 shrink-0">
                 <div className="flex items-center gap-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="w-5 h-5 text-indigo-600 flex-shrink-0"
+                    className="w-5 h-5 text-ht-cyan flex-shrink-0"
                   >
                     <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
                   </svg>
-                  <p className="text-sm font-medium text-indigo-900">
+                  <p className="text-sm font-medium text-ht-dark">
                     You've got 3 months of unlimited questions, explore freely while it's active!
                   </p>
                 </div>
@@ -1318,7 +1318,7 @@ export default function AskAI() {
                 ))}
               </div>
 
-              {/* <div className="bg-indigo-50 border border-blue-200 text-primary text-sm p-4 rounded-lg shrink-0">
+              {/* <div className="bg-sky-50 border border-sky-100 text-ht-cyan text-sm p-4 rounded-lg shrink-0">
                 <div className="flex items-center space-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1326,19 +1326,19 @@ export default function AskAI() {
                     className="w-5 h-5"
                   >
                     <path
-                      fill="#19B0F0F0"
+                      fill="var(--ht-cyan)"
                       d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-112c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
                     />
                   </svg>{" "}
-                  <p className="font-medium text-[#6C757D]">Welcome to Ask HomeTruth!</p>
+                  <p className="font-medium text-gray-600">Welcome to Ask HomeTruth!</p>
                 </div>
 
-                <p className="text-[#6C757D] ml-8 text-xs mt-2">
+                <p className="text-gray-600 ml-8 text-xs mt-2">
                   You can create unlimited sessions with unlimited questions. Save
                   up to 3 important sessions to prevent them from being deleted
                   after 7 days.
                 </p>
-                <p className="ml-8 text-customActiveText mt-2 text-xs">
+                <p className="ml-8 text-ht-cyan mt-2 text-xs">
                   Try asking one of the suggested questions above, or type your
                   own property-related question.
                 </p>
@@ -1364,7 +1364,7 @@ export default function AskAI() {
                         e.stopPropagation();
                         handleSaveCurrentSession();
                       }}
-                      className="text-xs text-customActiveText hover:underline leading-tight"
+                      className="text-xs text-ht-cyan hover:underline leading-tight"
                     >
                       Save Session
                     </button>
@@ -1375,7 +1375,7 @@ export default function AskAI() {
                 {qaPairs.map((pair) => (
                   <div key={pair.id} className="mb-6 relative">
                     <div className="flex justify-end">
-                      <div className="bg-customActiveText p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
+                      <div className="bg-ht-cyan p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
                         {pair.question.content}
                       </div>
                     </div>
@@ -1387,7 +1387,7 @@ export default function AskAI() {
 
                     <div className="flex justify-start mt-2 items-start space-x-2">
                       {pair.answer.content === "__typing__" ? (
-                        <div className="bg-[#EDEDED] p-3 rounded-xl max-w-[70%] whitespace-pre-wrap">
+                        <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] whitespace-pre-wrap">
                           <span className="text-gray-600 italic">Thinking...</span>
                         </div>
                       ) : (
@@ -1439,7 +1439,7 @@ export default function AskAI() {
                       className={`absolute top-1/2 right-4 -translate-y-1/2 h-8 w-8 rounded-full text-white flex items-center justify-center transition
                         ${questionLimitReached || isAnswering
                           ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-customActiveText"
+                          : "bg-ht-cyan"
                         }`}
                     >
                       →
@@ -1456,7 +1456,7 @@ export default function AskAI() {
                         toggleSearchWeb();
                       }}
                       className={`relative flex items-center justify-between text-sm px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer select-none border-2 min-w-[140px] ${searchWeb
-                        ? "bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700 shadow-md"
+                        ? "bg-ht-purple border-ht-purple text-white hover:bg-ht-purple-light hover:border-ht-purple-light shadow-md"
                         : "bg-white border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
                         }`}
                       style={{ WebkitTapHighlightColor: 'transparent' }}
@@ -1489,17 +1489,17 @@ export default function AskAI() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-4 mt-4 shrink-0">
+              <div className="bg-gradient-to-r from-sky-50 to-gray-50 border border-sky-100 rounded-xl p-4 mt-4 shrink-0">
                 <div className="flex items-center gap-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="w-5 h-5 text-indigo-600 flex-shrink-0"
+                    className="w-5 h-5 text-ht-cyan flex-shrink-0"
                   >
                     <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
                   </svg>
-                  <p className="text-sm font-medium text-indigo-900">
+                  <p className="text-sm font-medium text-ht-dark">
                     You've got 3 months of unlimited questions, explore freely while it's active!
                   </p>
                 </div>
@@ -1512,12 +1512,12 @@ export default function AskAI() {
           {currentQuestionCount >= 1 &&
             !currentSession?.saved &&
             sessions.filter((s) => s.saved).length < 3 && (
-              <div className="border border-primary/20 bg-indigo-50 rounded-lg p-1 flex items-center justify-between mt-4 shrink-0">
+              <div className="border border-sky-100 bg-sky-50 rounded-lg p-1 flex items-center justify-between mt-4 shrink-0">
                 <div className="flex items-center space-x-3">
                   <div className="rounded-full p-2">
-                    <span className="text-primary text-base">💾</span>
+                    <span className="text-ht-cyan text-base">💾</span>
                   </div>
-                  <div className="text-sm text-customActiveText">
+                  <div className="text-sm text-ht-cyan">
                     <strong>Save this session?</strong>
                     <span className="ml-1">You have</span>
                     <strong className="mx-1">
@@ -1528,7 +1528,7 @@ export default function AskAI() {
                 </div>
                 <button
                   onClick={handleSaveCurrentSession}
-                  className="bg-customActiveText text-white px-4 py-2 rounded-full text-sm"
+                  className="bg-ht-cyan text-white px-4 py-2 rounded-full text-sm"
                 >
                   Save
                 </button>
@@ -1560,10 +1560,11 @@ export default function AskAI() {
                   height="18"
                   viewBox="0 0 18 18"
                   fill="none"
+                  className="text-green-500"
                 >
                   <path
                     d="M6.75 9L8.25 10.5L11.25 7.5M15.75 9C15.75 12.7279 12.7279 15.75 9 15.75C5.27208 15.75 2.25 12.7279 2.25 9C2.25 5.27208 5.27208 2.25 9 2.25C12.7279 2.25 15.75 5.27208 15.75 9Z"
-                    stroke="#10B981"
+                    stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1601,7 +1602,7 @@ export default function AskAI() {
 
             {/* Icon */}
             <div className="flex items-center justify-center mb-4">
-              <div className="bg-customActive p-2 rounded-full">
+              <div className="bg-sky-50 p-2 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -1611,7 +1612,7 @@ export default function AskAI() {
                 >
                   <path
                     d="M6 3.83333H4C2.89543 3.83333 2 4.878 2 6.16667V20.1667C2 21.4554 2.89543 22.5 4 22.5H14C15.1046 22.5 16 21.4554 16 20.1667V6.16667C16 4.878 15.1046 3.83333 14 3.83333H12M6 3.83333C6 5.122 6.89543 6.16667 8 6.16667H10C11.1046 6.16667 12 5.122 12 3.83333M6 3.83333C6 2.54467 6.89543 1.5 8 1.5H10C11.1046 1.5 12 2.54467 12 3.83333M6 14.3333H12M6 19H10"
-                    stroke="#19B0F0F0"
+                    stroke="var(--ht-cyan)"
                     strokeWidth="2.3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1700,10 +1701,11 @@ export default function AskAI() {
                   height="24"
                   viewBox="0 0 24 24"
                   fill="none"
+                  className="text-red-500"
                 >
                   <path
                     d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                    stroke="#EF4444"
+                    stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1743,4 +1745,3 @@ export default function AskAI() {
     </div>
   );
 }
-
