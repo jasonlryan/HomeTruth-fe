@@ -251,7 +251,7 @@ export default function QuizEditor() {
                 onClick={() => handleAnswerChange(question.id, opt.id)}
                 className={`flex flex-col items-center justify-center h-36 w-36 rounded-lg border transition-all text-center px-2 py-2 text-sm font-medium shadow-sm ${
                   isSelected
-                    ? "bg-customActive border-customActiveText  ring-2 ring-customActive"
+                    ? "bg-sky-50 border-ht-cyan ring-2 ring-sky-50"
                     : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                 }`}
               >
@@ -291,7 +291,7 @@ export default function QuizEditor() {
                   name={`q-${question.id}`}
                   checked={isSelected}
                   onChange={() => handleAnswerChange(question.id, opt.id)}
-                  className="appearance-none w-5 h-5 border-2 rounded-full checked:border-[6px] border-customActiveText checked:border-customActiveText transition mb-1"
+                  className="appearance-none w-5 h-5 border-2 rounded-full checked:border-[6px] border-ht-cyan checked:border-ht-cyan transition mb-1"
                 />
                 <span
                   className={`mt-1 ${
@@ -336,7 +336,7 @@ export default function QuizEditor() {
         }}
         className={`w-full flex items-center justify-start px-4 py-4 border rounded-md transition text-sm font-medium ${
           isSelected
-            ? "bg-customActive border-customActive text-customActiveText"
+            ? "bg-sky-50 border-sky-50 text-ht-cyan"
             : "border-gray-300 text-gray-700 hover:bg-gray-50"
         }`}
       >
@@ -344,7 +344,7 @@ export default function QuizEditor() {
         <span
           className={`mr-2 inline-flex items-center justify-center w-4 h-4 rounded border ${
             isSelected
-              ? "bg-customActiveText border-customActiveText"
+              ? "bg-ht-cyan border-ht-cyan"
               : "border-gray-300"
           }`}
         >
@@ -383,7 +383,7 @@ export default function QuizEditor() {
                 key={opt.id}
                 className={`block cursor-pointer p-3 border rounded-md transition ${
                   isSelected
-                    ? "bg-primary border-customBlue text-black"
+                    ? "bg-sky-50 border-sky-50 text-black"
                     : "border-gray-300 hover:bg-gray-50"
                 }`}
               >
@@ -427,14 +427,14 @@ export default function QuizEditor() {
     }
     className="
       w-full h-2 rounded-lg appearance-none cursor-pointer 
-      bg-gray-200 accent-customActiveText
+      bg-gray-200 accent-ht-cyan
     "
   />
 
   {/* labels */}
   <div className="flex justify-between text-sm text-gray-600">
     <span>{question.options[0]?.text || "1"}</span>
-    <span className="font-medium text-customActiveText">
+    <span className="font-medium text-ht-cyan">
       Current: {value || question.options[0]?.text || "1"}
     </span>
     <span>{question.options[1]?.text || "10"}</span>
@@ -451,7 +451,7 @@ export default function QuizEditor() {
     }
     className="
       w-full border rounded-md p-2 mt-2 
-      focus:ring-2 focus:ring-customActiveText focus:border-customActiveText
+      focus:ring-2 focus:ring-ht-cyan focus:border-ht-cyan
     "
     placeholder={`Enter a value between ${
       question.options[0]?.text || "1"
@@ -488,7 +488,7 @@ export default function QuizEditor() {
           {selected.map((text, i) => (
             <span
               key={i}
-              className="px-3 py-1 bg-customBlue text-black text-sm rounded-md"
+              className="px-3 py-1 bg-sky-50 text-black text-sm rounded-md"
             >
               {text}
             </span>
@@ -504,7 +504,7 @@ export default function QuizEditor() {
         (ua) => ua.is_answered && ua.option_text
       );
       return selected ? (
-        <span className="inline-block px-3 py-1 bg-customBlue text-black text-sm rounded-full">
+        <span className="inline-block px-3 py-1 bg-sky-50 text-black text-sm rounded-full">
           {selected.option_text}
         </span>
       ) : (
@@ -524,8 +524,8 @@ export default function QuizEditor() {
           className={`text-sm font-medium rounded-md px-4 py-2 transition 
     ${
       editing
-        ? "text-customActiveText border border-customActiveText hover:bg-blue-50"
-        : "text-white bg-customActiveText hover:bg-sky-500"
+        ? "text-ht-cyan border border-ht-cyan hover:bg-sky-50"
+        : "text-white bg-ht-cyan hover:bg-ht-cyan-light"
     }`}
           onClick={() => setEditing((prev) => !prev)}
         >
@@ -601,7 +601,7 @@ export default function QuizEditor() {
             className={`text-sm font-medium px-6 py-2 rounded transition ${
               loading 
                 ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-customActiveText hover:bg-sky-500 text-white"
+                : "bg-ht-cyan hover:bg-ht-cyan-light text-white"
             }`}
           >
             {loading ? "Saving..." : "Save Responses"}

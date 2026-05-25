@@ -180,7 +180,7 @@ export default function AttitudinalQuizModal({ onClose }) {
                 }}
                 className={`w-full flex items-center justify-start px-4 py-4 border rounded-md transition text-md font-medium text-slateColor ${
                   value.includes(opt.id)
-                    ? "bg-customActive border-customActiveText text-customActiveText"
+                    ? "bg-sky-50 border-ht-cyan text-ht-cyan"
                     : "border-gray-300 text-black hover:bg-gray-50"
                 }`}
               >
@@ -190,7 +190,7 @@ export default function AttitudinalQuizModal({ onClose }) {
       type="checkbox"
       checked={value.includes(opt.id)}
       readOnly
-      className="peer appearance-none h-5 w-5 border border-gray-400 rounded bg-white checked:bg-customActiveText checked:border-customActiveText"
+      className="peer appearance-none h-5 w-5 border border-gray-400 rounded bg-white checked:bg-ht-cyan checked:border-ht-cyan"
     />
 
     {/* Centered checkmark */}
@@ -241,9 +241,9 @@ export default function AttitudinalQuizModal({ onClose }) {
                 step="10000"
                 value={ratingValue}
                 onChange={(e) => handleAnswerChange(question.id, Number(e.target.value))}
-                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200 accent-customActiveText slider"
+                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200 accent-ht-cyan slider"
                 style={{
-                  background: `linear-gradient(to right, #19B0F0F0 0%, #19B0F0F0 ${((ratingValue - minRating) / (maxRating - minRating)) * 100}%, #E5E7EB ${((ratingValue - minRating) / (maxRating - minRating)) * 100}%, #E5E7EB 100%)`
+                  background: `linear-gradient(to right, var(--ht-cyan) 0%, var(--ht-cyan) ${((ratingValue - minRating) / (maxRating - minRating)) * 100}%, rgb(229 231 235) ${((ratingValue - minRating) / (maxRating - minRating)) * 100}%, rgb(229 231 235) 100%)`
                 }}
               />
               
@@ -285,7 +285,7 @@ export default function AttitudinalQuizModal({ onClose }) {
           <p className="text-sm text-gray-600 mb-6">
             We've used your answers to customize your dashboard, insights, and tone.
           </p>
-          <button className="bg-customActiveText text-white px-4 py-2 rounded-md" onClick={handleFinishClick}>
+          <button className="bg-ht-cyan text-white px-4 py-2 rounded-md" onClick={handleFinishClick}>
             Go to Dashboard
           </button>
         </div>
@@ -302,7 +302,7 @@ export default function AttitudinalQuizModal({ onClose }) {
             <>
               <p className="text-gray-700 mb-4">{loadError}</p>
               <button
-                className="bg-primary text-white px-4 py-2 rounded-md"
+                className="bg-ht-cyan text-white px-4 py-2 rounded-md"
                 onClick={() => {
                   // bailout: unlock and exit
                   localStorage.removeItem("onboarding_lock");
@@ -343,7 +343,7 @@ export default function AttitudinalQuizModal({ onClose }) {
             Step {currentIndex + 1} of {allQuestions.length}
             <div className="h-2 mt-2 bg-gray-200 rounded-full">
               <div
-                className="bg-customActiveText h-2 rounded-full"
+                className="bg-ht-cyan h-2 rounded-full"
                 style={{ width: `${((currentIndex + 1) / allQuestions.length) * 100}%` }}
               />
             </div>
@@ -366,7 +366,7 @@ export default function AttitudinalQuizModal({ onClose }) {
             onClick={gotoNextOrFinish}
             disabled={!canProceed(currentQuestion)}
             className={`px-4 py-2 rounded-md text-sm text-white transition ${
-              canProceed(currentQuestion) ? "bg-customActiveText" : "bg-gray-300 cursor-not-allowed"
+              canProceed(currentQuestion) ? "bg-ht-cyan" : "bg-gray-300 cursor-not-allowed"
             }`}
           >
             {currentIndex < allQuestions.length - 1 ? "Next →" : "Finish"}

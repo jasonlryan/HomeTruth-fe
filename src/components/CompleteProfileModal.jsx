@@ -69,7 +69,7 @@ const handleSubmit = async (e) => {
           {error && <p className="text-red-600 text-sm">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-primary hover:bg-blue-700 text-white py-2 rounded font-bold"
+            className="w-full bg-ht-cyan hover:bg-ht-cyan-light text-white py-2 rounded font-bold"
           >
             Continue →
           </button>
