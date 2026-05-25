@@ -2,6 +2,16 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Tickets
+
+Tickets live in the standalone repo at `../HomeTruth-tickets`.
+
+Reference ticket IDs in branch names, commit messages, pull requests, and implementation notes. Do not add a ticket checkout or submodule inside this repo.
+
+All codebase changes must start from a ticket and include an implementation log
+in that ticket. See `../HomeTruth-tickets/README.md` for the shared ways of
+working.
+
 ## Coming Soon Mode
 
 This app includes a "Coming Soon" mode that blocks access to all routes and displays only the Coming Soon page until you're ready to launch.
