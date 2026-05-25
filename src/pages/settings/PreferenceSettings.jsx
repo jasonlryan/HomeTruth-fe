@@ -81,7 +81,7 @@ export default function PreferenceSettings() {
     <div className="mt-4 mb-20">
       <div className="max-w-7xl mx-auto px-4 space-y-6">
         <div className="flex items-start gap-3 ">
-          <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-customActiveText rounded-full ">
+          <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full ">
             <img src="/assets/settings/preferences.svg" alt="" className="w-5 h-5" />
           </div>
           <PageTitle>Preferences</PageTitle>
@@ -96,7 +96,7 @@ export default function PreferenceSettings() {
         <Section
           title="Communication Tone & Style"
           icon={
-            <span className="material-symbols-outlined mt-2 text-customActiveText text-xl">
+            <span className="material-symbols-outlined mt-2 text-ht-cyan text-xl">
               chat_bubble
             </span>
           }
@@ -141,7 +141,7 @@ export default function PreferenceSettings() {
         <Section
           title="Assistant behaviour settings"
           icon={
-            <span className="material-symbols-outlined mt-1 text-customActiveText">
+            <span className="material-symbols-outlined mt-1 text-ht-cyan">
               brightness_5
             </span>
           }
@@ -182,7 +182,7 @@ export default function PreferenceSettings() {
               >
                 <path
                   d="M16.5 8.38341C16.5029 9.4833 16.2459 10.5683 15.75 11.5501C15.162 12.7265 14.2581 13.7161 13.1395 14.4078C12.021 15.0996 10.7319 15.4662 9.41667 15.4667C8.31678 15.4696 7.23176 15.2126 6.25 14.7167L1.5 16.3001L3.08333 11.5501C2.58744 10.5683 2.33047 9.4833 2.33333 8.38341C2.33384 7.0682 2.70051 5.77911 3.39227 4.66053C4.08402 3.54195 5.07355 2.63805 6.25 2.05007C7.23176 1.55418 8.31678 1.2972 9.41667 1.30007H9.83333C11.5703 1.3959 13.2109 2.12904 14.441 3.35912C15.671 4.5892 16.4042 6.22978 16.5 7.96674V8.38341Z"
-                  stroke="#19B0F0F0"
+                  stroke="var(--ht-cyan)"
                   strokeWidth="1.66667"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -206,7 +206,7 @@ export default function PreferenceSettings() {
                   onChange={() => setPersonalization(!personalization)}
                 />
                 <div
-                  className={`relative w-11 h-6 rounded-full shadow-inner transition ${personalization ? "bg-customActiveText" : "bg-gray-300"
+                  className={`relative w-11 h-6 rounded-full shadow-inner transition ${personalization ? "bg-ht-cyan" : "bg-gray-300"
                     }`}
                 >
                   <div
@@ -221,7 +221,7 @@ export default function PreferenceSettings() {
               </span>
             </div>
 
-            <div className="bg-blue-50 text-customActiveText text-sm px-4 py-2 rounded-md flex items-start gap-2 mt-1">
+            <div className="bg-sky-50 text-ht-cyan text-sm px-4 py-2 rounded-md flex items-start gap-2 mt-1">
               <span className="material-symbols-outlined text-base">
                 shield
               </span>
@@ -237,7 +237,7 @@ export default function PreferenceSettings() {
         <Section
           title="Questionnaire"
           icon={
-            <span className="material-symbols-outlined text-customActiveText text-xl">
+            <span className="material-symbols-outlined text-ht-cyan text-xl">
               quiz
             </span>
           }
@@ -251,7 +251,7 @@ export default function PreferenceSettings() {
             </div>
             <button
               onClick={() => navigate("/quiz")}
-              className="bg-customActiveText text-white px-4 py-2 rounded-lg hover:bg-sky-500 transition"
+              className="bg-ht-cyan text-white px-4 py-2 rounded-lg hover:bg-ht-cyan-light transition"
             >
               Update answers
             </button>
@@ -275,13 +275,13 @@ export default function PreferenceSettings() {
               setAIBehavior("link_notes");
               setPersonalization(true);
             }}
-            className="bg-gray-100 text-customActiveText border border-customActiveText hover:bg-gray-200 text-sm px-4 py-2 rounded-md"
+            className="bg-gray-100 text-ht-cyan border border-ht-cyan hover:bg-gray-200 text-sm px-4 py-2 rounded-md"
           >
             Return to default
           </button>
           <button
             onClick={handleSave}
-            className="bg-customActiveText text-white hover:bg-opacity-90 text-sm px-4 py-2 rounded-md"
+            className="bg-ht-cyan text-white hover:bg-ht-cyan-light text-sm px-4 py-2 rounded-md"
           >
             Save Preferences
           </button>
@@ -310,12 +310,12 @@ function RadioOption({ value, selected, onChange, label }) {
         value={value}
         checked={selected === value}
         onChange={() => onChange(value)}
-        className={`w-4 h-4 bg-white focus:ring-customActiveText focus:ring-2 ${selected === value
-            ? 'border-2 border-customActiveText'
+        className={`w-4 h-4 bg-white focus:ring-ht-cyan focus:ring-2 ${selected === value
+            ? 'border-2 border-ht-cyan'
             : 'border-2 border-gray-300'
           }`}
         style={{
-          accentColor: 'var(--customActiveText)'
+          accentColor: 'var(--ht-cyan)'
         }}
       />
       <span className="text-sm">{label}</span>

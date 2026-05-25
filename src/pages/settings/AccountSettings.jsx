@@ -121,10 +121,10 @@ export default function AccountSettings() {
   };
 
   return (
-    <div className="bg-[#F5F7FA] min-h-screen mt-4 mb-20">
+    <div className="bg-gray-50 min-h-screen mt-4 mb-20">
       <div className="max-w-7xl mx-auto px-4 space-y-6 mt-4">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+          <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full">
             <img src="/assets/settings/account.svg" alt="" className="w-5 h-5" />
           </div>
           <PageTitle>Account</PageTitle>
@@ -187,7 +187,7 @@ export default function AccountSettings() {
             }
             className={`mt-2 px-4 py-2 rounded text-white transition ${
               oldPassword && newPassword && confirmPassword
-                ? "bg-customActiveText hover:bg-sky-500"
+                ? "bg-ht-cyan hover:bg-ht-cyan-light"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
@@ -256,7 +256,7 @@ export default function AccountSettings() {
               />
               <div
                 className={`w-10 h-5 rounded-full shadow-inner transition duration-300 ${
-                  weeklySummary ? "bg-primary" : "bg-gray-300"
+                  weeklySummary ? "bg-ht-cyan" : "bg-gray-300"
                 }`}
               ></div>
               <div
@@ -270,7 +270,7 @@ export default function AccountSettings() {
 
         <button
           onClick={handleSaveNotifications}
-          className="mt-8 bg-customActiveText text-white px-4 py-2 rounded hover:bg-sky-500"
+          className="mt-8 bg-ht-cyan text-white px-4 py-2 rounded hover:bg-ht-cyan-light"
         >
           Save Notification Settings
         </button>

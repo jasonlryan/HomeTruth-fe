@@ -88,7 +88,7 @@ export default function DataPrivacySettings() {
   return (
     <div className="max-w-7xl mx-auto px-4 space-y-6 mt-4 mb-20">
       <div className="flex items-start gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+        <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full">
           <img src="/assets/settings/data-privacy.svg" alt="" className="w-5 h-5" />
         </div>
         <PageTitle>Data Privacy</PageTitle>
@@ -188,13 +188,13 @@ export default function DataPrivacySettings() {
       <div className="flex justify-end gap-2 mb-4">
         <button
           onClick={handleReset}
-          className="px-4 py-2 rounded-lg bg-gray-100 border-customActiveText text-customActiveText text-sm hover:bg-gray-200 border"
+          className="px-4 py-2 rounded-lg bg-gray-100 border-ht-cyan text-ht-cyan text-sm hover:bg-gray-200 border"
         >
           Return to Default
         </button>
         <button
           onClick={saveSettings}
-          className="px-4 py-2 rounded-lg bg-customActiveText text-white text-sm hover:bg-sky-500"
+          className="px-4 py-2 rounded-lg bg-ht-cyan text-white text-sm hover:bg-ht-cyan-light"
         >
           Save Settings
         </button>
@@ -211,7 +211,7 @@ function Section({ title, description, children, pro = false }) {
         <div className="flex items-center gap-2">
           <h2 className="font-extrabold text-lg text-textColor">{title}</h2>
           {pro && (
-            <span className="text-xs bg-customActiveText text-white px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-ht-cyan text-white px-2 py-0.5 rounded-full">
               PRO
             </span>
           )}
@@ -248,7 +248,7 @@ function ToggleRow({ label, value, onChange, border }) {
         />
         <div
           className={`relative w-11 h-6 mt-3 rounded-full shadow-inner transition ${
-            value ? "bg-customActiveText" : "bg-gray-300"
+            value ? "bg-ht-cyan" : "bg-gray-300"
           }`}
         >
           <div

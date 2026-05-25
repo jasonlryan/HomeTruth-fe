@@ -78,7 +78,7 @@ export default function NotificationSettings() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 mt-4 mb-20">
       <div className="flex items-start gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+        <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full">
           <img src="/assets/settings/notification.svg" alt="" className="w-5 h-5" />
         </div>
         <PageTitle>Notifications</PageTitle>
@@ -168,7 +168,7 @@ export default function NotificationSettings() {
           className={`px-4 py-2 rounded-lg text-sm ${
             saving
               ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-              : "bg-customActiveText text-white hover:bg-sky-500"
+              : "bg-ht-cyan text-white hover:bg-ht-cyan-light"
           }`}
         >
           {saving ? "Saving..." : "Save Settings"}
@@ -197,7 +197,7 @@ function ToggleItem({ label, description, value, onChange, pro = false }) {
         <div className="flex items-center space-x-2">
           <span className="font-medium text-grayDeep">{label}</span>
           {pro && (
-            <span className="text-xs bg-customActiveText text-white px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-ht-cyan text-white px-2 py-0.5 rounded-full">
               PRO
             </span>
           )}
@@ -213,7 +213,7 @@ function ToggleItem({ label, description, value, onChange, pro = false }) {
         />
         <div
           className={`relative w-11 h-6 rounded-full shadow-inner transition ${
-            value ? "bg-customActiveText" : "bg-gray-300"
+            value ? "bg-ht-cyan" : "bg-gray-300"
           }`}
         >
           <div
