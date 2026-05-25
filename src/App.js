@@ -47,8 +47,10 @@ import Pricing from "./pages/Pricing";
 import HomeTruths from "./pages/HomeTruths";
 import ArticleDetail from "./pages/ArticleDetail";
 import AdminArticleManager from "./pages/AdminArticleManager";
+import VisualReviewHarness from "./dev/VisualReviewHarness";
 // Check if we're in "Coming Soon" mode
 const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
+const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
 
 function App() {
   // If Coming Soon mode is enabled, show only the Coming Soon page (except admin routes)
@@ -197,6 +199,8 @@ function App() {
           <Route path="/pricing" element={<PublicRoute><Pricing /></PublicRoute>} />
           <Route path="/home-truths" element={<HomeTruths />} />
           <Route path="/home-truths/:slug" element={<ArticleDetail />} />
+          {isVisualReviewMode && <Route path="/visual-review" element={<VisualReviewHarness />} />}
+          {isVisualReviewMode && <Route path="/visual-review/:role" element={<VisualReviewHarness />} />}
 
           {/* Protected Routes with Shared Layout */}
           <Route
