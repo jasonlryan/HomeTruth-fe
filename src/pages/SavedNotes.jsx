@@ -20,7 +20,7 @@ const markdownComponents = {
       {...props}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-blue-600 underline break-words"
+      className="text-ht-cyan underline break-words"
     >
       {props.children || props.href}
     </a>
@@ -230,7 +230,7 @@ export default function SavedNotes() {
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-md 
             ${notes.length >= 5
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-customActiveText text-white hover:bg-sky-500"
+              : "bg-ht-cyan text-white hover:bg-ht-cyan-light"
             }`}
         >
           <span className="material-symbols-outlined text-sm">stars_2</span>
@@ -240,12 +240,12 @@ export default function SavedNotes() {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-cyan mb-4"></div>
           <p className="text-gray-600">Loading your saved notes...</p>
         </div>
       ) : notes.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center mt-48">
-          <div className="w-64 h-64 bg-blue-100 rounded-full flex items-center justify-center mb-6 flex-shrink-0">
+          <div className="w-64 h-64 bg-sky-50 rounded-full flex items-center justify-center mb-6 flex-shrink-0">
             <img src="/assets/notes.svg" alt="" className="w-36 h-36 object-contain" aria-hidden />
           </div>
           <p className="text-4xl font-semibold text-gray-800">
@@ -270,7 +270,7 @@ export default function SavedNotes() {
                     setShowEditModal(true);
                   }
                 }}
-                className="absolute top-3 right-3 text-blue-500 hover:text-blue-700"
+                className="absolute top-3 right-3 text-ht-cyan hover:text-ht-cyan-light"
                 title={isBudgetItem(note) ? "Edit in budget chat" : "Edit title"}
               >
                 <span className="material-symbols-outlined text-xl">edit</span>
@@ -294,7 +294,7 @@ export default function SavedNotes() {
                 <p className="text-xs text-gray-400">{getItemDate(note)}</p>
                 <button
                   onClick={() => handleView(note)}
-                  className="text-blue-500 text-sm hover:underline"
+                  className="text-ht-cyan text-sm hover:underline"
                 >
                   View
                 </button>
@@ -322,7 +322,7 @@ export default function SavedNotes() {
                 setShowModal(false);
                 setShowEditModal(true);
               }}
-              className="absolute top-3 right-10 text-blue-500 hover:text-blue-700"
+              className="absolute top-3 right-10 text-ht-cyan hover:text-ht-cyan-light"
               title="Edit"
             >
               <span className="material-symbols-outlined text-lg">edit</span>
@@ -334,7 +334,7 @@ export default function SavedNotes() {
                 loadingConversation ? (
                   <div className="h-40 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mx-auto mb-3"></div>
                       <p className="text-sm text-gray-600">Loading conversation...</p>
                     </div>
                   </div>
@@ -355,7 +355,7 @@ export default function SavedNotes() {
                         >
                           <div
                             className={`max-w-[80%] rounded-xl px-4 py-2 text-sm whitespace-pre-wrap ${isUser
-                                ? "bg-customActiveText text-white"
+                                ? "bg-ht-cyan text-white"
                                 : "bg-gray-200 text-gray-800"
                               }`}
                           >
@@ -408,11 +408,11 @@ export default function SavedNotes() {
               placeholder="Enter Name"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200 mb-4"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-ht-cyan mb-4"
             />
 
             <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+              className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-md"
               onClick={async () => {
                 try {
                   if (isBudgetItem({ type: editNoteType })) {

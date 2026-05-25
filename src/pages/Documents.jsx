@@ -394,14 +394,14 @@ export default function Documents() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen bg-gray-50">
       <div className="w-full max-w-[1440px] mx-auto px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <PageTitle>Documents</PageTitle>
           {/* <button
             onClick={handleAskAIClick}
-            className="flex items-center gap-2 px-4 py-2 bg-customActiveText text-white rounded-lg hover:bg-sky-500 whitespace-nowrap"
+            className="flex items-center gap-2 px-4 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light whitespace-nowrap"
           >
             <Sparkles className="w-4 h-4" />
             Ask HomeTruth
@@ -418,7 +418,7 @@ export default function Documents() {
                 placeholder="Search document..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-ht-cyan"
               />
             </div>
 
@@ -437,7 +437,7 @@ export default function Documents() {
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="text-xl font-bold text-gray-900">Filters</h2>
-                      <button onClick={clearAllFilters} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                      <button onClick={clearAllFilters} className="text-ht-cyan hover:text-ht-cyan-light text-sm font-medium">
                         Clear all
                       </button>
                     </div>
@@ -453,7 +453,7 @@ export default function Documents() {
                                 type="checkbox"
                                 checked={filters.category.includes(option)}
                                 onChange={() => handleFilterChange("category", option)}
-                                className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="mr-3 rounded border-gray-300 text-ht-cyan focus:ring-ht-cyan"
                               />
                               <span className="text-sm text-gray-700">{option}</span>
                             </label>
@@ -471,7 +471,7 @@ export default function Documents() {
                                 type="checkbox"
                                 checked={filters.status.includes(option)}
                                 onChange={() => handleFilterChange("status", option)}
-                                className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="mr-3 rounded border-gray-300 text-ht-cyan focus:ring-ht-cyan"
                               />
                               <span className="text-sm text-gray-700">{option}</span>
                             </label>
@@ -489,7 +489,7 @@ export default function Documents() {
                                 type="checkbox"
                                 checked={filters.type.includes(option)}
                                 onChange={() => handleFilterChange("type", option)}
-                                className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="mr-3 rounded border-gray-300 text-ht-cyan focus:ring-ht-cyan"
                               />
                               <span className="text-sm text-gray-700">{option}</span>
                             </label>
@@ -507,7 +507,7 @@ export default function Documents() {
                                 type="checkbox"
                                 checked={filters.tags.includes(option)}
                                 onChange={() => handleFilterChange("tags", option)}
-                                className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="mr-3 rounded border-gray-300 text-ht-cyan focus:ring-ht-cyan"
                               />
                               <span className="text-sm text-gray-700">{option}</span>
                             </label>
@@ -517,7 +517,7 @@ export default function Documents() {
                     </div>
 
                     <div className="flex justify-end mt-8">
-                      <button onClick={applyFilters} className="px-6 py-2 bg-[#4A90E2] text-white rounded-lg hover:bg-blue-700 transition">
+                      <button onClick={applyFilters} className="px-6 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light transition">
                         Apply
                       </button>
                     </div>
@@ -540,19 +540,19 @@ export default function Documents() {
                 <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
                   <button
                     onClick={() => handleSortChange("earliest")}
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${sortBy === "earliest" ? "bg-blue-50 text-blue-600" : ""}`}
+                    className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${sortBy === "earliest" ? "bg-sky-50 text-ht-cyan" : ""}`}
                   >
                     Earliest
                   </button>
                   <button
                     onClick={() => handleSortChange("latest")}
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${sortBy === "latest" ? "bg-blue-50 text-blue-600" : ""}`}
+                    className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${sortBy === "latest" ? "bg-sky-50 text-ht-cyan" : ""}`}
                   >
                     Latest
                   </button>
                   <button
                     onClick={() => handleSortChange("name")}
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${sortBy === "name" ? "bg-blue-50 text-blue-600" : ""}`}
+                    className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${sortBy === "name" ? "bg-sky-50 text-ht-cyan" : ""}`}
                   >
                     Name
                   </button>
@@ -616,10 +616,10 @@ export default function Documents() {
 
         {/* Processing Message */}
         {processingMessage && (
-          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-4 p-4 bg-sky-50 border border-sky-100 rounded-lg">
             <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
-              <p className="text-blue-600 font-medium">{processingMessage}</p>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-ht-cyan mr-3"></div>
+              <p className="text-ht-cyan font-medium">{processingMessage}</p>
             </div>
           </div>
         )}
@@ -629,7 +629,7 @@ export default function Documents() {
         {successMessage && <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg"><p className="text-green-600">{successMessage}</p></div>}
         {loading && (
           <div className="flex flex-col justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mb-4"></div>
             <p className="text-gray-600">Loading documents...</p>
           </div>
         )}
@@ -646,8 +646,8 @@ export default function Documents() {
               documents.map((document) => (
                 <div
                   key={document.id}
-                  className={`flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:bg-customActive cursor-pointer ${
-                    document.selected ? "bg-blue-50" : ""
+                  className={`flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:bg-sky-50 cursor-pointer ${
+                    document.selected ? "bg-sky-50" : ""
                   }`}
                   onClick={() => handleDocumentClick(document)}
                 >
@@ -708,7 +708,7 @@ export default function Documents() {
         )}
 
         {/* Pro banner */}
-        <div className="mt-8 bg-gradient-to-r from-sky-500/95 via-indigo-400/95 to-violet-400/95 rounded-xl p-6 text-white text-center">
+        <div className="mt-8 bg-gradient-to-r from-ht-cyan via-ht-purple to-ht-purple-light rounded-xl p-6 text-white text-center">
           <div className="mb-4">
             <h3 className="text-3xl font-semibold mb-2">Upload Reminder</h3>
             <p className="text-white/90 text-2xl max-w-5xl mx-auto">
@@ -722,7 +722,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
 
             </p>
           </div>
-          {/* <button className="bg-white text-customActiveText px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition border border-customActiveText">
+          {/* <button className="bg-white text-ht-cyan px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition border border-ht-cyan">
             Upgrade to Pro
           </button> */}
         </div>
@@ -770,12 +770,12 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
                     onChange={(e) => setAskAIQuestion(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleAskAISubmit()}
                     placeholder="e.g. 'When does my tenancy agreement expire?'"
-                    className="w-full px-4 py-3 pr-14 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 pr-14 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-ht-cyan"
                   />
                   <button
                     onClick={handleAskAISubmit}
                     disabled={isAskingAI || !askAIQuestion.trim()}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-customActiveText text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-ht-cyan text-white rounded-full flex items-center justify-center hover:bg-ht-cyan-light transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isAskingAI ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -808,7 +808,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
               {isLoadingChatHistory && (
                 <div className="mb-6">
                   <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan"></div>
                     <span className="ml-2 text-gray-600">Loading chat history...</span>
                   </div>
                 </div>
@@ -819,7 +819,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
                 <div className="mb-6">
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center gap-3">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan"></div>
                       <span className="text-gray-600">Reviewing your question…</span>
                     </div>
                   </div>
@@ -866,7 +866,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
                   <div className="bg-gray-100 rounded-lg h-96 flex items-center justify-center border-2 border-dashed border-gray-300 overflow-hidden">
                     {isLoadingPreview ? (
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mx-auto mb-4"></div>
                         <p className="text-gray-500">Loading document preview...</p>
                       </div>
                     ) : previewError ? (
@@ -958,7 +958,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
                         <span className="text-gray-500">Tags</span>
                         <div className="flex flex-wrap gap-1">
                           {selectedDocument.tags.map((tag, index) => (
-                            <span key={`tag-${selectedDocument.id}-${index}`} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            <span key={`tag-${selectedDocument.id}-${index}`} className="px-2 py-1 bg-sky-50 text-ht-cyan text-xs rounded-full">
                               {tag}
                             </span>
                           ))}
@@ -987,7 +987,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
                       setShowDocumentModal(false);
                       setShowAskAI(true);
                     }}
-                    className="flex items-center gap-2 px-6 py-3 bg-customActiveBlue text-white rounded-lg hover:bg-sky-500 active:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light active:bg-ht-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ht-cyan transition-colors"
                   >
                     <Sparkles className="w-5 h-5" />
                     Ask HomeTruth
