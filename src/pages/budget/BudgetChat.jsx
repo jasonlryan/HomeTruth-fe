@@ -327,7 +327,7 @@ export default function BudgetChat() {
               {initializing && messages.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3" />
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mx-auto mb-3" />
                     <p className="text-sm text-gray-600">
                       Starting your budget chat...
                     </p>
@@ -344,7 +344,7 @@ export default function BudgetChat() {
                     <div
                       className={`rounded-xl px-4 py-2 text-sm max-w-[60%] ${
                         msg.role === "user"
-                          ? "bg-customActiveText text-white"
+                          ? "bg-ht-cyan text-white"
                           : "bg-gray-200 text-gray-800"
                       }`}
                     >
@@ -370,7 +370,7 @@ export default function BudgetChat() {
                 <button
                   onClick={sendMessage}
                   disabled={loading || initializing}
-                  className="p-2 text-primary disabled:opacity-50"
+                  className="p-2 text-ht-cyan disabled:opacity-50"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -381,11 +381,11 @@ export default function BudgetChat() {
                   >
                     <path
                       d="M12.428 17.0709L1.03516 11.8923L27.9637 1.53516L17.6066 28.4637L12.428 17.0709Z"
-                      fill="#19B0F0F0"
+                      fill="var(--ht-cyan)"
                     />
                     <path
                       d="M12.428 17.0709L18.6423 10.8566"
-                      stroke="#19B0F0F0"
+                      stroke="var(--ht-cyan)"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -401,7 +401,7 @@ export default function BudgetChat() {
         <div className="flex justify-end mt-4">
           <button
             onClick={handleGetEstimate}
-            className="bg-customActiveText hover:bg-sky-500 text-white px-4 py-2 rounded-md text-sm"
+            className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-md text-sm"
           >
             Get my estimate
           </button>
@@ -457,7 +457,7 @@ export default function BudgetChat() {
                   !saveEnabled ||
                   isSaved
                 }
-                className="bg-customActiveText hover:bg-sky-500 text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
+                className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
               >
                 {isSaved ? "Saved" : "Save"}
               </button>
@@ -529,12 +529,12 @@ export default function BudgetChat() {
                 placeholder="Enter Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ht-cyan"
               />
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={handleSaveWithName}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
+                  className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-5 py-2 rounded-md text-sm"
                 >
                   Done
                 </button>

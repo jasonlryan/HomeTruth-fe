@@ -199,7 +199,7 @@ export default function BudgetChatViewer() {
                       msg.role === "user"
                         ? "bg-gray-200 text-gray-800"
                         : msg.role === "assistant"
-                        ? "bg-customActiveText text-white"
+                        ? "bg-ht-cyan text-white"
                         : "bg-gray-100 text-gray-700"
                     }`}
                   >
@@ -215,7 +215,7 @@ export default function BudgetChatViewer() {
         </div>
         <div className="mt-4 flex justify-end gap-4">
           <button
-            className="bg-sky-500 text-white px-4 py-2 rounded-md text-sm opacity-60 cursor-not-allowed"
+            className="bg-ht-cyan text-white px-4 py-2 rounded-md text-sm opacity-60 cursor-not-allowed"
             disabled
           >
             Get my estimate
@@ -235,13 +235,13 @@ export default function BudgetChatViewer() {
               <button
                 onClick={handleSave}
                 disabled={isSaved}
-                className="bg-sky-500 text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
+                className="bg-ht-cyan text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
               >
                 {isSaved ? "Saved" : "Save"}
               </button>
               <button
                 onClick={() => setShowEditPopup(true)}
-                className="bg-customActiveText hover:bg-sky-500 text-white px-4 py-2 rounded-md text-sm"
+                className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-md text-sm"
               >
                 Edit My Answers
               </button>
@@ -317,7 +317,7 @@ export default function BudgetChatViewer() {
                           {pair.answer || "No answer"}
                         </div>
                         <button
-                          className="ml-2 text-blue-600 text-sm"
+                          className="ml-2 text-ht-cyan text-sm"
                           onClick={() => setEditIndex(idx)}
                         >
                           Edit ✎
@@ -330,7 +330,7 @@ export default function BudgetChatViewer() {
               <div className="flex justify-start mt-6 gap-4">
                 <button
                   onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+                  className="bg-ht-cyan text-white px-4 py-2 rounded text-sm"
                 >
                   Update Estimate
                 </button>
@@ -348,4 +348,3 @@ export default function BudgetChatViewer() {
     </div>
   );
 }
-

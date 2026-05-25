@@ -41,7 +41,7 @@ export default function BudgetQAEditor() {
               <div className="text-sm text-gray-900 bg-gray-100 p-2 rounded-md w-full mr-4">
                 {field.answer ?? "No answer provided"}
               </div>
-              <button className="text-blue-600 hover:underline text-sm">Edit ✎</button>
+              <button className="text-ht-cyan hover:underline text-sm">Edit ✎</button>
             </div>
           </div>
         ))}
@@ -50,7 +50,7 @@ export default function BudgetQAEditor() {
       <div className="mt-8 flex justify-end gap-4">
         <button
           onClick={handleUpdateEstimate}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+          className="bg-ht-cyan text-white px-4 py-2 rounded-md text-sm"
         >
           Update Estimate
         </button>

@@ -60,7 +60,7 @@ export default function MortgageIntro() {
           <button
             onClick={handleStart}
             disabled={loading}
-            className="px-6 py-2 bg-customActiveText hover:bg-sky-500 text-white text-sm font-medium rounded-md transition disabled:opacity-50"
+            className="px-6 py-2 bg-ht-cyan hover:bg-ht-cyan-light text-white text-sm font-medium rounded-md transition disabled:opacity-50"
           >
             {loading ? "Starting..." : "Start now!"}
           </button>

@@ -73,7 +73,7 @@ export default function BudgetCalculator() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-cyan mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your saved budgets...</p>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function BudgetCalculator() {
           </div>
           <button
             onClick={() => navigate("/budget")}
-            className="bg-customActiveText hover:bg-sky-500 text-white px-6 py-3 rounded-lg text-sm shadow flex items-center"
+            className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg text-sm shadow flex items-center"
           >
             {/* SVG icon */}
             <svg
@@ -114,7 +114,7 @@ export default function BudgetCalculator() {
 
         {/* Empty state visual */}
         <div className="flex flex-col items-center justify-center text-center mt-48">
-          <div className="w-64 h-64 bg-blue-100 rounded-full flex items-center justify-center mb-6 flex-shrink-0">
+          <div className="w-64 h-64 bg-sky-50 rounded-full flex items-center justify-center mb-6 flex-shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="137"
@@ -138,9 +138,9 @@ export default function BudgetCalculator() {
                   y2="68.5"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor="#19B0F0" />
-                  <stop offset="0.555049" stopColor="#89A4E1" />
-                  <stop offset="1" stopColor="#AE9CD9" />
+                  <stop stopColor="var(--ht-cyan)" />
+                  <stop offset="0.555049" stopColor="var(--ht-purple-light)" />
+                  <stop offset="1" stopColor="var(--ht-purple)" />
                 </linearGradient>
               </defs>
             </svg>
@@ -162,7 +162,7 @@ export default function BudgetCalculator() {
         </div>
         <button
           onClick={() => navigate("/budget")}
-          className="bg-customActiveText hover:bg-sky-500 text-white px-4 py-2 rounded-lg text-sm shadow flex items-center gap-2"
+          className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-lg text-sm shadow flex items-center gap-2"
         >
           {/* SVG */}
           <svg
@@ -192,7 +192,7 @@ export default function BudgetCalculator() {
             {editingId !== b.id && (
               <button
                 onClick={() => handleEditClick(b)}
-                className="absolute top-3 right-3 text-blue-500 hover:text-blue-700"
+                className="absolute top-3 right-3 text-ht-cyan hover:text-ht-cyan-light"
               >
                 <span className="material-symbols-outlined text-base">
                   border_color
@@ -207,12 +207,12 @@ export default function BudgetCalculator() {
                   <input
                     value={tempName}
                     onChange={(e) => setTempName(e.target.value)}
-                    className="w-full bg-[#EFEFEF] text-sm font-semibold text-gray-900 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-gray-100 text-sm font-semibold text-gray-900 border-b border-gray-300 focus:outline-none focus:border-ht-cyan"
                   />
                   <div className="mt-2 flex gap-3">
                     <button
                       onClick={() => handleSave(b.id)}
-                      className="text-blue-600 text-sm hover:underline"
+                      className="text-ht-cyan text-sm hover:underline"
                     >
                       Save
                     </button>
@@ -243,7 +243,7 @@ export default function BudgetCalculator() {
             <div className="mt-4 text-xs text-gray-400 flex justify-between">
               <span>{formatDate(b.createdAt)}</span>
               <button
-                className="text-blue-500 hover:underline"
+                className="text-ht-cyan hover:underline"
                 onClick={() => navigate(`/budget/view/${b.id}`)}
               >
                 View
