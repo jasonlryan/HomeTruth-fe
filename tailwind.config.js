@@ -1,6 +1,6 @@
 // tailwind.config.js
 
-const brandFont = ['Gill Sans', 'Gill Sans MT', '-apple-system', 'Helvetica Neue', 'Arial', 'sans-serif'];
+const brandFont = ['HomeTruth Gill Sans', 'Gill Sans', 'Gill Sans MT', '-apple-system', 'Helvetica Neue', 'Arial', 'sans-serif'];
 const chatFont = ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'];
 
 module.exports = {
