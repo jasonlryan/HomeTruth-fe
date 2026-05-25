@@ -47,11 +47,11 @@ export default function Topbar() {
 
   return (
     <div className="flex items-center justify-between px-5 py-2 bg-white border-b relative">
-      <div className="text-darkGrey text-base font-medium">Hi, {userName}!</div>
+      <div className="text-ht-dark text-base font-medium">Hi, {userName}!</div>
       <div className="flex items-center gap-4 min-h-[2.25rem]">
         <div className="relative flex items-center justify-center h-9" ref={dropdownRef}>
           <span
-            className="material-symbols-outlined text-lightGrey cursor-pointer hover:text-primary transition !text-[20px] inline-flex items-center justify-center"
+            className="material-symbols-outlined text-ht-mid-grey cursor-pointer hover:text-ht-cyan transition !text-[20px] inline-flex items-center justify-center"
             onClick={toggleNotificationDropdown}
             title="Notifications"
           >
@@ -73,7 +73,7 @@ export default function Topbar() {
               <div className="p-4 border-t border-gray-200">
                 <button
                   onClick={() => navigate("/settings/notifications")}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-sm text-ht-cyan hover:text-ht-cyan-light font-medium"
                 >
                   Manage Notifications
                 </button>

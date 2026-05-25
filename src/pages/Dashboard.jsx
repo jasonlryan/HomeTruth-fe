@@ -255,7 +255,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-cyan mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -265,7 +265,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#F5F7FA] px-8 py-8">
+      <div className="min-h-screen bg-gray-50 px-8 py-8">
         {/* Ask HomeTruth Title */}
         <PageTitle as="h2" className="mb-6">Ask HomeTruth</PageTitle>
 
@@ -294,11 +294,11 @@ export default function Dashboard() {
                   }
                 }}
                 placeholder="Ask any property question..."
-                className="flex-1 text-base bg-white h-14 pl-4 pr-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 text-base bg-white h-14 pl-4 pr-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-ht-cyan"
               />
               <button
                 onClick={handleSearch}
-                className="h-14 w-14 rounded-lg bg-customActiveText text-white flex items-center justify-center hover:bg-sky-500 transition"
+                className="h-14 w-14 rounded-lg bg-ht-cyan text-white flex items-center justify-center hover:bg-ht-cyan-light transition"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -372,8 +372,8 @@ export default function Dashboard() {
           </PageTitle>
 
           {/* Note limit message */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-customActiveText">
+          <div className="bg-sky-50 border border-sky-100 rounded-lg p-4 mb-6">
+            <p className="text-sm text-ht-cyan">
               You can save up to 5 notes in total, shared between Budget
               Calculations and Ask HomeTruth.
               <br />
@@ -390,7 +390,7 @@ export default function Dashboard() {
                 className="relative bg-white shadow-md p-4 rounded-lg hover:shadow-lg transition flex flex-col"
               >
                 <button 
-                  className="absolute top-3 right-3 text-blue-500 hover:text-blue-700"
+                  className="absolute top-3 right-3 text-ht-cyan hover:text-ht-cyan-light"
                   onClick={() => navigate('/saved-notes')}
                   title="Edit notes"
                 >
@@ -407,7 +407,7 @@ export default function Dashboard() {
                           {...props}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 underline break-words"
+                          className="text-ht-cyan underline break-words"
                         >
                           {props.children || props.href}
                         </a>
@@ -477,7 +477,7 @@ export default function Dashboard() {
                         setShowNoteModal(true);
                       }
                     }}
-                    className="text-blue-500 text-sm hover:underline"
+                    className="text-ht-cyan text-sm hover:underline"
                   >
                     View
                   </button>
@@ -499,7 +499,7 @@ export default function Dashboard() {
             </PageTitle>
             <button 
               onClick={() => navigate("/documents")}
-              className="text-customActiveText hover:underline text-sm font-medium"
+              className="text-ht-cyan hover:underline text-sm font-medium"
             >
               View all
             </button>
@@ -529,7 +529,7 @@ export default function Dashboard() {
                     }`}>
                       <span className={`material-symbols-outlined text-lg ${
                         index === 0 ? 'text-red-600' :
-                        index === 1 ? 'text-blue-600' :
+                        index === 1 ? 'text-ht-cyan' :
                         'text-green-600'
                       }`}>
                         docs
@@ -578,7 +578,7 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 text-center">
             <div className="flex flex-col items-center">
               {/* Upload Icon with Gradient Background */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-ht-cyan to-ht-purple flex items-center justify-center mb-6">
                 <span className="material-symbols-outlined text-white text-4xl">upload</span>
               </div>
               
@@ -592,7 +592,7 @@ export default function Dashboard() {
               
               <button 
                 onClick={() => navigate("/documents")}
-                className="bg-customActiveText text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-500 transition"
+                className="bg-ht-cyan text-white px-6 py-3 rounded-lg font-medium hover:bg-ht-cyan-light transition"
               >
                 Choose Files
               </button>
@@ -682,7 +682,7 @@ export default function Dashboard() {
                             {...props}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 underline break-words"
+                            className="text-ht-cyan underline break-words"
                           >
                             {props.children || props.href}
                           </a>
@@ -729,7 +729,7 @@ export default function Dashboard() {
                             {...props}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 underline break-words"
+                            className="text-ht-cyan underline break-words"
                           >
                             {props.children || props.href}
                           </a>
@@ -776,7 +776,7 @@ export default function Dashboard() {
                             {...props}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 underline break-words"
+                            className="text-ht-cyan underline break-words"
                           >
                             {props.children || props.href}
                           </a>
@@ -823,7 +823,7 @@ export default function Dashboard() {
                             {...props}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 underline break-words"
+                            className="text-ht-cyan underline break-words"
                           >
                             {props.children || props.href}
                           </a>
@@ -924,7 +924,7 @@ export default function Dashboard() {
                 <div className="bg-gray-100 rounded-lg h-96 flex items-center justify-center border-2 border-dashed border-gray-300 overflow-hidden">
                   {isLoadingPreview ? (
                     <div className="text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mx-auto mb-4"></div>
                       <p className="text-gray-500">Loading document preview...</p>
                     </div>
                   ) : previewError ? (
@@ -1025,7 +1025,7 @@ export default function Dashboard() {
             <div className="flex justify-end p-6 border-t border-gray-200">
               <button
                 onClick={() => navigate('/documents')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
               >
                 <span className="material-symbols-outlined text-lg">auto_awesome</span>
                 Ask HomeTruth

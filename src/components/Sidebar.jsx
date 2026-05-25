@@ -120,7 +120,7 @@ function NavItem({ icon, label, active, onClick }) {
       onClick={onClick}
       className={`flex items-center px-4 py-4 rounded-lg cursor-pointer transition-colors duration-150 ${
         active
-          ? "bg-customActive text-customActiveText font-medium"
+          ? "bg-sky-50 text-ht-cyan font-medium"
           : "hover:bg-gray-100"
       }`}
     >
@@ -136,7 +136,7 @@ function SubNavItem({ icon, label, active, onClick }) {
       onClick={onClick}
       className={`flex items-center px-4 py-3 rounded cursor-pointer text-sm transition-colors duration-150 ${
         active
-          ? "text-customActiveText font-medium bg-customActive"
+          ? "text-ht-cyan font-medium bg-sky-50"
           : "hover:bg-gray-100 text-gray-700"
       }`}
     >
