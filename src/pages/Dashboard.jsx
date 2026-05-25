@@ -578,7 +578,7 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-8 text-center">
             <div className="flex flex-col items-center">
               {/* Upload Icon with Gradient Background */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-ht-cyan to-ht-purple flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-ht-gradient-cool flex items-center justify-center mb-6">
                 <span className="material-symbols-outlined text-white text-4xl">upload</span>
               </div>
               

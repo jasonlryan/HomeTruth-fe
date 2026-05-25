@@ -60,7 +60,7 @@ export default function ComingSoon() {
   };
 
   return (
-    <>
+    <div className="font-brand">
       <ComingSoonHeader />
 
       {/* Hero Section */}
@@ -365,6 +365,6 @@ export default function ComingSoon() {
           </a>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

@@ -1,27 +1,33 @@
+import BuildingBlockIcon from "./icons/BuildingBlockIcon";
+
 export default function TrustSecurity() {
   const items = [
     {
       title: "Complete Records",
       description: "Your property history is permanent and tamper-proof.",
       image: "/assets/trustSeurity/pic1.svg",
+      icon: "maintain",
     },
     {
       title: "GDPR Compliant",
       description: "Your privacy is built into how we work.",
       image: "/assets/trustSeurity/pic2.svg",
+      icon: "purchase",
     },
     {
       title: "Your Privacy",
       description: "Your information stays yours, period.",
       image: "/assets/trustSeurity/pic3.svg",
+      icon: "sell",
     },
   ];
 
   return (
-    <section className="bg-gray-50 py-12 md:py-16">
+    <section className="bg-gray-50 py-12 md:py-16 font-brand">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col items-center justify-center text-center mb-10">
+          <BuildingBlockIcon variant="improve" className="h-10 w-10 mb-4" />
           <h2 className="text-2xl font-bold text-black mb-2">
             Trust & Privacy
           </h2>
@@ -46,6 +52,7 @@ export default function TrustSecurity() {
                   className="w-14 h-14 object-contain"
                 />
               </div>
+              <BuildingBlockIcon variant={item.icon} className="h-8 w-8 mx-auto mb-4" />
 
               {/* Title */}
               <h3 className="text-xl font-bold text-black mb-4">

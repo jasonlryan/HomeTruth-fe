@@ -103,6 +103,16 @@ code {
   --grad-brand-h: linear-gradient(90deg, var(--ht-orange), var(--ht-purple), var(--ht-cyan));
 }
 
+@layer utilities {
+  .bg-ht-gradient-warm {
+    background-image: linear-gradient(90deg, var(--ht-orange), var(--ht-purple-light), var(--ht-purple));
+  }
+
+  .bg-ht-gradient-cool {
+    background-image: linear-gradient(90deg, var(--ht-cyan), var(--ht-cyan-light), var(--ht-purple));
+  }
+}
+
 /* Default app typography */
 * {
   font-family: var(--font-base);

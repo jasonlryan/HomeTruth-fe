@@ -708,7 +708,7 @@ export default function Documents() {
         )}
 
         {/* Pro banner */}
-        <div className="mt-8 bg-gradient-to-r from-ht-cyan via-ht-purple to-ht-purple-light rounded-xl p-6 text-white text-center">
+        <div className="mt-8 bg-ht-gradient-cool rounded-xl p-6 text-white text-center">
           <div className="mb-4">
             <h3 className="text-3xl font-semibold mb-2">Upload Reminder</h3>
             <p className="text-white/90 text-2xl max-w-5xl mx-auto">

@@ -82,7 +82,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col font-brand">
       {/* Header with Logo */}
        <div className="flex items-center p-12">
         <div className="flex items-center space-x-3">

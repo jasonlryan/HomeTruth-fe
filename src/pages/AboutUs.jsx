@@ -46,7 +46,7 @@ export default function AboutUs() {
   ];
 
   return (
-    <div className="bg-white">
+    <div className="bg-white font-brand">
       <Navbar />
 
       {/* Hero Section */}
@@ -425,7 +425,7 @@ export default function AboutUs() {
       </section>
 
       {/* New Gradient CTA Section */}
-      <section className="w-full bg-gradient-to-r from-ht-orange via-ht-purple to-ht-cyan py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
+      <section className="w-full bg-ht-gradient-warm py-16 md:py-20 flex flex-col items-center justify-center text-center px-6">
         <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
           Start Making Better Property Decisions
         </h2>

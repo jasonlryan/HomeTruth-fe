@@ -53,14 +53,14 @@ export default function WelcomePage() {
   // Show quiz modal if quiz is active
   if (showQuiz) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white font-brand">
         <AttitudinalQuizModal onClose={handleQuizClose} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col font-brand">
       {/* Header with Logo */}
       <div className="flex items-center p-12">
         <div className="flex items-center space-x-3">
