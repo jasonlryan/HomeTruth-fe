@@ -57,7 +57,7 @@ export default function HomeTruths() {
   };
 
   return (
-    <div className="bg-white min-h-screen font-gill">
+    <div className="bg-white min-h-screen font-brand">
       <Navbar />
 
       {/* Hero Section */}

@@ -18,12 +18,70 @@ code {
 @tailwind utilities;
 
 :root {
-  --system-chat-font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Mirrors ../../design-system/tokens/tokens.css. Update through a tracked ticket. */
+  --ht-orange: #E8651A;
+  --ht-orange-light: #F28C4E;
+  --ht-cyan: #00B4D8;
+  --ht-cyan-light: #48D1E8;
+  --ht-purple: #8B3FA0;
+  --ht-purple-light: #A966BF;
+  --ht-green: #43B02A;
+  --ht-green-light: #6BC955;
+  --ht-black: #1A1A1A;
+  --ht-dark: #0F1620;
+  --ht-mid-grey: #8C8C8C;
+  --ht-light-grey: #C4C4C4;
+  --ht-white: #FFFFFF;
+  --ht-primary: var(--ht-cyan);
+  --ht-secondary: var(--ht-purple);
+
+  --color-action-primary: var(--ht-orange);
+  --color-action-primary-hover: var(--ht-orange-light);
+  --color-accent: var(--ht-cyan);
+  --color-accent-hover: var(--ht-cyan-light);
+  --color-secondary: var(--ht-purple);
+  --color-success: var(--ht-green);
+  --color-text-default: var(--ht-black);
+  --color-text-muted: var(--ht-mid-grey);
+  --color-text-on-dark: var(--ht-white);
+  --color-surface-default: var(--ht-white);
+  --color-surface-dark: var(--ht-dark);
+  --color-border-default: var(--ht-light-grey);
+
+  --font-base: 'Gill Sans', 'Gill Sans MT', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-chat: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --system-chat-font-stack: var(--font-chat);
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  --icon-size-sm: 16px;
+  --icon-size-md: 24px;
+  --icon-size-lg: 32px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --grad-brand: linear-gradient(135deg, var(--ht-orange), var(--ht-purple), var(--ht-cyan));
+  --grad-brand-h: linear-gradient(90deg, var(--ht-orange), var(--ht-purple), var(--ht-cyan));
 }
 
 /* Default app typography */
 * {
-  font-family: var(--system-chat-font-stack);
+  font-family: var(--font-base);
 }
 
 /* Backward-compatible class used by legacy chat wrappers */
@@ -33,6 +91,8 @@ code {
 }
 
 /* Shared chat font utility for all chat experiences */
+.font-chat,
+.font-chat *,
 .chat-system-font,
 .chat-system-font * {
   font-family: var(--system-chat-font-stack);
@@ -94,8 +154,8 @@ code {
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 9999px;
-  background-color: #19B0F01F;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%2319B0F0'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E");
+  background-color: rgb(0 180 216 / 0.12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%2300B4D8'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
   flex-shrink: 0;

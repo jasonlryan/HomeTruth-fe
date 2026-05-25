@@ -47,7 +47,7 @@ export default function ArticleDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col font-gill">
+    <div className="min-h-screen bg-white flex flex-col font-brand">
       <Navbar />
 
       <div className="flex-1">

@@ -24,7 +24,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-sm font-gill">
+    <nav className="sticky top-0 z-50 bg-white shadow-sm font-brand">
       <div className="flex justify-between gap-10 px-3 py-4 max-w mx-auto">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 transition-opacity hover:opacity-90">
@@ -120,4 +120,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

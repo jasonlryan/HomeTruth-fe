@@ -35,7 +35,7 @@ const Resources = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] flex flex-col font-gill">
+        <div className="min-h-screen bg-[#f8fafc] flex flex-col font-brand">
             <Navbar />
 
             <main className="flex-grow mx-auto px-4 md:px-10 py-16 max-w-[1800px] w-full">

@@ -737,7 +737,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
                        transform transition-transform duration-300 ease-out translate-x-0"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="font-inter h-full overflow-y-auto p-6">
+            <div className="font-chat h-full overflow-y-auto p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">
                   Ask HomeTruth about {selectedDocument ? selectedDocument.name : "Document"}
