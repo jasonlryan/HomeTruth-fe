@@ -39,7 +39,14 @@ const PERIODS = [
   { value: "all", label: "All Time" },
 ];
 
-const CHART_COLORS = ["#7C3AED", "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#6366F1"];
+const CHART_COLORS = [
+  "var(--ht-purple)",
+  "var(--ht-cyan)",
+  "var(--ht-green)",
+  "rgb(245 158 11)",
+  "rgb(239 68 68)",
+  "var(--ht-purple-light)",
+];
 
 function formatDate(dateStr) {
   if (!dateStr) return "—";
@@ -73,14 +80,14 @@ function TrendBadge({ value }) {
 
 function KPICard({ icon: Icon, label, value, subtitle, trend, color = "purple" }) {
   const colorMap = {
-    purple: "bg-purple-50 text-purple-600",
-    blue: "bg-blue-50 text-blue-600",
+    purple: "bg-purple-50 text-ht-purple",
+    blue: "bg-sky-50 text-ht-cyan",
     green: "bg-green-50 text-green-600",
     amber: "bg-amber-50 text-amber-600",
     rose: "bg-rose-50 text-rose-600",
-    indigo: "bg-indigo-50 text-indigo-600",
+    indigo: "bg-purple-50 text-ht-purple-light",
     teal: "bg-teal-50 text-teal-600",
-    sky: "bg-sky-50 text-sky-600",
+    sky: "bg-sky-50 text-ht-cyan",
   };
 
   return (
@@ -217,7 +224,7 @@ export default function AdminReportingDashboard() {
                 onClick={() => setPeriod(p.value)}
                 className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                   period === p.value
-                    ? "bg-white text-purple-700 font-medium shadow-sm"
+                    ? "bg-white text-ht-purple font-medium shadow-sm"
                     : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -227,7 +234,7 @@ export default function AdminReportingDashboard() {
           </div>
           <button
             onClick={refreshAll}
-            className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+            className="p-2 text-gray-500 hover:text-ht-purple hover:bg-purple-50 rounded-lg transition-colors"
             title="Refresh"
           >
             <RefreshCw size={18} />
@@ -313,7 +320,7 @@ export default function AdminReportingDashboard() {
         <ChartCard title="User Signups Over Time" loading={chartsLoading}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={signupsChart}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(240 240 240)" />
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: 11 }}
@@ -326,7 +333,7 @@ export default function AdminReportingDashboard() {
                 labelFormatter={(d) => formatDate(d)}
                 contentStyle={{ fontSize: 12, borderRadius: 8 }}
               />
-              <Bar dataKey="count" name="Signups" fill="#7C3AED" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="count" name="Signups" fill="var(--ht-purple)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -334,7 +341,7 @@ export default function AdminReportingDashboard() {
         <ChartCard title="AI Chat Records Over Time" loading={chartsLoading}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={aiUsageChart}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(240 240 240)" />
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: 11 }}
@@ -351,7 +358,7 @@ export default function AdminReportingDashboard() {
                 type="monotone"
                 dataKey="count"
                 name="Records"
-                stroke="#3B82F6"
+                stroke="var(--ht-cyan)"
                 strokeWidth={2}
                 dot={false}
               />
@@ -362,7 +369,7 @@ export default function AdminReportingDashboard() {
         <ChartCard title="Documents Uploaded Over Time" loading={chartsLoading}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={documentsChart}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(240 240 240)" />
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: 11 }}
@@ -375,7 +382,7 @@ export default function AdminReportingDashboard() {
                 labelFormatter={(d) => formatDate(d)}
                 contentStyle={{ fontSize: 12, borderRadius: 8 }}
               />
-              <Bar dataKey="count" name="Uploads" fill="#10B981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="count" name="Uploads" fill="var(--ht-green)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>

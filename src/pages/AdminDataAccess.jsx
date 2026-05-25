@@ -121,7 +121,7 @@ function UserDetailDrawer({ userId, onClose }) {
                     <p className="text-xl font-bold text-sky-700">
                       {user.activity_summary?.ai_chat_records ?? 0}
                     </p>
-                    <p className="text-xs text-sky-600">AI Chat Records</p>
+                    <p className="text-xs text-ht-cyan">AI Chat Records</p>
                   </div>
                 </div>
               </section>
@@ -280,7 +280,7 @@ export default function AdminDataAccess() {
 
   const SortIndicator = ({ field }) => {
     if (sortBy !== field) return null;
-    return <span className="ml-1 text-purple-500">{sortOrder === "ASC" ? "↑" : "↓"}</span>;
+    return <span className="ml-1 text-ht-purple">{sortOrder === "ASC" ? "↑" : "↓"}</span>;
   };
 
   return (
@@ -358,20 +358,20 @@ export default function AdminDataAccess() {
               <tr className="border-b border-gray-100 bg-gray-50">
                 <th className="text-left px-4 py-3 font-medium text-gray-600">ID</th>
                 <th
-                  className="text-left px-4 py-3 font-medium text-gray-600 cursor-pointer hover:text-purple-600"
+                  className="text-left px-4 py-3 font-medium text-gray-600 cursor-pointer hover:text-ht-purple"
                   onClick={() => toggleSort("email")}
                 >
                   Email <SortIndicator field="email" />
                 </th>
                 <th
-                  className="text-left px-4 py-3 font-medium text-gray-600 cursor-pointer hover:text-purple-600"
+                  className="text-left px-4 py-3 font-medium text-gray-600 cursor-pointer hover:text-ht-purple"
                   onClick={() => toggleSort("first_name")}
                 >
                   Name <SortIndicator field="first_name" />
                 </th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Plan</th>
                 <th
-                  className="text-left px-4 py-3 font-medium text-gray-600 cursor-pointer hover:text-purple-600"
+                  className="text-left px-4 py-3 font-medium text-gray-600 cursor-pointer hover:text-ht-purple"
                   onClick={() => toggleSort("createdAt")}
                 >
                   Signup Date <SortIndicator field="createdAt" />
@@ -414,7 +414,7 @@ export default function AdminDataAccess() {
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => setSelectedUserId(u.id)}
-                        className="text-purple-600 hover:text-purple-800 text-sm font-medium hover:underline"
+                        className="text-ht-purple hover:text-ht-purple-light text-sm font-medium hover:underline"
                       >
                         View
                       </button>
@@ -465,7 +465,7 @@ export default function AdminDataAccess() {
                     onClick={() => fetchUsers(pageNum)}
                     className={`w-8 h-8 rounded-lg text-sm transition-colors ${
                       pageNum === pagination.page
-                        ? "bg-purple-600 text-white"
+                        ? "bg-ht-purple text-white"
                         : "hover:bg-gray-100 text-gray-600"
                     }`}
                   >
