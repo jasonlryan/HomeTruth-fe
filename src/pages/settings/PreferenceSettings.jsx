@@ -92,7 +92,7 @@ export default function PreferenceSettings() {
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto text-textColor mt-10 px-4 space-y-6">
+      <div className="max-w-7xl mx-auto text-ht-black mt-10 px-4 space-y-6">
         <Section
           title="Communication Tone & Style"
           icon={
@@ -102,7 +102,7 @@ export default function PreferenceSettings() {
           }
         >
           <div className="mb-4">
-            <p className="text-textColor mb-2">
+            <p className="text-ht-black mb-2">
               How would you like HomeTruth to speak with you?
             </p>
             {["formal", "friendly", "encouraging"].map((option) => (
@@ -146,7 +146,7 @@ export default function PreferenceSettings() {
             </span>
           }
         >
-          <p className="mb-2 text-textColor">
+          <p className="mb-2 text-ht-black">
             Control how much HomeTruth adapts to you.
           </p>
           {[

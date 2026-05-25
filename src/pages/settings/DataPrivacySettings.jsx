@@ -99,7 +99,7 @@ export default function DataPrivacySettings() {
         description="Manage how your data is stored, personalized, and used to power your HomeTruth experience."
       >
         <div className="ml-8">
-          <h2 className="font-extrabold text-lg text-textColor mt-12 ">
+          <h2 className="font-extrabold text-lg text-ht-black mt-12 ">
             Personalisation preferences
           </h2>
           <p className="text-sm text-gray-500 mb-4">
@@ -209,7 +209,7 @@ function Section({ title, description, children, pro = false }) {
     <div className="bg-white p-6 rounded-xl shadow border space-y-4">
       <div>
         <div className="flex items-center gap-2">
-          <h2 className="font-extrabold text-lg text-textColor">{title}</h2>
+          <h2 className="font-extrabold text-lg text-ht-black">{title}</h2>
           {pro && (
             <span className="text-xs bg-ht-cyan text-white px-2 py-0.5 rounded-full">
               PRO
@@ -231,7 +231,7 @@ function ToggleRow({ label, value, onChange, border }) {
       }`}
     >
       <div className="mr-4 flex items-center gap-1">
-        <span className="font-normal text-sm mt-4 text-textColor">{label}</span>
+        <span className="font-normal text-sm mt-4 text-ht-black">{label}</span>
         <span
           className="material-symbols-outlined text-[16px] mt-4 text-gray-400 cursor-pointer"
           title="Info"

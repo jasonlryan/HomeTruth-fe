@@ -41,7 +41,7 @@ export default function Footer() {
 
   if (user) {
     return (
-      <footer className="bg-[#0a1220] text-white flex-shrink-0">
+      <footer className="bg-ht-dark text-white flex-shrink-0">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-4 pb-4 border-t border-gray-800 flex justify-center">
           <p className="text-gray-500 text-xs">
             © 2026 HomeTruth. All rights reserved.
@@ -52,7 +52,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-[#0a1220] text-white pt-10 pb-8">
+    <footer className="bg-ht-dark text-white pt-10 pb-8">
       <div className="max-w-7xl mx-auto px-6 py-5 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-x-12 gap-y-10">
           {/* Logo Column */}

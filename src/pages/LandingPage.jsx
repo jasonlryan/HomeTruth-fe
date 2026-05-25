@@ -36,7 +36,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="relative isolate overflow-hidden py-5  bg-[#F3F7FD]">
+      <section className="relative isolate overflow-hidden py-5 bg-gray-50">
         <div className=" w-full relative mx-auto max-w-xl px-6 my-5 text-center">
           {/* Orange corner (top-left) */}
           {/* <img

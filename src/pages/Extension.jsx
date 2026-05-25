@@ -3,8 +3,8 @@ export default function ExtensionPage() {
     <div className=" flex flex-col items-center justify-center text-center px-4">
       {/* Logo Header */}
       <div className="absolute top-6 left-6 flex items-center gap-2">
-        <div className="w-9 h-9 bg-blurpleLight/20 rounded-full flex items-center justify-center">
-          <span className="material-symbols-outlined text-primary">
+        <div className="w-9 h-9 bg-purple-50 rounded-full flex items-center justify-center">
+          <span className="material-symbols-outlined text-ht-cyan">
             extension
           </span>
         </div>
@@ -15,7 +15,7 @@ export default function ExtensionPage() {
       </div>
 
       <div className="flex flex-col items-center mt-64">
-        <div className="w-64 h-64 bg-blurpleLight/25 rounded-full flex items-center justify-center mb-8">
+        <div className="w-64 h-64 bg-purple-50 rounded-full flex items-center justify-center mb-8">
           <div className=" rounded-xl flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -39,8 +39,8 @@ export default function ExtensionPage() {
                   y2="126.084"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor="#4A6BFF" />
-                  <stop offset="1" stopColor="#7098FE" />
+                  <stop stopColor="var(--ht-cyan)" />
+                  <stop offset="1" stopColor="var(--ht-purple-light)" />
                 </linearGradient>
               </defs>
             </svg>{" "}
@@ -58,7 +58,7 @@ export default function ExtensionPage() {
               "_blank"
             )
           }
-          className="bg-primary  text-white font-medium px-6 py-3 rounded-lg text-sm"
+          className="bg-ht-cyan text-white font-medium px-6 py-3 rounded-lg text-sm"
         >
           Download Extension
         </button>

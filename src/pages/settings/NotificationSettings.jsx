@@ -183,7 +183,7 @@ function Section({ title, description, children }) {
     <div className="bg-white p-6 rounded-xl shadow border space-y-4">
       <div>
         <h3 className="font-bold text-lg mb-1">{title}</h3>
-        <p className="text-sm text-darkGrey">{description}</p>
+        <p className="text-sm text-ht-dark">{description}</p>
       </div>
       <div className="space-y-4">{children}</div>
     </div>
@@ -195,7 +195,7 @@ function ToggleItem({ label, description, value, onChange, pro = false }) {
     <div className="flex justify-between items-start">
       <div className="mr-4">
         <div className="flex items-center space-x-2">
-          <span className="font-medium text-grayDeep">{label}</span>
+          <span className="font-medium text-ht-black">{label}</span>
           {pro && (
             <span className="text-xs bg-ht-cyan text-white px-2 py-0.5 rounded-full">
               PRO

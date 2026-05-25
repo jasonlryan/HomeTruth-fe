@@ -178,7 +178,7 @@ export default function AttitudinalQuizModal({ onClose }) {
                     : [...value, opt.id];
                   handleAnswerChange(question.id, updated);
                 }}
-                className={`w-full flex items-center justify-start px-4 py-4 border rounded-md transition text-md font-medium text-slateColor ${
+                className={`w-full flex items-center justify-start px-4 py-4 border rounded-md transition text-md font-medium text-slate-800 ${
                   value.includes(opt.id)
                     ? "bg-sky-50 border-ht-cyan text-ht-cyan"
                     : "border-gray-300 text-black hover:bg-gray-50"

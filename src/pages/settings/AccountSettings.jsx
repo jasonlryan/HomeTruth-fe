@@ -131,7 +131,7 @@ export default function AccountSettings() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow text-darkGrey space-y-8 mt-6">
+      <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow text-ht-dark space-y-8 mt-6">
         {/* Email */}
         <div>
           <label className="block font-sm mb-1 font-medium">
@@ -224,7 +224,7 @@ export default function AccountSettings() {
 
         {/* Deactivation */}
         <div>
-          <h3 className="text-darkGrey font-extrabold text-lg mb-2">
+          <h3 className="text-ht-dark font-extrabold text-lg mb-2">
             Account Management
           </h3>
           <button
@@ -238,10 +238,10 @@ export default function AccountSettings() {
         {/* Weekly Summary */}
         <div className="flex items-center justify-between mt-8">
           <div>
-            <h3 className="text-darkGrey font-medium text-md mb-1">
+            <h3 className="text-ht-dark font-medium text-md mb-1">
               Weekly Summary
             </h3>
-            <p className="text-lightGrey text-sm">
+            <p className="text-ht-mid-grey text-sm">
               Receive a weekly summary of your activity
             </p>
           </div>

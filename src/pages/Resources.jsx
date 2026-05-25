@@ -35,21 +35,21 @@ const Resources = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] flex flex-col font-brand">
+        <div className="min-h-screen bg-gray-50 flex flex-col font-brand">
             <Navbar />
 
             <main className="flex-grow mx-auto px-4 md:px-10 py-16 max-w-[1800px] w-full">
                 {/* Hero Section */}
-                <section className="bg-white rounded-[2rem] shadow-[0_2px_15px_rgba(0,0,0,0.02)] border border-[#f1f5f9] p-8 md:p-12 mb-12 flex flex-col lg:flex-row gap-8 items-stretch">
+                <section className="bg-white rounded-[2rem] shadow-[0_2px_15px_rgba(0,0,0,0.02)] border border-slate-100 p-8 md:p-12 mb-12 flex flex-col lg:flex-row gap-8 items-stretch">
                     <div className="flex-1 space-y-6 flex flex-col justify-center">
                         <div>
-                            <div className="inline-flex items-center gap-2 bg-[#f0f7ff] text-[#1e2e5c] px-4 py-1.5 rounded-full text-[11px] font-bold tracking-tight border border-[#e0f0fe]">
+                            <div className="inline-flex items-center gap-2 bg-sky-50 text-ht-dark px-4 py-1.5 rounded-full text-[11px] font-bold tracking-tight border border-sky-100">
                                 <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
                                 HomeTruth Resources
                             </div>
                         </div>
 
-                        <h1 className="text-xl md:text-[2rem] font-medium text-[#111827] leading-[1.1] tracking-tight">
+                        <h1 className="text-xl md:text-[2rem] font-medium text-gray-900 leading-[1.1] tracking-tight">
                             Explain the &ldquo;why&rdquo; behind every HomeTruth touchpoint.
                         </h1>
 
@@ -58,7 +58,7 @@ const Resources = () => {
                         </p>
 
                         <div className="flex flex-wrap gap-3 pt-2">
-                            <span className="bg-[#f0f7ff] text-[#1e2e5c] px-5 py-2.5 rounded-full text-sm font-medium border border-[#e0f0fe]">
+                            <span className="bg-sky-50 text-ht-dark px-5 py-2.5 rounded-full text-sm font-medium border border-sky-100">
                                 Dynamic index: reads everything in <span className="text-ht-cyan font-semibold">public/resources</span>
                             </span>
                             <span className="bg-white text-gray-500 px-5 py-2.5 rounded-full text-sm font-medium border border-gray-200">
@@ -67,23 +67,23 @@ const Resources = () => {
                         </div>
                     </div>
 
-                    <div className="w-full lg:w-[480px] bg-[#f8fbff] rounded-[2rem] p-6 flex flex-col justify-center space-y-4 border border-[#eef5ff]">
+                    <div className="w-full lg:w-[480px] bg-gray-50 rounded-[2rem] p-6 flex flex-col justify-center space-y-4 border border-sky-50">
                         <div className="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-gray-50 group cursor-pointer hover:shadow-md transition-all">
-                            <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-ht-cyan shrink-0">
+                            <div className="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-ht-cyan shrink-0">
                                 <span className="material-symbols-outlined text-[22px]">description</span>
                             </div>
                             <div>
-                                <h3 className="font-bold text-[#111827] text-[15px] mb-0.5">HomeTruth Profiling System</h3>
+                                <h3 className="font-bold text-gray-900 text-[15px] mb-0.5">HomeTruth Profiling System</h3>
                                 <p className="text-[11px] text-gray-400 font-medium leading-relaxed">Why the 2&ndash;3 minute onboarding exists and how it powers the property assistant.</p>
                             </div>
                         </div>
 
                         <div className="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-gray-100/50 group cursor-pointer hover:shadow-md transition-all">
-                            <div className="w-12 h-12 bg-[#f5f3ff] rounded-xl flex items-center justify-center text-ht-purple shrink-0">
+                            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-ht-purple shrink-0">
                                 <span className="material-symbols-outlined text-[22px]">arrow_forward</span>
                             </div>
                             <div>
-                                <h3 className="font-bold text-[#111827] text-[15px] mb-0.5">Add more explainers</h3>
+                                <h3 className="font-bold text-gray-900 text-[15px] mb-0.5">Add more explainers</h3>
                                 <p className="text-[11px] text-gray-400 font-medium leading-relaxed">Drop new HTML files into <span className="text-gray-400 font-bold">public/resources</span> to have them appear below automatically.</p>
                             </div>
                         </div>
@@ -131,7 +131,7 @@ const Resources = () => {
                             >
                                 <div>
                                     <div className="flex justify-between items-center mb-5">
-                                        <span className="text-[10px] font-black tracking-widest text-[#1e2e5c] uppercase">EXPLAINER</span>
+                                        <span className="text-[10px] font-black tracking-widest text-ht-dark uppercase">EXPLAINER</span>
                                         <span className="text-sm text-gray-400 font-medium">Updated {card.date}</span>
                                     </div>
 
@@ -150,8 +150,8 @@ const Resources = () => {
                                         <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                                     </button>
 
-                                    <div className="flex items-center bg-[#eff6ff] px-3 py-1.5 rounded-lg border border-blue-1">
-                                        <span className="text-xs text-[#1e2e5c] font-bold tracking-wider flex items-center gap-1.5">
+                                    <div className="flex items-center bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-100">
+                                        <span className="text-xs text-ht-dark font-bold tracking-wider flex items-center gap-1.5">
                                             HTML <span className="w-1 h-1 bg-ht-cyan rounded-full"></span> PUBLIC
                                         </span>
                                     </div>

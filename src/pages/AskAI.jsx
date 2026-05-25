@@ -1206,7 +1206,7 @@ export default function AskAI() {
                     currentQuestionCount > 0 && (
                       <button
                         onClick={handleSaveCurrentSession}
-                        className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                        className="text-sm text-ht-cyan hover:text-ht-cyan-light font-medium"
                       >
                         Save Session
                       </button>

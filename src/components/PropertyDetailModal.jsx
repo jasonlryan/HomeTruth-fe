@@ -73,12 +73,12 @@ export default function PropertyDetailModal({ property, onClose }) {
 
           {phone && (
             <div className="text-sm">
-              📞 <a href={`tel:${phone}`} className="text-blue-600 hover:underline">{phone}</a>
+              📞 <a href={`tel:${phone}`} className="text-ht-cyan hover:underline">{phone}</a>
             </div>
           )}
           {email && (
             <div className="text-sm">
-              ✉ <a href={`mailto:${email}`} className="text-blue-600 hover:underline">{email}</a>
+              ✉ <a href={`mailto:${email}`} className="text-ht-cyan hover:underline">{email}</a>
             </div>
           )}
         </div>

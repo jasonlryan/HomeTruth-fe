@@ -45,11 +45,11 @@ export default function PremiumFeatures() {
                 className="w-16 h-16 mx-auto mb-4"
               />
 
-              <h3 className="text-lg  font-extrabold text-darkGrey mb-2">
+              <h3 className="text-lg  font-extrabold text-ht-dark mb-2">
                 {feature.title}
               </h3>
 
-              <p className="text-sm text-lightGrey mb-6">{feature.description}</p>
+              <p className="text-sm text-ht-mid-grey mb-6">{feature.description}</p>
 
               <button className="bg-ht-cyan hover:bg-ht-cyan-light text-white text-sm px-4 py-2 rounded-md font-medium transition">
                 Unlock with Pro

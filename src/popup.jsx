@@ -47,7 +47,7 @@ const Popup = () => {
           <button onClick={handleLoginClick} className="mb-2">
             Login via Website (opens new tab)
           </button>
-          <button onClick={handleSetDevToken} className="text-xs text-blue-600 underline">
+          <button onClick={handleSetDevToken} className="text-xs text-ht-cyan underline">
             Use Dev Token
           </button>
         </>

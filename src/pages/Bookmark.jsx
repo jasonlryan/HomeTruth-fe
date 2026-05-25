@@ -59,7 +59,7 @@ const MyBookmarks = () => {
                       <>• {bedrooms || "?"} bed • {bathrooms || "?"} bath</>
                     )}
                   </p>
-                  <p className="mt-2 text-purple-700 font-bold text-md">
+                  <p className="mt-2 text-ht-purple font-bold text-md">
                     £{price ? Number(price).toLocaleString() : "N/A"}
                   </p>
                 </div>
