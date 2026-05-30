@@ -85,11 +85,11 @@ export default function AuthenticatedLayout() {
   // Normal chrome layout
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-w-0">
         {!isAdmin && <Sidebar />}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 min-w-0 flex flex-col">
           {!isAdmin && <Topbar />}
-          <main className="flex-1 relative">
+          <main className="flex-1 min-w-0 relative">
             <Outlet />
           </main>
         </div>

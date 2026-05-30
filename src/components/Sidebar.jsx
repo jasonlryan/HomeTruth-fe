@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Home,
+  Building2,
   Search,
   FileText,
   File,
@@ -25,7 +26,7 @@ export default function Sidebar() {
   }, [location.pathname]);
 
   return (
-    <div className="w-80 bg-white border-r p-4 flex flex-col">
+    <div className="hidden w-80 bg-white border-r p-4 lg:flex lg:flex-col">
       <div className="flex items-center space-x-2 mb-6">
         <img 
           src="/assets/logo.png" 
@@ -41,6 +42,12 @@ export default function Sidebar() {
           label="Dashboard"
           onClick={() => navigate("/dashboard")}
           active={location.pathname === "/dashboard"}
+        />
+        <NavItem
+          icon={<Building2 size={20} />}
+          label="Property profile"
+          onClick={() => navigate("/property-profile")}
+          active={location.pathname === "/property-profile"}
         />
         <NavItem
           icon={<Search size={20} />}

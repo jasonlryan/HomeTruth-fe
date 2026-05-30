@@ -20,6 +20,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import AskAI from "./pages/AskAI";
 import Documents from "./pages/Documents";
+import PropertyProfile from "./pages/PropertyProfile";
 // import BudgetCalculator from "./pages/budget/NoBudgetCalculator";
 import QuizPage from "./pages/QuizPage";
 // import BudgetHistory from "./pages/budget/BudgetHistory";
@@ -215,6 +216,7 @@ function App() {
             <Route path="welcome" element={<WelcomePage />} />
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="documents" element={<Documents />} />
+            <Route path="property-profile" element={<PropertyProfile />} />
             <Route path="home" element={<Home />} />
             <Route path="quiz" element={<QuizPage />} />
             {/* <Route path="budget" element={<BudgetRedirect />} /> */}

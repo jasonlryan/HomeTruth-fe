@@ -469,6 +469,22 @@ export const getBookmarkedProperties = async () => {
   return res.data?.bookmarks || [];
 };
 
+// --- Property Record APIs ---
+export const getPropertyRecords = async () => {
+  const res = await api.get("/api/property-records");
+  return res.data?.data || [];
+};
+
+export const createPropertyRecord = async (payload) => {
+  const res = await api.post("/api/property-records", payload);
+  return res.data?.data;
+};
+
+export const updatePropertyRecord = async (propertyId, payload) => {
+  const res = await api.patch(`/api/property-records/${propertyId}`, payload);
+  return res.data?.data;
+};
+
 
 // --- Document APIs ---
 export const getUserDocuments = async (params = {}) => {
