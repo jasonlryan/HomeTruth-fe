@@ -485,6 +485,46 @@ export const updatePropertyRecord = async (propertyId, payload) => {
   return res.data?.data;
 };
 
+// --- Partner Onboarding APIs ---
+export const validatePartnerInvite = async (inviteCode) => {
+  const res = await api.get(
+    `/api/partner-onboarding/invites/${encodeURIComponent(inviteCode)}`
+  );
+  return res.data?.data;
+};
+
+export const claimPartnerInvite = async (inviteCode) => {
+  const res = await api.post("/api/partner-onboarding/claim", {
+    inviteCode,
+  });
+  return res.data?.data;
+};
+
+export const recordPartnerConsents = async (inviteCode, consents, consentVersion = "pilot-v1") => {
+  const res = await api.post("/api/partner-onboarding/consents", {
+    inviteCode,
+    consentVersion,
+    consents,
+  });
+  return res.data?.data;
+};
+
+export const attachPartnerOnboardingProperty = async (inviteCode, propertyId) => {
+  const res = await api.post("/api/partner-onboarding/property", {
+    inviteCode,
+    propertyId,
+  });
+  return res.data?.data;
+};
+
+export const emitPartnerOnboardingEvent = async (eventName, inviteCode, metadata = {}) => {
+  const res = await api.post("/api/partner-onboarding/events", {
+    eventName,
+    inviteCode,
+    metadata,
+  });
+  return res.data?.data;
+};
 
 // --- Document APIs ---
 export const getUserDocuments = async (params = {}) => {

@@ -21,6 +21,7 @@ import Dashboard from "./pages/Dashboard";
 import AskAI from "./pages/AskAI";
 import Documents from "./pages/Documents";
 import PropertyProfile from "./pages/PropertyProfile";
+import PartnerOnboarding from "./pages/PartnerOnboarding";
 // import BudgetCalculator from "./pages/budget/NoBudgetCalculator";
 import QuizPage from "./pages/QuizPage";
 // import BudgetHistory from "./pages/budget/BudgetHistory";
@@ -200,6 +201,7 @@ function App() {
           <Route path="/pricing" element={<PublicRoute><Pricing /></PublicRoute>} />
           <Route path="/home-truths" element={<HomeTruths />} />
           <Route path="/home-truths/:slug" element={<ArticleDetail />} />
+          <Route path="/partner/:inviteCode" element={<PartnerOnboarding />} />
           {isVisualReviewMode && <Route path="/visual-review" element={<VisualReviewHarness />} />}
           {isVisualReviewMode && <Route path="/visual-review/:role" element={<VisualReviewHarness />} />}
 

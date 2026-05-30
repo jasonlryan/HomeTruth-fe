@@ -9,6 +9,10 @@ export default function Login() {
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const redirectTo = searchParams.get("redirect") || null;
+  const partnerInvite =
+    searchParams.get("partner_invite") ||
+    localStorage.getItem("partner_invite_code") ||
+    "";
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || null;
 
   const [email, setEmail] = useState("");
@@ -84,6 +88,16 @@ export default function Login() {
         return;
       }
 
+      if (partnerInvite) {
+        localStorage.setItem("partner_invite_code", partnerInvite);
+        const partnerRedirect =
+          redirectTo?.startsWith("/partner/")
+            ? redirectTo
+            : `/partner/${encodeURIComponent(partnerInvite)}`;
+        navigate(partnerRedirect, { replace: true });
+        return;
+      }
+
       // Guest session continuity: claim guest chat and redirect to Ask AI with conversation
       if (guestSessionId && (redirectTo === "/ask-ai" || redirectTo === "ask-ai")) {
         try {
@@ -110,6 +124,8 @@ export default function Login() {
       if (isNewUser) {
         // Redirect new users to welcome page
         navigate("/welcome", { replace: true });
+      } else if (redirectTo?.startsWith("/")) {
+        navigate(redirectTo, { replace: true });
       } else {
         // Default behavior (normal login) - Dashboard will check for quiz completion
         navigate("/dashboard", { replace: true });
@@ -249,7 +265,13 @@ export default function Login() {
             <p className="text-gray-600">
               Don't Have an Account?{" "}
               <button 
-                onClick={() => navigate("/register")}
+                onClick={() =>
+                  navigate(
+                    partnerInvite
+                      ? `/register?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
+                      : "/register"
+                  )
+                }
                 className="font-bold text-black hover:text-ht-cyan transition-colors"
               >
                 Sign up

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   AlertCircle,
   CheckCircle2,
@@ -10,7 +11,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import {
+  attachPartnerOnboardingProperty,
   createPropertyRecord,
+  emitPartnerOnboardingEvent,
   getPropertyRecords,
 } from "../api/api";
 
@@ -110,6 +113,7 @@ function StatusPanel({ title, body, icon: Icon }) {
 }
 
 export default function PropertyProfile() {
+  const location = useLocation();
   const [records, setRecords] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [form, setForm] = useState(initialForm);
@@ -190,7 +194,46 @@ export default function PropertyProfile() {
       setRecords((current) => [created, ...current]);
       setSelectedId(created.property.id);
       setForm(initialForm);
-      setSuccess("Property profile set up.");
+
+      const params = new URLSearchParams(location.search);
+      const partnerInvite =
+        params.get("partner_invite") ||
+        localStorage.getItem("partner_invite_code");
+
+      if (partnerInvite) {
+        try {
+          const linked = await attachPartnerOnboardingProperty(
+            partnerInvite,
+            created.property.id
+          );
+          localStorage.setItem(
+            "partner_onboarding_context",
+            JSON.stringify({
+              inviteCode: partnerInvite,
+              partnerName: linked.partner?.name || null,
+              cohortName: linked.cohort?.name || null,
+              memberId: linked.member?.id || null,
+              propertyId: created.property.id,
+            })
+          );
+          await emitPartnerOnboardingEvent(
+            "property_completed",
+            partnerInvite,
+            {
+              propertyId: created.property.id,
+              path: "new_property",
+            }
+          );
+          setSuccess("Property profile set up and linked to the pilot.");
+        } catch (linkError) {
+          setError(
+            linkError.response?.data?.message ||
+              "Property profile was set up, but pilot linking could not be completed."
+          );
+        }
+      } else {
+        setSuccess("Property profile set up.");
+      }
     } catch (saveError) {
       setError(
         saveError.response?.data?.message ||

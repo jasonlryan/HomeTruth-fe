@@ -7,6 +7,10 @@ export default function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "";
+  const partnerInvite =
+    searchParams.get("partner_invite") ||
+    localStorage.getItem("partner_invite_code") ||
+    "";
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || "";
 
   const [firstName, setFirstName] = useState("");
@@ -67,10 +71,14 @@ export default function Register() {
       localStorage.setItem("new_user", "true");
       localStorage.setItem("user_email", email);
       localStorage.setItem("user_name", `${firstName} ${lastName}`);
+      if (partnerInvite) {
+        localStorage.setItem("partner_invite_code", partnerInvite);
+      }
 
       const loginQuery = new URLSearchParams();
       if (redirectTo) loginQuery.set("redirect", redirectTo);
       if (guestSessionId) loginQuery.set("guest_session_id", guestSessionId);
+      if (partnerInvite) loginQuery.set("partner_invite", partnerInvite);
       const queryString = loginQuery.toString();
 
       setTimeout(() => {
@@ -260,7 +268,13 @@ export default function Register() {
             <p className="text-gray-600">
               Already have an account?{" "}
               <button 
-                onClick={() => navigate("/login")}
+                onClick={() =>
+                  navigate(
+                    partnerInvite
+                      ? `/login?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
+                      : "/login"
+                  )
+                }
                 className="font-bold text-black hover:text-ht-cyan transition-colors"
               >
                 Sign in
