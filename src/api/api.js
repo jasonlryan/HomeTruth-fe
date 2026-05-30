@@ -485,6 +485,30 @@ export const updatePropertyRecord = async (propertyId, payload) => {
   return res.data?.data;
 };
 
+export const getPropertyTasks = async (propertyId, params = {}) => {
+  const queryParams = new URLSearchParams();
+  if (params.status) queryParams.append("status", params.status);
+
+  const queryString = queryParams.toString();
+  const res = await api.get(
+    `/api/property-records/${propertyId}/tasks${queryString ? `?${queryString}` : ""}`
+  );
+  return res.data?.data || [];
+};
+
+export const generatePropertyTasks = async (propertyId) => {
+  const res = await api.post(`/api/property-records/${propertyId}/tasks/generate`);
+  return res.data?.data;
+};
+
+export const updatePropertyTaskStatus = async (propertyId, taskId, payload) => {
+  const res = await api.patch(
+    `/api/property-records/${propertyId}/tasks/${taskId}`,
+    payload
+  );
+  return res.data?.data;
+};
+
 // --- Partner Onboarding APIs ---
 export const validatePartnerInvite = async (inviteCode) => {
   const res = await api.get(

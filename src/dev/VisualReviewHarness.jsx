@@ -9,6 +9,7 @@ const VISUAL_REVIEW_TOKEN = "visual-review-token";
 const userRoutes = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "Documents", path: "/documents" },
+  { label: "Property Profile", path: "/property-profile" },
   { label: "Ask HomeTruth", path: "/ask-ai" },
   { label: "Quiz", path: "/quiz" },
   { label: "Account", path: "/settings/account" },
@@ -69,6 +70,98 @@ const visualSavedItems = [
     name: "North London budget",
     summary: "Monthly payment scenario for a 20% deposit.",
     createdAt: "2026-05-19T16:30:00Z",
+  },
+];
+
+const visualPropertyRecords = [
+  {
+    property: {
+      id: 42,
+      uprn: null,
+      propertyType: "house",
+      tenure: "freehold",
+      lifecycleStatus: "active",
+      sourceType: "manual",
+      sourceRef: null,
+      createdByUserId: "visual-user",
+      createdAt: "2026-05-30T09:00:00Z",
+      updatedAt: "2026-05-30T09:00:00Z",
+    },
+    currentAddress: {
+      id: 77,
+      propertyId: 42,
+      isCurrent: true,
+      addressLine1: "24 Chestnut Road",
+      addressLine2: null,
+      townCity: "Guildford",
+      county: "Surrey",
+      postcode: "GU1 1AA",
+      country: "GB",
+      sourceType: "manual",
+      confidence: null,
+      validFrom: null,
+      validTo: null,
+      createdAt: "2026-05-30T09:00:00Z",
+      updatedAt: "2026-05-30T09:00:00Z",
+    },
+    relationship: {
+      id: 88,
+      propertyId: 42,
+      userId: "visual-user",
+      relationshipType: "owner",
+      relationshipStatus: "active",
+      permissionLevel: "admin",
+      isPrimary: true,
+      verificationStatus: "user_confirmed",
+    },
+    linkedDocumentCount: 2,
+    linkedDocuments: [],
+    currentFacts: [
+      {
+        id: 1001,
+        factKey: "maintenance.next_service_due",
+        displayValue: "Boiler service due on 15 July 2026",
+      },
+      {
+        id: 1002,
+        factKey: "risk.known_issue",
+        displayValue: "Small damp patch in rear bedroom",
+      },
+    ],
+    currentFactsByNamespace: {},
+  },
+];
+
+const visualPropertyTasks = [
+  {
+    id: 501,
+    propertyId: 42,
+    assignedUserId: "visual-user",
+    taskType: "service_due",
+    title: "Review upcoming service",
+    description: "Boiler service due on 15 July 2026 indicates a service date to review.",
+    recommendedAction: "Check whether the service is booked, complete or no longer relevant.",
+    priority: "high",
+    status: "open",
+    sourceType: "property_fact",
+    sourceModel: "PropertyFact",
+    sourceId: 1001,
+    dueDate: "2026-07-15",
+  },
+  {
+    id: 502,
+    propertyId: 42,
+    assignedUserId: "visual-user",
+    taskType: "known_issue_follow_up",
+    title: "Follow up a known issue",
+    description: "Small damp patch in rear bedroom is recorded as a known issue for this home.",
+    recommendedAction: "Review the issue and add an update, repair evidence or mark it no longer relevant.",
+    priority: "high",
+    status: "open",
+    sourceType: "property_fact",
+    sourceModel: "PropertyFact",
+    sourceId: 1002,
+    dueDate: null,
   },
 ];
 
@@ -233,6 +326,43 @@ function installVisualReviewApiMock() {
         data: { documents: visualDocuments, pagination: { page: 1, total: visualDocuments.length } },
         total: visualDocuments.length,
         count: visualDocuments.length,
+      });
+    }
+
+    if (method === "get" && path === "/api/property-records") {
+      return toAxiosResponse(config, { success: true, data: visualPropertyRecords });
+    }
+
+    if (method === "post" && path.match(/^\/api\/property-records\/\d+\/tasks\/generate$/)) {
+      return toAxiosResponse(
+        config,
+        {
+          success: true,
+          data: {
+            createdCount: 0,
+            updatedCount: 0,
+            proposalCount: visualPropertyTasks.length,
+            tasks: visualPropertyTasks,
+          },
+        },
+        201
+      );
+    }
+
+    if (method === "get" && path.match(/^\/api\/property-records\/\d+\/tasks$/)) {
+      return toAxiosResponse(config, { success: true, data: visualPropertyTasks });
+    }
+
+    if (method === "patch" && path.match(/^\/api\/property-records\/\d+\/tasks\/\d+$/)) {
+      const taskId = Number(path.split("/").pop());
+      const task = visualPropertyTasks.find((item) => item.id === taskId);
+      return toAxiosResponse(config, {
+        success: true,
+        data: {
+          ...task,
+          status: data.status || "completed",
+          statusUpdatedAt: "2026-05-30T10:30:00Z",
+        },
       });
     }
 

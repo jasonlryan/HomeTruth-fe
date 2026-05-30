@@ -1,20 +1,29 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   AlertCircle,
+  CalendarClock,
+  Check,
   CheckCircle2,
+  CircleOff,
   ClipboardList,
   FileText,
   Home,
   Loader2,
   MapPin,
+  RefreshCw,
   ShieldCheck,
+  Wrench,
+  X,
 } from "lucide-react";
 import {
   attachPartnerOnboardingProperty,
   createPropertyRecord,
   emitPartnerOnboardingEvent,
+  generatePropertyTasks,
   getPropertyRecords,
+  getPropertyTasks,
+  updatePropertyTaskStatus,
 } from "../api/api";
 
 const initialForm = {
@@ -65,6 +74,30 @@ const formatLabel = (value) => {
     .join(" ");
 };
 
+const formatTaskDate = (date) => {
+  if (!date) return "No due date";
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(date));
+};
+
+const taskTypeLabels = {
+  service_due: "Service due",
+  seasonal_check: "Seasonal check",
+  document_expiry: "Document review",
+  missing_baseline: "Profile detail",
+  known_issue_follow_up: "Known issue",
+  evidence_improvement: "Evidence",
+};
+
+const priorityStyles = {
+  high: "border-[var(--color-action-primary)] text-[var(--color-action-primary)]",
+  medium: "border-[var(--color-accent)] text-[var(--color-accent)]",
+  low: "border-[var(--color-border-default)] text-[var(--color-text-muted)]",
+};
+
 function DetailRow({ label, value }) {
   return (
     <div className="flex items-start justify-between gap-4 border-b border-[var(--color-border-default)]/40 py-3 last:border-b-0">
@@ -112,6 +145,155 @@ function StatusPanel({ title, body, icon: Icon }) {
   );
 }
 
+function PreventionTasksPanel({
+  tasks,
+  loading,
+  generating,
+  error,
+  updatingTaskId,
+  onRefresh,
+  onUpdateStatus,
+}) {
+  return (
+    <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5 sm:p-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-accent)]">
+            <Wrench size={20} aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-sm text-[var(--color-secondary)]">
+              Recommended actions
+            </p>
+            <h3 className="mt-1 text-xl font-normal text-[var(--color-text-default)]">
+              Prevention tasks
+            </h3>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)]">
+              Useful actions generated from this property profile, linked
+              documents and recorded facts.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={loading || generating}
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-default)] transition hover:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <RefreshCw
+            className={generating ? "animate-spin" : ""}
+            size={16}
+            aria-hidden="true"
+          />
+          Refresh
+        </button>
+      </div>
+
+      {error && (
+        <div className="mt-4 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_10%,var(--color-surface-default))] p-3 text-sm text-[var(--color-text-default)]">
+          <AlertCircle
+            className="mt-0.5 flex-none text-[var(--color-action-primary)]"
+            size={16}
+          />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="mt-5 flex min-h-32 items-center justify-center rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-default)] text-sm text-[var(--color-text-muted)]">
+          <Loader2 className="mr-2 animate-spin" size={18} />
+          Loading actions
+        </div>
+      ) : tasks.length === 0 ? (
+        <div className="mt-5 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-default)] p-5 text-sm leading-6 text-[var(--color-text-muted)]">
+          No open actions right now. Refresh after adding documents or property
+          facts.
+        </div>
+      ) : (
+        <div className="mt-5 grid gap-3">
+          {tasks.map((task) => {
+            const isUpdating = updatingTaskId === task.id;
+            return (
+              <article
+                key={task.id}
+                className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4"
+              >
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-[var(--radius-full)] border border-[var(--color-border-default)] px-2.5 py-1 text-xs text-[var(--color-text-muted)]">
+                        {taskTypeLabels[task.taskType] ||
+                          formatLabel(task.taskType)}
+                      </span>
+                      <span
+                        className={`rounded-[var(--radius-full)] border px-2.5 py-1 text-xs ${
+                          priorityStyles[task.priority] || priorityStyles.medium
+                        }`}
+                      >
+                        {formatLabel(task.priority)}
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-[var(--radius-full)] border border-[var(--color-border-default)] px-2.5 py-1 text-xs text-[var(--color-text-muted)]">
+                        <CalendarClock size={13} aria-hidden="true" />
+                        {formatTaskDate(task.dueDate)}
+                      </span>
+                    </div>
+                    <h4 className="mt-3 text-lg font-normal text-[var(--color-text-default)]">
+                      {task.title}
+                    </h4>
+                    {task.description && (
+                      <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+                        {task.description}
+                      </p>
+                    )}
+                    {task.recommendedAction && (
+                      <p className="mt-2 text-sm leading-6 text-[var(--color-text-default)]">
+                        {task.recommendedAction}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 md:justify-end">
+                    <button
+                      type="button"
+                      onClick={() => onUpdateStatus(task.id, "completed")}
+                      disabled={isUpdating}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-success)] px-3 py-2 text-sm text-[var(--color-text-on-dark)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isUpdating ? (
+                        <Loader2 className="animate-spin" size={15} />
+                      ) : (
+                        <Check size={15} aria-hidden="true" />
+                      )}
+                      Complete
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onUpdateStatus(task.id, "dismissed")}
+                      disabled={isUpdating}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-default)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <X size={15} aria-hidden="true" />
+                      Dismiss
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onUpdateStatus(task.id, "not_relevant")}
+                      disabled={isUpdating}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-default)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <CircleOff size={15} aria-hidden="true" />
+                      Not relevant
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function PropertyProfile() {
   const location = useLocation();
   const [records, setRecords] = useState([]);
@@ -121,6 +303,11 @@ export default function PropertyProfile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
+  const [tasksGenerating, setTasksGenerating] = useState(false);
+  const [tasksError, setTasksError] = useState("");
+  const [updatingTaskId, setUpdatingTaskId] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -156,6 +343,49 @@ export default function PropertyProfile() {
       records.find((record) => record.property?.id === selectedId) || records[0]
     );
   }, [records, selectedId]);
+
+  const openTasks = useMemo(
+    () => tasks.filter((task) => task.status === "open"),
+    [tasks]
+  );
+
+  const loadTasks = useCallback(async (propertyId, options = {}) => {
+    if (!propertyId) {
+      setTasks([]);
+      return;
+    }
+
+    try {
+      setTasksError("");
+      setTasksLoading(!options.refresh);
+      setTasksGenerating(Boolean(options.refresh));
+
+      if (options.refresh) {
+        const generated = await generatePropertyTasks(propertyId);
+        setTasks(Array.isArray(generated?.tasks) ? generated.tasks : []);
+        return;
+      }
+
+      const data = await getPropertyTasks(propertyId, { status: "open" });
+      setTasks(Array.isArray(data) ? data : []);
+    } catch (taskError) {
+      setTasksError(
+        taskError.response?.data?.message || "Recommended actions could not be loaded."
+      );
+    } finally {
+      setTasksLoading(false);
+      setTasksGenerating(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!selectedRecord?.property?.id) {
+      setTasks([]);
+      return;
+    }
+
+    loadTasks(selectedRecord.property.id, { refresh: true });
+  }, [loadTasks, selectedRecord?.property?.id]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -241,6 +471,33 @@ export default function PropertyProfile() {
       );
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleTaskStatusUpdate = async (taskId, status) => {
+    if (!selectedRecord?.property?.id) return;
+
+    try {
+      setTasksError("");
+      setUpdatingTaskId(taskId);
+      const updated = await updatePropertyTaskStatus(
+        selectedRecord.property.id,
+        taskId,
+        { status }
+      );
+
+      setTasks((current) =>
+        updated.status === "open"
+          ? current.map((task) => (task.id === updated.id ? updated : task))
+          : current.filter((task) => task.id !== updated.id)
+      );
+      setSuccess("Action updated.");
+    } catch (taskError) {
+      setTasksError(
+        taskError.response?.data?.message || "Action could not be updated."
+      );
+    } finally {
+      setUpdatingTaskId(null);
     }
   };
 
@@ -519,10 +776,22 @@ export default function PropertyProfile() {
                   <SummaryMetric
                     icon={ClipboardList}
                     label="Open actions"
-                    value={0}
+                    value={openTasks.length}
                   />
                 </div>
               </div>
+
+              <PreventionTasksPanel
+                tasks={openTasks}
+                loading={tasksLoading}
+                generating={tasksGenerating}
+                error={tasksError}
+                updatingTaskId={updatingTaskId}
+                onRefresh={() =>
+                  loadTasks(selectedRecord.property.id, { refresh: true })
+                }
+                onUpdateStatus={handleTaskStatusUpdate}
+              />
 
               <div className="grid gap-4 lg:grid-cols-3">
                 <StatusPanel
@@ -546,7 +815,13 @@ export default function PropertyProfile() {
                 <StatusPanel
                   icon={ClipboardList}
                   title="Next actions"
-                  body="No open actions yet."
+                  body={
+                    openTasks.length
+                      ? `${openTasks.length} open action${
+                          openTasks.length === 1 ? "" : "s"
+                        } to review.`
+                      : "No open actions right now."
+                  }
                 />
               </div>
             </div>
