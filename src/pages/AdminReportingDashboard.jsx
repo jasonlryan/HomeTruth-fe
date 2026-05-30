@@ -10,6 +10,10 @@ import {
   TrendingDown,
   RefreshCw,
   Mail,
+  ShieldCheck,
+  CheckCircle2,
+  AlertTriangle,
+  ClipboardCheck,
 } from "lucide-react";
 import {
   BarChart,
@@ -30,6 +34,7 @@ import {
   getAdminDashboardKPIs,
   getAdminDashboardChart,
   getAdminDashboardRecent,
+  getAdminPilotCohortReport,
 } from "../api/api";
 
 const PERIODS = [
@@ -124,6 +129,174 @@ function ChartCard({ title, children, loading }) {
   );
 }
 
+function ReadinessBadge({ status }) {
+  const classes = {
+    ready: "bg-green-50 text-green-700 border-green-200",
+    needs_data: "bg-amber-50 text-amber-700 border-amber-200",
+    blocked: "bg-red-50 text-red-700 border-red-200",
+  };
+
+  return (
+    <span
+      className={`rounded-full border px-2 py-0.5 text-[11px] ${
+        classes[status] || classes.needs_data
+      }`}
+    >
+      {status ? status.replace("_", " ") : "review"}
+    </span>
+  );
+}
+
+function PilotReadinessPanel({ report, loading }) {
+  if (loading) {
+    return <LoadingSkeleton className="mb-6 h-72 w-full" />;
+  }
+
+  const pilot = report?.reports?.[0];
+  if (!pilot) {
+    return (
+      <section className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Pilot readiness
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          No partner cohort reporting data is available yet.
+        </p>
+      </section>
+    );
+  }
+
+  const metrics = pilot.metrics || {};
+  const readiness = pilot.readiness || {};
+  const recommendation = readiness.recommendation || "review";
+  const isBlocked = recommendation === "no_go";
+
+  return (
+    <section className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+        <div>
+          <p className="text-sm font-medium text-ht-purple">
+            500-user pilot readiness
+          </p>
+          <h2 className="mt-1 text-xl font-semibold text-gray-900">
+            {pilot.partner?.name || "Partner"} · {pilot.cohort?.name || "Cohort"}
+          </h2>
+          <p className="mt-2 max-w-3xl text-sm text-gray-500">
+            {report.privacyBoundary}
+          </p>
+        </div>
+        <span
+          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
+            isBlocked
+              ? "border-red-200 bg-red-50 text-red-700"
+              : "border-green-200 bg-green-50 text-green-700"
+          }`}
+        >
+          {isBlocked ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+          {recommendation.replaceAll("_", " ")}
+        </span>
+      </div>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+        <KPICard
+          icon={Users}
+          label="Target Size"
+          value={formatNumber(metrics.targetSize)}
+          color="purple"
+        />
+        <KPICard
+          icon={UserCheck}
+          label="Invited Members"
+          value={formatNumber(metrics.invitedMembers)}
+          color="blue"
+        />
+        <KPICard
+          icon={ShieldCheck}
+          label="Consent Rate"
+          value={`${metrics.consentRate || 0}%`}
+          color="green"
+        />
+        <KPICard
+          icon={ClipboardCheck}
+          label="Properties Linked"
+          value={formatNumber(metrics.propertiesLinked)}
+          color="teal"
+        />
+        <KPICard
+          icon={ClipboardList}
+          label="Tasks Generated"
+          value={formatNumber(metrics.tasksGenerated)}
+          color="amber"
+        />
+        <KPICard
+          icon={CheckCircle2}
+          label="Tasks Completed"
+          value={formatNumber(metrics.taskCompleted)}
+          color="green"
+        />
+      </div>
+
+      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="rounded-lg border border-gray-200 p-4">
+          <h3 className="text-sm font-semibold text-gray-700">
+            Readiness checklist
+          </h3>
+          <div className="mt-3 space-y-3">
+            {(readiness.items || []).map((item) => (
+              <div
+                key={item.key}
+                className="flex flex-col gap-2 rounded-lg bg-gray-50 p-3 sm:flex-row sm:items-start sm:justify-between"
+              >
+                <div>
+                  <p className="text-sm font-medium text-gray-800">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500">
+                    {item.note}
+                  </p>
+                </div>
+                <ReadinessBadge status={item.status} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 p-4">
+          <h3 className="text-sm font-semibold text-gray-700">
+            Funnel drop-off
+          </h3>
+          <dl className="mt-3 space-y-3 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-gray-500">Invite to signup</dt>
+              <dd className="font-medium text-gray-900">
+                {formatNumber(pilot.dropOff?.inviteToSignup || 0)}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-gray-500">Signup to consent</dt>
+              <dd className="font-medium text-gray-900">
+                {formatNumber(pilot.dropOff?.signupToConsent || 0)}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-gray-500">Consent to property</dt>
+              <dd className="font-medium text-gray-900">
+                {formatNumber(pilot.dropOff?.consentToProperty || 0)}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-gray-500">Property to document</dt>
+              <dd className="font-medium text-gray-900">
+                {formatNumber(pilot.dropOff?.propertyToDocument || 0)}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function AdminReportingDashboard() {
   const [period, setPeriod] = useState("30d");
   const [kpis, setKpis] = useState(null);
@@ -134,9 +307,11 @@ export default function AdminReportingDashboard() {
   const [recentSignups, setRecentSignups] = useState([]);
   const [recentUploads, setRecentUploads] = useState([]);
   const [recentAI, setRecentAI] = useState([]);
+  const [pilotReport, setPilotReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [chartsLoading, setChartsLoading] = useState(true);
   const [recentLoading, setRecentLoading] = useState(true);
+  const [pilotLoading, setPilotLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetchKPIs = useCallback(async () => {
@@ -190,10 +365,23 @@ export default function AdminReportingDashboard() {
     }
   }, []);
 
+  const fetchPilotReport = useCallback(async () => {
+    try {
+      setPilotLoading(true);
+      const data = await getAdminPilotCohortReport({ period });
+      setPilotReport(data);
+    } catch (err) {
+      console.error("Pilot report fetch error:", err);
+    } finally {
+      setPilotLoading(false);
+    }
+  }, [period]);
+
   useEffect(() => {
     fetchKPIs();
     fetchCharts();
-  }, [fetchKPIs, fetchCharts]);
+    fetchPilotReport();
+  }, [fetchKPIs, fetchCharts, fetchPilotReport]);
 
   useEffect(() => {
     fetchRecent();
@@ -204,6 +392,7 @@ export default function AdminReportingDashboard() {
     fetchKPIs();
     fetchCharts();
     fetchRecent();
+    fetchPilotReport();
   };
 
   return (
@@ -314,6 +503,8 @@ export default function AdminReportingDashboard() {
           />
         </div>
       ) : null}
+
+      <PilotReadinessPanel report={pilotReport} loading={pilotLoading} />
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">

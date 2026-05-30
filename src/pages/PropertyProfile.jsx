@@ -19,7 +19,6 @@ import {
 import {
   attachPartnerOnboardingProperty,
   createPropertyRecord,
-  emitPartnerOnboardingEvent,
   generatePropertyTasks,
   getPropertyRecords,
   getPropertyTasks,
@@ -445,14 +444,6 @@ export default function PropertyProfile() {
               memberId: linked.member?.id || null,
               propertyId: created.property.id,
             })
-          );
-          await emitPartnerOnboardingEvent(
-            "property_completed",
-            partnerInvite,
-            {
-              propertyId: created.property.id,
-              path: "new_property",
-            }
           );
           setSuccess("Property profile set up and linked to the pilot.");
         } catch (linkError) {

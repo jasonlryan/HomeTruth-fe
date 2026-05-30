@@ -201,11 +201,6 @@ export default function PartnerOnboarding() {
       setStoredInvite(inviteCode, saved);
       localStorage.setItem(`partner_consent_${inviteCode}`, "true");
       setConsentSaved(true);
-      await emitPartnerOnboardingEvent("consent_granted", inviteCode, {
-        requiredScopes: payload
-          .filter((consent) => consent.granted)
-          .map((consent) => consent.scope),
-      });
     } catch (saveError) {
       setError(
         saveError.response?.data?.message || "Consent could not be recorded."
@@ -232,10 +227,6 @@ export default function PartnerOnboarding() {
       );
       setInviteData(attached);
       setStoredInvite(inviteCode, attached);
-      await emitPartnerOnboardingEvent("property_completed", inviteCode, {
-        propertyId: record.property.id,
-        path: "existing_property",
-      });
       navigate("/property-profile");
     } catch (attachError) {
       setError(

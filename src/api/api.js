@@ -676,6 +676,13 @@ export const getAdminDashboardRecent = async (tableName, limit = 10) => {
   return res.data?.data;
 };
 
+export const getAdminPilotCohortReport = async (params = {}) => {
+  const res = await api.get("/api/admin/pilot/cohort-report", {
+    params,
+  });
+  return res.data?.data;
+};
+
 // --- Admin Data Access APIs ---
 export const getAdminUsers = async (params = {}) => {
   const queryParams = new URLSearchParams();

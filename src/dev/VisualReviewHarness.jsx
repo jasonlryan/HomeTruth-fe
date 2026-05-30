@@ -568,6 +568,112 @@ function installVisualReviewApiMock() {
       });
     }
 
+    if (method === "get" && path === "/api/admin/pilot/cohort-report") {
+      return toAxiosResponse(config, {
+        success: true,
+        data: {
+          period: url.searchParams.get("period") || "30d",
+          generatedAt: "2026-05-30T12:00:00Z",
+          privacyBoundary:
+            "Cohort aggregate metrics only. No user, member, property, document or raw fact rows are returned.",
+          reports: [
+            {
+              cohort: {
+                id: 1,
+                name: "Zurich Home Pilot",
+                cohortKey: "zurich-2026",
+                status: "active",
+                targetSize: 500,
+                startDate: "2026-06-01",
+                endDate: "2026-08-31",
+              },
+              partner: {
+                id: 1,
+                name: "Zurich UK",
+                partnerType: "insurer",
+                reportingMode: "aggregate_only",
+              },
+              metrics: {
+                targetSize: 500,
+                invitedMembers: 126,
+                onboardedMembers: 84,
+                activeMembers: 71,
+                propertiesLinked: 68,
+                aggregateConsentGranted: 82,
+                totalEvents: 402,
+                inviteViewed: 118,
+                signupCompleted: 84,
+                consentRecorded: 82,
+                propertySetupCompleted: 68,
+                documentLinked: 41,
+                factCreated: 93,
+                tasksGenerated: 156,
+                taskCompleted: 44,
+                taskDismissed: 11,
+                taskNotRelevant: 7,
+                feedbackSubmitted: 12,
+                averageFeedbackRating: 4.2,
+                activationRate: 54,
+                consentRate: 65,
+                taskCompletionRate: 71,
+              },
+              dropOff: {
+                inviteToSignup: 34,
+                signupToConsent: 2,
+                consentToProperty: 14,
+                propertyToDocument: 27,
+              },
+              readiness: {
+                recommendation: "no_go",
+                blockers: [
+                  "Data deletion and withdrawal path",
+                  "Incident and support escalation",
+                ],
+                items: [
+                  {
+                    key: "event_pipeline",
+                    label: "Pilot event pipeline",
+                    status: "ready",
+                    note: "Durable pilot events are being recorded.",
+                  },
+                  {
+                    key: "consent_boundary",
+                    label: "Consent-bound aggregate reporting",
+                    status: "ready",
+                    note: "Report returns cohort aggregates only; no personal rows are exposed.",
+                  },
+                  {
+                    key: "onboarding_monitoring",
+                    label: "Failed onboarding monitoring",
+                    status: "ready",
+                    note: "Invite activity is visible in aggregate.",
+                  },
+                  {
+                    key: "data_deletion",
+                    label: "Data deletion and withdrawal path",
+                    status: "blocked",
+                    note: "Operational owner and withdrawal runbook still need confirmation.",
+                  },
+                  {
+                    key: "incident_response",
+                    label: "Incident and support escalation",
+                    status: "blocked",
+                    note: "Support owner and escalation contact must be assigned before launch.",
+                  },
+                  {
+                    key: "notification_scope",
+                    label: "Notification scope",
+                    status: "ready",
+                    note: "External push notifications are excluded from the V1 pilot.",
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      });
+    }
+
     if (method === "get" && path.startsWith("/api/admin/dashboard/charts/")) {
       const chart = path.split("/").pop();
       if (chart === "doc-categories") {
