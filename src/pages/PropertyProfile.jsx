@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   AlertCircle,
   CalendarClock,
@@ -11,6 +11,7 @@ import {
   Home,
   Loader2,
   MapPin,
+  MessageCircle,
   RefreshCw,
   ShieldCheck,
   Wrench,
@@ -295,6 +296,7 @@ function PreventionTasksPanel({
 
 export default function PropertyProfile() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [form, setForm] = useState(initialForm);
@@ -342,6 +344,12 @@ export default function PropertyProfile() {
       records.find((record) => record.property?.id === selectedId) || records[0]
     );
   }, [records, selectedId]);
+
+  const selectedPropertyLabel =
+    selectedRecord?.currentAddress?.addressLine1 ||
+    (selectedRecord?.property?.id
+      ? `Property ${selectedRecord.property.id}`
+      : "Selected property");
 
   const openTasks = useMemo(
     () => tasks.filter((task) => task.status === "open"),
@@ -490,6 +498,21 @@ export default function PropertyProfile() {
     } finally {
       setUpdatingTaskId(null);
     }
+  };
+
+  const handleAskAboutProperty = () => {
+    if (!selectedRecord?.property?.id) return;
+
+    const params = new URLSearchParams({
+      propertyId: String(selectedRecord.property.id),
+    });
+
+    navigate(`/ask-ai?${params.toString()}`, {
+      state: {
+        propertyId: selectedRecord.property.id,
+        propertyLabel: selectedPropertyLabel,
+      },
+    });
   };
 
   return (
@@ -748,9 +771,19 @@ export default function PropertyProfile() {
                         .join(", ") || "Address details incomplete"}
                     </p>
                   </div>
-                  <span className="w-fit rounded-[var(--radius-full)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-muted)]">
-                    {formatLabel(selectedRecord.relationship?.relationshipType)}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="w-fit rounded-[var(--radius-full)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-muted)]">
+                      {formatLabel(selectedRecord.relationship?.relationshipType)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleAskAboutProperty}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-action-primary)] px-3 py-2 text-sm text-[var(--color-text-on-dark)] transition hover:bg-[var(--color-action-primary-hover)]"
+                    >
+                      <MessageCircle size={16} aria-hidden="true" />
+                      Ask about this property
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mt-6 grid gap-4 md:grid-cols-3">
