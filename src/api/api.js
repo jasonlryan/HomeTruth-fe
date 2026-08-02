@@ -557,6 +557,11 @@ export const emitPartnerOnboardingEvent = async (eventName, inviteCode, metadata
   return res.data?.data;
 };
 
+export const recordPilotDailyActivity = async () => {
+  const res = await api.post("/api/partner-onboarding/activity");
+  return res.data?.data;
+};
+
 // --- Document APIs ---
 export const getUserDocuments = async (params = {}) => {
   const queryParams = new URLSearchParams();
