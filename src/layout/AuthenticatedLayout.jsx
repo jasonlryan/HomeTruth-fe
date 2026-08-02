@@ -4,6 +4,10 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
+import { recordPilotDailyActivity } from "../api/api";
+
+const pilotActivityStorageKey = (userId) =>
+  `hometruth:pilot-activity:${userId}:${new Date().toISOString().slice(0, 10)}`;
 
 export default function AuthenticatedLayout() {
   const location = useLocation();
@@ -66,6 +70,26 @@ export default function AuthenticatedLayout() {
       clearInterval(id);
     };
   }, [location.pathname, user]);
+
+  useEffect(() => {
+    if (!user?.id) return undefined;
+
+    const storageKey = pilotActivityStorageKey(user.id);
+    if (sessionStorage.getItem(storageKey)) return undefined;
+
+    let cancelled = false;
+    recordPilotDailyActivity()
+      .then(() => {
+        if (!cancelled) sessionStorage.setItem(storageKey, "recorded");
+      })
+      .catch(() => {
+        // Analytics must not block the signed-in product experience.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   if (onboardingMode) {
     // Full white canvas; no chrome
