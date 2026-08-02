@@ -606,7 +606,11 @@ export default function AskAI() {
         });
     }
 
-    window.history.replaceState({}, document.title, location.pathname);
+    window.history.replaceState(
+      {},
+      document.title,
+      `${location.pathname}${location.search || ""}`
+    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -1203,13 +1207,13 @@ export default function AskAI() {
       )}
 
 
-      <main className="flex-1 flex flex-col px-8 py-4 overflow-hidden">
-        <div className="flex items-center justify-between mb-6 shrink-0">
-          <div className="flex items-center gap-4 flex-1">
+      <main className="flex-1 flex flex-col px-4 py-4 overflow-hidden sm:px-8">
+        <div className="flex flex-col gap-3 mb-6 shrink-0 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 flex-1 sm:flex-row sm:items-center sm:gap-4">
             {!isChatHistoryVisible && (
               <button
                 onClick={() => setIsChatHistoryVisible(true)}
-                className=" rounded-lg p-2 transition-all flex items-center justify-center"
+                className="w-fit rounded-lg p-2 transition-all flex items-center justify-center"
                 title="Show sidebar"
               >
                 <img
@@ -1220,7 +1224,7 @@ export default function AskAI() {
               </button>
             )}
             <PageTitle>Ask HomeTruth</PageTitle>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <div className="bg-gray-100 text-gray-600 text-sm rounded-lg px-3 py-1">
                 {sessions.length} total sessions
               </div>
@@ -1234,7 +1238,7 @@ export default function AskAI() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:justify-end">
 
             <button
               onClick={handleNewSession}
@@ -1438,11 +1442,6 @@ export default function AskAI() {
                   )}
               </div>
 
-              <PropertyContextNotice
-                context={propertyContext}
-                onClear={clearPropertyContext}
-              />
-
               <div className="bg-white rounded-3xl p-4 mb-4 overflow-y-auto max-h-[580px]">
                 {qaPairs.map((pair) => (
                   <div key={pair.id} className="mb-6 relative">
@@ -1486,6 +1485,10 @@ export default function AskAI() {
 
               <div className="shrink-0">
                 <div className="rounded-3xl border border-gray-200 bg-white p-3 flex flex-col gap-3 shadow-sm">
+                  <PropertyContextNotice
+                    context={propertyContext}
+                    onClear={clearPropertyContext}
+                  />
                   <div className="relative w-full">
                     <input
                       ref={inputRef}
