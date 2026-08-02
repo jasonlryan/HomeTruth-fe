@@ -271,12 +271,19 @@ export const submitQuizAnswer = async (question, answer) => {
 };
 
 // --- AI-Chat APIs ---
-export const askAIChat = async (message, conversationId = null, searchWeb = false, isSaved = false) => {
+export const askAIChat = async (
+  message,
+  conversationId = null,
+  searchWeb = false,
+  isSaved = false,
+  propertyId = null
+) => {
   const res = await api.post("/api/ai_chat/chat", {
     userMessage: message,
     is_saved: isSaved,
     search_web: searchWeb,
     ...(conversationId ? { conversation_id: conversationId } : {}),
+    ...(propertyId ? { propertyId } : {}),
   });
   return res.data?.data;
 };

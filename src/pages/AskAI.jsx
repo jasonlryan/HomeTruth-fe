@@ -22,6 +22,43 @@ import {
   isLimitErrorMessage,
 } from "../utils/saveGating";
 
+const getPropertyContextFromLocation = (location) => {
+  const params = new URLSearchParams(location.search || "");
+  const rawPropertyId = location.state?.propertyId ?? params.get("propertyId");
+  const propertyId = Number.parseInt(rawPropertyId, 10);
+
+  if (!Number.isInteger(propertyId) || propertyId <= 0) return null;
+
+  return {
+    id: propertyId,
+    label:
+      location.state?.propertyLabel ||
+      params.get("propertyLabel") ||
+      `Property ${propertyId}`,
+  };
+};
+
+function PropertyContextNotice({ context, onClear }) {
+  if (!context) return null;
+
+  return (
+    <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-sky-100 bg-sky-50 px-3 py-2 text-sm text-gray-700">
+      <div className="min-w-0">
+        <span className="font-medium text-ht-dark">Using property context</span>
+        <span className="mx-2 text-gray-300">|</span>
+        <span className="break-words text-gray-600">{context.label}</span>
+      </div>
+      <button
+        type="button"
+        onClick={onClear}
+        className="rounded-md px-2 py-1 text-xs font-medium text-ht-cyan hover:bg-white"
+      >
+        Clear
+      </button>
+    </div>
+  );
+}
+
 // Reusable assistant bubble that renders Markdown safely.
 // - Links open in new tab (target/rel set on <a>)
 // - No raw HTML allowed (avoids XSS)
@@ -104,6 +141,9 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
 
 export default function AskAI() {
   const location = useLocation();
+  const [propertyContext, setPropertyContext] = useState(() =>
+    getPropertyContextFromLocation(location)
+  );
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [saveError, setSaveError] = useState(null);
@@ -143,6 +183,11 @@ export default function AskAI() {
     const answer = normalizeForSavedKey(answerValue);
     if (!answer) return null;
     return `content:${question}||${answer}`;
+  };
+
+  const clearPropertyContext = () => {
+    setPropertyContext(null);
+    window.history.replaceState({}, document.title, location.pathname);
   };
 
   const getSavedNoteKeys = (note) => {
@@ -418,6 +463,15 @@ export default function AskAI() {
   ];
 
   useEffect(() => {
+    const nextPropertyContext = getPropertyContextFromLocation(location);
+    if (nextPropertyContext) {
+      setPropertyContext(nextPropertyContext);
+    } else if (!location.search && !location.state?.propertyId) {
+      setPropertyContext(null);
+    }
+  }, [location]);
+
+  useEffect(() => {
     // Refresh saved notes count on component mount
     refreshSavedNotesCount();
     // Hydrate saved icon state from persisted notes
@@ -552,7 +606,11 @@ export default function AskAI() {
         });
     }
 
-    window.history.replaceState({}, document.title, location.pathname);
+    window.history.replaceState(
+      {},
+      document.title,
+      `${location.pathname}${location.search || ""}`
+    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -676,7 +734,13 @@ export default function AskAI() {
     setInput("");
 
     try {
-      const result = await askAIChat(input, currentSessionId, searchWeb, false);
+      const result = await askAIChat(
+        input,
+        currentSessionId,
+        searchWeb,
+        false,
+        propertyContext?.id || null
+      );
 
       const latestHistory = result.chatHistory?.[result.chatHistory.length - 1];
       // Use the chat_history_id from backend - this is the ID we need for saving
@@ -907,6 +971,7 @@ export default function AskAI() {
         setMessages([]);
         setInput("");
         setCurrentSessionId(null);
+        clearPropertyContext();
         prevMsgCountRef.current = 0;
       }
 
@@ -935,6 +1000,7 @@ export default function AskAI() {
     setSaveError(null);
     setSaveSuccess(null);
     setCurrentSessionId(null);
+    clearPropertyContext();
     setIsAnswering(false);
     setStreamingText("");
     setStreamingMessageId(null);
@@ -954,6 +1020,7 @@ export default function AskAI() {
 
   const handleSessionSelect = (sessionId) => {
     setCurrentSessionId(sessionId);
+    clearPropertyContext();
     loadConversationHistory(sessionId);
   };
 
@@ -1140,13 +1207,13 @@ export default function AskAI() {
       )}
 
 
-      <main className="flex-1 flex flex-col px-8 py-4 overflow-hidden">
-        <div className="flex items-center justify-between mb-6 shrink-0">
-          <div className="flex items-center gap-4 flex-1">
+      <main className="flex-1 flex flex-col px-4 py-4 overflow-hidden sm:px-8">
+        <div className="flex flex-col gap-3 mb-6 shrink-0 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 flex-1 sm:flex-row sm:items-center sm:gap-4">
             {!isChatHistoryVisible && (
               <button
                 onClick={() => setIsChatHistoryVisible(true)}
-                className=" rounded-lg p-2 transition-all flex items-center justify-center"
+                className="w-fit rounded-lg p-2 transition-all flex items-center justify-center"
                 title="Show sidebar"
               >
                 <img
@@ -1157,7 +1224,7 @@ export default function AskAI() {
               </button>
             )}
             <PageTitle>Ask HomeTruth</PageTitle>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <div className="bg-gray-100 text-gray-600 text-sm rounded-lg px-3 py-1">
                 {sessions.length} total sessions
               </div>
@@ -1171,7 +1238,7 @@ export default function AskAI() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:justify-end">
 
             <button
               onClick={handleNewSession}
@@ -1214,6 +1281,10 @@ export default function AskAI() {
                 </div>
 
                 <div className="rounded-2xl border border-gray-200 bg-white p-3 flex flex-col gap-3 shadow-sm">
+                  <PropertyContextNotice
+                    context={propertyContext}
+                    onClear={clearPropertyContext}
+                  />
                   <div className="relative w-full">
                     <input
                       ref={inputRef}
@@ -1414,6 +1485,10 @@ export default function AskAI() {
 
               <div className="shrink-0">
                 <div className="rounded-3xl border border-gray-200 bg-white p-3 flex flex-col gap-3 shadow-sm">
+                  <PropertyContextNotice
+                    context={propertyContext}
+                    onClear={clearPropertyContext}
+                  />
                   <div className="relative w-full">
                     <input
                       ref={inputRef}
