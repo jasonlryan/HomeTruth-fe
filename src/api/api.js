@@ -695,6 +695,37 @@ export const getAdminPilotCohortReport = async (params = {}) => {
   return res.data?.data;
 };
 
+export const getAdminPartners = async () => {
+  const res = await api.get("/api/admin/partner-programmes/partners");
+  return res.data?.data || [];
+};
+
+export const getAdminPartnerProgrammes = async (params = {}) => {
+  const res = await api.get("/api/admin/partner-programmes/programmes", { params });
+  return res.data?.data || [];
+};
+
+export const createAdminPartnerProgramme = async (payload) => {
+  const res = await api.post("/api/admin/partner-programmes/programmes", payload);
+  return res.data?.data;
+};
+
+export const updateAdminPartnerProgramme = async (programmeId, payload) => {
+  const res = await api.patch(
+    `/api/admin/partner-programmes/programmes/${programmeId}`,
+    payload
+  );
+  return res.data?.data;
+};
+
+export const transitionAdminPartnerProgramme = async (programmeId, status) => {
+  const res = await api.post(
+    `/api/admin/partner-programmes/programmes/${programmeId}/transitions`,
+    { status }
+  );
+  return res.data?.data;
+};
+
 // --- Admin Data Access APIs ---
 export const getAdminUsers = async (params = {}) => {
   const queryParams = new URLSearchParams();
