@@ -1062,6 +1062,14 @@ export default function KnowledgeBaseAdmin() {
       onClick: () => navigate("/admin/articles"),
       comingSoon: false,
     },
+    {
+      id: 8,
+      title: "Partner Programmes",
+      description: "Configure shared B2B programmes, campaigns, cohorts, and lifecycle states.",
+      icon: "corporate_fare",
+      onClick: () => navigate("/admin/partner-programmes"),
+      comingSoon: false,
+    },
   ];
 
   return (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { cloneElement, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Activity,
@@ -44,13 +44,18 @@ const typeLabel = (type) =>
   PARTNER_TYPES.find((option) => option.value === type)?.label || type;
 
 function Field({ label, hint, error, children }) {
+  const errorId = useId();
+  const control = cloneElement(children, {
+    "aria-invalid": error ? "true" : undefined,
+    "aria-describedby": error ? errorId : children.props["aria-describedby"],
+  });
   return (
     <label className="block text-sm text-[var(--color-text-default)]">
       <span className="font-bold">{label}</span>
       {hint && <span className="ml-2 text-xs text-[var(--color-text-muted)]">{hint}</span>}
-      {children}
+      {control}
       {error && (
-        <span className="mt-2 flex items-center gap-2 text-xs text-[var(--color-action-primary)]">
+        <span id={errorId} className="mt-2 flex items-center gap-2 text-xs text-[var(--color-action-primary)]">
           <AlertTriangle size={14} aria-hidden="true" />
           {error}
         </span>
@@ -195,9 +200,13 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
 
   const submit = async (event) => {
     event.preventDefault();
+    const formElement = event.currentTarget;
     const nextErrors = validateProgrammeForm(form);
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
+      requestAnimationFrame(() => {
+        formElement.querySelector('[aria-invalid="true"]')?.focus();
+      });
       return;
     }
     try {
@@ -215,7 +224,12 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
   };
 
   return (
-    <form className={`${surface} overflow-hidden`} onSubmit={submit} noValidate>
+    <form
+      className={`${surface} overflow-hidden`}
+      onSubmit={submit}
+      noValidate
+      aria-busy={submitting}
+    >
       <div className="h-1 bg-ht-gradient-warm" />
       <div className="p-5 sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -429,9 +443,11 @@ export default function PartnerProgrammeAdmin() {
     <main className="min-h-screen bg-[color-mix(in_srgb,var(--color-accent)_4%,var(--color-surface-default))] px-4 py-6 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <nav aria-label="Admin" className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/knowledge-base">Knowledge base</Link>
           <Link className="text-[var(--color-accent)] hover:underline" to="/admin/dashboard">Dashboard</Link>
           <span aria-current="page" className="font-bold text-[var(--color-text-default)]">Partner programmes</span>
           <Link className="text-[var(--color-accent)] hover:underline" to="/admin/data-access">Data access</Link>
+          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/articles">Articles</Link>
         </nav>
 
         <header className={`${surface} relative overflow-hidden p-6 sm:p-8`}>
