@@ -176,11 +176,7 @@ function App() {
           />
           <Route
             path="/faq"
-            element={
-              <PublicRoute>
-                <FAQ />
-              </PublicRoute>
-            }
+            element={<FAQ />}
           />
           <Route
             path="/register"

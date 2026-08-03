@@ -19,6 +19,8 @@ test("builds the shared programme contract for a mortgage provider", () => {
     targetSize: "250",
     participantLimit: "300",
     approvedContentRefs: "copy/homeowner-v1, copy/privacy-v2",
+    acquisitionHeadline: "Understand your new home from day one",
+    consentVersion: "completion-v1",
   };
 
   expect(validateProgrammeForm(form)).toEqual({});
@@ -27,6 +29,13 @@ test("builds the shared programme contract for a mortgage provider", () => {
     programmeKey: "completion-support",
     entitlement: { pack: "shared_core", participantLimit: 300 },
     approvedContentRefs: ["copy/homeowner-v1", "copy/privacy-v2"],
+    campaign: {
+      acquisitionConfig: {
+        headline: "Understand your new home from day one",
+        support: { url: "/faq" },
+      },
+      consentConfig: { version: "completion-v1" },
+    },
     cohort: { targetSize: 250 },
   });
 });
@@ -43,6 +52,23 @@ test("rejects incomplete configuration and inverted dates", () => {
   expect(errors.campaignName).toBeTruthy();
   expect(errors.cohortName).toBeTruthy();
   expect(errors.programmeEndDate).toMatch(/follow/);
+});
+
+test("requires accessible alternative text for configured partner branding", () => {
+  const errors = validateProgrammeForm({
+    ...INITIAL_PROGRAMME_FORM,
+    partnerId: "2",
+    programmeName: "Completion support",
+    programmeKey: "completion-support",
+    campaignName: "Autumn completions",
+    campaignKey: "autumn",
+    cohortName: "September homeowners",
+    cohortKey: "september",
+    partnerLogoUrl: "https://example.com/approved-logo.svg",
+    partnerLogoAlt: "",
+  });
+
+  expect(errors.partnerLogoAlt).toMatch(/Describe/);
 });
 
 test("exposes only valid lifecycle actions", () => {

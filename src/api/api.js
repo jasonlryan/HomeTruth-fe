@@ -524,6 +524,13 @@ export const validatePartnerInvite = async (inviteCode) => {
   return res.data?.data;
 };
 
+export const recordPartnerInviteView = async (inviteCode) => {
+  const res = await api.post(
+    `/api/partner-onboarding/invites/${encodeURIComponent(inviteCode)}/view`
+  );
+  return res.data?.data;
+};
+
 export const claimPartnerInvite = async (inviteCode) => {
   const res = await api.post("/api/partner-onboarding/claim", {
     inviteCode,
@@ -531,10 +538,9 @@ export const claimPartnerInvite = async (inviteCode) => {
   return res.data?.data;
 };
 
-export const recordPartnerConsents = async (inviteCode, consents, consentVersion = "pilot-v1") => {
+export const recordPartnerConsents = async (inviteCode, consents) => {
   const res = await api.post("/api/partner-onboarding/consents", {
     inviteCode,
-    consentVersion,
     consents,
   });
   return res.data?.data;

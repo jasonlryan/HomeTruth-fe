@@ -29,6 +29,19 @@ export const INITIAL_PROGRAMME_FORM = {
   campaignKey: "",
   inviteRoute: "",
   campaignContentRef: "",
+  acquisitionEyebrow: "A HomeTruth partner programme",
+  acquisitionHeadline: "Everything about your home, clearer and easier to manage",
+  homeownerPromise:
+    "Build a useful record of your home, understand important documents and keep practical actions in one place.",
+  setupExpectations:
+    "Create or sign in to your HomeTruth account\nChoose the programme permissions you want to grant\nConnect an existing property or start a new home record",
+  privacySummary:
+    "Your HomeTruth record stays under your control. The partner receives no individual property, document or task data through this journey.",
+  supportLabel: "Get help from HomeTruth",
+  supportUrl: "/faq",
+  partnerLogoUrl: "",
+  partnerLogoAlt: "",
+  consentVersion: "partner-acquisition-v1",
   campaignStartDate: "",
   campaignEndDate: "",
   cohortName: "",
@@ -68,10 +81,20 @@ export const validateProgrammeForm = (form) => {
     ["programmeKey", "Enter a stable programme key."],
     ["campaignName", "Enter the campaign name."],
     ["campaignKey", "Enter a stable campaign key."],
+    ["acquisitionHeadline", "Enter the approved homeowner headline."],
+    ["homeownerPromise", "Enter the approved homeowner promise."],
+    ["privacySummary", "Enter the approved privacy summary."],
+    ["supportLabel", "Enter a support link label."],
+    ["supportUrl", "Enter an approved support route."],
+    ["consentVersion", "Enter a consent contract version."],
     ["cohortName", "Enter the cohort name."],
     ["cohortKey", "Enter a unique cohort key."],
   ]) {
     if (!required(form[field])) errors[field] = message;
+  }
+
+  if (required(form.partnerLogoUrl) && !required(form.partnerLogoAlt)) {
+    errors.partnerLogoAlt = "Describe the approved partner logo.";
   }
 
   if (form.targetSize && (!Number.isInteger(Number(form.targetSize)) || Number(form.targetSize) < 1)) {
@@ -98,6 +121,12 @@ export const validateProgrammeForm = (form) => {
 const commaSeparated = (value) =>
   value
     .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const lineSeparated = (value) =>
+  value
+    .split("\n")
     .map((item) => item.trim())
     .filter(Boolean);
 
@@ -128,6 +157,24 @@ export const buildProgrammePayload = (form) => ({
     name: form.campaignName.trim(),
     inviteRoute: form.inviteRoute.trim() || null,
     approvedContentRef: form.campaignContentRef.trim() || null,
+    acquisitionConfig: {
+      eyebrow: form.acquisitionEyebrow.trim() || "A HomeTruth partner programme",
+      headline: form.acquisitionHeadline.trim(),
+      homeownerPromise: form.homeownerPromise.trim(),
+      setupExpectations: lineSeparated(form.setupExpectations),
+      privacySummary: form.privacySummary.trim(),
+      support: {
+        label: form.supportLabel.trim(),
+        url: form.supportUrl.trim(),
+      },
+      partnerLogo: form.partnerLogoUrl.trim()
+        ? {
+            url: form.partnerLogoUrl.trim(),
+            alt: form.partnerLogoAlt.trim() || `${form.partnerName.trim() || "Partner"} logo`,
+          }
+        : null,
+    },
+    consentConfig: { version: form.consentVersion.trim() },
     startDate: optionalDate(form.campaignStartDate),
     endDate: optionalDate(form.campaignEndDate),
   },
