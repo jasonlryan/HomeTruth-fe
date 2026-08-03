@@ -36,6 +36,7 @@ export default function PartnerAccessManager({ programme }) {
     try {
       setLoading(true);
       setError("");
+      setMessage("");
       setAssignments(await getAdminPartnerAccessAssignments(programme.id));
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Access assignments could not be loaded.");
@@ -52,6 +53,7 @@ export default function PartnerAccessManager({ programme }) {
 
   const submit = async (event) => {
     event.preventDefault();
+    setMessage("");
     const nextErrors = validateAccessGrant(form);
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
@@ -82,6 +84,7 @@ export default function PartnerAccessManager({ programme }) {
     try {
       setBusyId(assignment.id);
       setError("");
+      setMessage("");
       const updated = await changeAdminPartnerAccessRole(programme.id, assignment.id, role);
       setAssignments((current) => current.map((item) => (item.id === updated.id ? updated : item)));
       setMessage(`${updated.user?.email || "The user"} is now a ${roleLabel(updated.role).toLowerCase()}.`);
@@ -97,6 +100,7 @@ export default function PartnerAccessManager({ programme }) {
     try {
       setBusyId(assignment.id);
       setError("");
+      setMessage("");
       const updated = await revokeAdminPartnerAccess(programme.id, assignment.id);
       setAssignments((current) => current.map((item) => (item.id === updated.id ? updated : item)));
       setMessage(`Access was revoked for ${updated.user?.email || "the user"}.`);
