@@ -698,6 +698,15 @@ const toAxiosResponse = (config, data, status = 200) =>
     statusText: status === 200 ? "OK" : "Error",
   });
 
+const toAxiosError = async (config, data, status) => {
+  const response = await toAxiosResponse(config, data, status);
+  const error = new Error(`Request failed with status code ${status}`);
+  error.config = config;
+  error.response = response;
+  error.isAxiosError = true;
+  throw error;
+};
+
 const parsePayload = (payload) => {
   if (!payload || typeof payload !== "string") return payload || {};
   try {
@@ -1217,6 +1226,17 @@ function installVisualReviewApiMock() {
       return toAxiosResponse(config, { success: true, data: visualPartnerAuditEvents });
     }
     if (method === "get" && path.match(/^\/api\/partner\/programmes\/\d+$/)) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("denied") === "1") {
+        return toAxiosError(
+          config,
+          {
+            success: false,
+            message: "Partner programme access is not permitted",
+          },
+          403
+        );
+      }
       return toAxiosResponse(config, {
         success: true,
         data: visualPartnerProgrammeEntry(),

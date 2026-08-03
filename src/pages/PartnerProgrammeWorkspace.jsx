@@ -185,8 +185,15 @@ export default function PartnerProgrammeWorkspace() {
       setProgrammes((items) => items.map((item) => item.programme.id === current.programme.id ? current : item));
       setNotice(`${current.programme.name} access was checked and recorded.`);
     } catch (requestError) {
-      setError(requestError.response?.data?.message || "Programme access is no longer available.");
-      await load();
+      const accessError =
+        requestError.response?.data?.message ||
+        "Programme access is no longer available.";
+      try {
+        setProgrammes(await getPartnerProgrammes());
+      } catch {
+        // Preserve the authoritative access denial even if the refresh also fails.
+      }
+      setError(accessError);
     } finally {
       setBusyId(null);
     }
