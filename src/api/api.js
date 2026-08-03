@@ -767,6 +767,11 @@ export const getPartnerProgrammes = async () => {
   return res.data?.data || [];
 };
 
+export const getPartnerProgrammeAccessStatus = async () => {
+  const res = await api.get("/api/partner/programmes/access-status");
+  return Boolean(res.data?.data?.hasAccess);
+};
+
 export const getPartnerProgramme = async (programmeId) => {
   const res = await api.get(`/api/partner/programmes/${programmeId}`);
   return res.data?.data;

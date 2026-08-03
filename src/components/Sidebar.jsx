@@ -14,7 +14,7 @@ import {
   Lock,
   KeyRound,
 } from "lucide-react";
-import { getPartnerProgrammes } from "../api/api";
+import { getPartnerProgrammeAccessStatus } from "../api/api";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -30,9 +30,9 @@ export default function Sidebar() {
 
   useEffect(() => {
     let cancelled = false;
-    getPartnerProgrammes()
-      .then((programmes) => {
-        if (!cancelled) setHasPartnerAccess(programmes.length > 0);
+    getPartnerProgrammeAccessStatus()
+      .then((hasAccess) => {
+        if (!cancelled) setHasPartnerAccess(hasAccess);
       })
       .catch(() => {
         if (!cancelled) setHasPartnerAccess(false);

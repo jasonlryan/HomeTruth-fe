@@ -433,10 +433,6 @@ const visualPartnerProgrammeEntry = () => {
       ...(operational ? ["programme:view"] : []),
       ...(auditAllowed ? ["audit:view"] : []),
     ],
-    reportingCapabilities:
-      role === "privacy_auditor"
-        ? ["report:definitions:view"]
-        : ["report:view", "report:export"],
     programme: {
       id: 41,
       programmeKey: "home-ready-2026",
@@ -1217,6 +1213,13 @@ function installVisualReviewApiMock() {
       return toAxiosResponse(config, {
         success: true,
         data: params.get("empty") === "1" ? [] : [visualPartnerProgrammeEntry()],
+      });
+    }
+    if (method === "get" && path === "/api/partner/programmes/access-status") {
+      const params = new URLSearchParams(window.location.search);
+      return toAxiosResponse(config, {
+        success: true,
+        data: { hasAccess: params.get("empty") !== "1" },
       });
     }
     if (

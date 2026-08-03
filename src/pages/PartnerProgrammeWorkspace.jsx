@@ -124,7 +124,7 @@ function ProgrammeAccessCard({ entry, selectedAudit, onAudit, onOpen, busy }) {
 
         {!state.operational && (
           <div className="mt-5 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_8%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <AlertTriangle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} /> Operational and reporting access is unavailable while this programme is not active. Authorised historical audit remains reviewable.
+            <AlertTriangle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} /> Operational and reporting access is unavailable while this programme is not active.{canAudit ? " Your role can still review historical audit evidence." : " Historical audit remains limited to authorised programme managers and privacy auditors."}
           </div>
         )}
 
@@ -165,6 +165,7 @@ export default function PartnerProgrammeWorkspace() {
     try {
       setLoading(true);
       setError("");
+      setNotice("");
       setProgrammes(await getPartnerProgrammes());
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Partner programmes could not be loaded.");
