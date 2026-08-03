@@ -25,6 +25,7 @@ import {
   getPropertyTasks,
   updatePropertyTaskStatus,
 } from "../api/api";
+import { storedInviteContext } from "../utils/partnerAcquisition";
 
 const initialForm = {
   addressLine1: "",
@@ -445,19 +446,13 @@ export default function PropertyProfile() {
           );
           localStorage.setItem(
             "partner_onboarding_context",
-            JSON.stringify({
-              inviteCode: partnerInvite,
-              partnerName: linked.partner?.name || null,
-              cohortName: linked.cohort?.name || null,
-              memberId: linked.member?.id || null,
-              propertyId: created.property.id,
-            })
+            JSON.stringify(storedInviteContext(partnerInvite, linked))
           );
-          setSuccess("Property profile set up and linked to the pilot.");
+          setSuccess("Property profile set up and linked to the programme.");
         } catch (linkError) {
           setError(
             linkError.response?.data?.message ||
-              "Property profile was set up, but pilot linking could not be completed."
+              "Property profile was set up, but programme linking could not be completed."
           );
         }
       } else {
