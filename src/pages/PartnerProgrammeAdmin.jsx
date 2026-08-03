@@ -358,6 +358,56 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
           </div>
         </fieldset>
 
+        <fieldset className="mt-10 border-t border-[var(--color-border-default)] pt-8">
+          <legend className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-default)]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-success)_12%,var(--color-surface-default))] text-[var(--color-success)]">4</span>
+            Approved homeowner journey
+          </legend>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--color-text-muted)]">
+            Configure approved plain-text acquisition content for this campaign. HomeTruth identity and the consent boundary remain fixed.
+          </p>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <Field label="Programme eyebrow">
+              <input className={inputClass} value={form.acquisitionEyebrow} onChange={update("acquisitionEyebrow")} />
+            </Field>
+            <Field label="Consent contract version" hint="Stable and versioned" error={errors.consentVersion}>
+              <input className={inputClass} value={form.consentVersion} onChange={update("consentVersion")} />
+            </Field>
+            <div className="md:col-span-2">
+              <Field label="Homeowner headline" error={errors.acquisitionHeadline}>
+                <input className={inputClass} value={form.acquisitionHeadline} onChange={update("acquisitionHeadline")} />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="Homeowner promise" error={errors.homeownerPromise}>
+                <textarea rows="3" className={inputClass} value={form.homeownerPromise} onChange={update("homeownerPromise")} />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="Expected setup" hint="One step per line">
+                <textarea rows="4" className={inputClass} value={form.setupExpectations} onChange={update("setupExpectations")} />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="Privacy summary" error={errors.privacySummary}>
+                <textarea rows="3" className={inputClass} value={form.privacySummary} onChange={update("privacySummary")} />
+              </Field>
+            </div>
+            <Field label="Support label" error={errors.supportLabel}>
+              <input className={inputClass} value={form.supportLabel} onChange={update("supportLabel")} />
+            </Field>
+            <Field label="Support route" hint="Internal path, HTTPS or mailto" error={errors.supportUrl}>
+              <input className={inputClass} value={form.supportUrl} onChange={update("supportUrl")} />
+            </Field>
+            <Field label="Approved partner logo URL" hint="Optional internal path or HTTPS URL">
+              <input className={inputClass} value={form.partnerLogoUrl} onChange={update("partnerLogoUrl")} />
+            </Field>
+            <Field label="Partner logo alternative text" hint="Required when a logo is supplied" error={errors.partnerLogoAlt}>
+              <input className={inputClass} value={form.partnerLogoAlt} onChange={update("partnerLogoAlt")} />
+            </Field>
+          </div>
+        </fieldset>
+
         <div className="mt-8 flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--color-success)] bg-[color-mix(in_srgb,var(--color-success)_8%,var(--color-surface-default))] p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
             <ShieldCheck className="mt-0.5 flex-none text-[var(--color-success)]" size={20} />

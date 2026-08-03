@@ -8,6 +8,7 @@ const VISUAL_REVIEW_TOKEN = "visual-review-token";
 
 const userRoutes = [
   { label: "Dashboard", path: "/dashboard" },
+  { label: "Partner invitation", path: "/partner/insurer-active" },
   { label: "Documents", path: "/documents" },
   { label: "Property Profile", path: "/property-profile" },
   { label: "Ask HomeTruth", path: "/ask-ai" },
@@ -386,6 +387,187 @@ const adminPartnerProgrammes = [
   },
 ];
 
+const visualConsentScopes = [
+  {
+    scope: "hometruth_processing",
+    required: true,
+    label: "Use HomeTruth for your home",
+    summary:
+      "Allows HomeTruth to create and manage the property record, documents and actions you choose to add.",
+    textHash: "1".repeat(64),
+  },
+  {
+    scope: "aggregate_analytics",
+    required: false,
+    label: "Include my use in aggregate programme analytics",
+    summary:
+      "Allows de-identified activity to contribute to grouped programme measures. No individual property record is shown to the partner.",
+    textHash: "2".repeat(64),
+  },
+  {
+    scope: "partner_reporting",
+    required: false,
+    label: "Include my progress in aggregate partner reporting",
+    summary:
+      "Allows HomeTruth to include your activity in thresholded programme totals shared with the sponsoring partner.",
+    textHash: "3".repeat(64),
+  },
+  {
+    scope: "partner_contact_servicing",
+    required: false,
+    label: "Allow programme follow-up from the partner",
+    summary:
+      "Allows the sponsoring partner to contact you about this programme. It does not grant access to your HomeTruth records.",
+    textHash: "4".repeat(64),
+  },
+];
+
+const visualPartnerInvites = {
+  "insurer-active": {
+    partnerName: "Northstar Mutual",
+    partnerType: "insurer",
+    programmeName: "Home Ready",
+    campaignName: "Autumn prevention invitation",
+    cohortName: "Autumn homeowner cohort",
+    headline: "Make the important details of your home easier to manage",
+  },
+  "mortgage-active": {
+    partnerName: "Hearthside Building Society",
+    partnerType: "mortgage_provider",
+    programmeName: "Completion Companion",
+    campaignName: "Completion support",
+    cohortName: "New homeowner cohort",
+    headline: "Start a useful home record as you complete your move",
+  },
+  "developer-active": {
+    partnerName: "Common Ground Homes",
+    partnerType: "home_developer",
+    programmeName: "Handover Support",
+    campaignName: "New home handover",
+    cohortName: "Phase one homeowners",
+    headline: "Keep your new-home information and next steps together",
+  },
+  "other-active": {
+    partnerName: "SurveySafe Services",
+    partnerType: "other",
+    programmeName: "Home Record Starter",
+    campaignName: "Survey follow-up",
+    cohortName: "Homeowner support cohort",
+    headline: "Turn important home information into practical next steps",
+  },
+};
+
+const buildVisualPartnerInvite = (code, options = {}) => {
+  const statusByCode = {
+    expired: "expired",
+    paused: "ineligible",
+    closed: "ineligible",
+  };
+  const configured = visualPartnerInvites[code];
+  const status = configured ? "valid" : statusByCode[code] || "invalid";
+  const details = configured || visualPartnerInvites["insurer-active"];
+  const safeMessage =
+    {
+      expired: "This invite has expired.",
+      paused: "This partner programme is currently paused.",
+      closed: "This partner programme is closed.",
+    }[code] ||
+    (status === "valid" ? "Invite is valid." : "Invite code was not recognised.");
+  const acquisition = {
+    eyebrow: "A HomeTruth partner programme",
+    headline: details.headline,
+    homeownerPromise:
+      "Build a useful record of your home, understand important documents and keep practical actions in one place.",
+    setupExpectations: [
+      "Create or sign in to your HomeTruth account",
+      "Choose the programme permissions you want to grant",
+      "Connect an existing property or start a new home record",
+    ],
+    privacySummary:
+      "Your HomeTruth record stays under your control. The partner receives no individual property, document or task data through this journey.",
+    support: { label: "Get help from HomeTruth", url: "/faq" },
+    partnerLogo: null,
+    partnerName: details.partnerName,
+    partnerType: details.partnerType,
+    programmeName: details.programmeName,
+    campaignName: details.campaignName,
+    cohortName: details.cohortName,
+    productName: "HomeTruth",
+  };
+  const consentContract = {
+    version: "partner-acquisition-v1",
+    scopes: visualConsentScopes,
+  };
+
+  if (status === "invalid") {
+    return {
+      invite: { code, mode: "unknown", status, message: safeMessage },
+      partner: null,
+      programme: null,
+      campaign: null,
+      cohort: null,
+      member: null,
+      acquisition: { ...acquisition, partnerName: null, partnerType: null },
+      consentContract,
+    };
+  }
+
+  return {
+    invite: {
+      code,
+      mode: code === "mortgage-active" ? "individual_invite" : "cohort_code",
+      status,
+      message: safeMessage,
+    },
+    partner: {
+      id: 1,
+      name: details.partnerName,
+      partnerType: details.partnerType,
+      reportingMode: "aggregate_only",
+    },
+    programme: {
+      id: 41,
+      programmeKey: `${details.partnerType}-programme`,
+      name: details.programmeName,
+      status: status === "valid" ? "active" : code,
+    },
+    campaign: {
+      id: 51,
+      campaignKey: `${details.partnerType}-campaign`,
+      name: details.campaignName,
+      status: status === "valid" ? "active" : code,
+    },
+    cohort: {
+      id: 61,
+      cohortKey: code,
+      name: details.cohortName,
+      status: status === "valid" ? "active" : code,
+      reportingLevel: "aggregate_only",
+    },
+    member: options.authenticated
+      ? { id: 71, membershipStatus: "onboarded", propertyId: null }
+      : null,
+    acquisition: { ...acquisition, consentContract },
+    branding: acquisition,
+    consentContract,
+    requiredConsentScopes: ["hometruth_processing"],
+    optionalConsentScopes: [
+      "aggregate_analytics",
+      "partner_reporting",
+      "partner_contact_servicing",
+    ],
+    ...(options.authenticated
+      ? {
+          consentState: {
+            version: consentContract.version,
+            completed: Boolean(options.consentComplete),
+            choices: options.choices || {},
+          },
+        }
+      : {}),
+  };
+};
+
 const knowledgeDocuments = [
   {
     id: "kb-1",
@@ -440,6 +622,83 @@ function installVisualReviewApiMock() {
     const url = new URL(config.url || "", window.location.origin);
     const path = url.pathname;
     const data = parsePayload(config.data);
+
+    const inviteMatch = path.match(
+      /^\/api\/partner-onboarding\/invites\/([^/]+)$/
+    );
+    if (method === "get" && inviteMatch) {
+      return toAxiosResponse(config, {
+        success: true,
+        data: buildVisualPartnerInvite(decodeURIComponent(inviteMatch[1])),
+      });
+    }
+
+    if (
+      method === "post" &&
+      path.match(/^\/api\/partner-onboarding\/invites\/[^/]+\/view$/)
+    ) {
+      return toAxiosResponse(
+        config,
+        { success: true, data: { recorded: true } },
+        202
+      );
+    }
+
+    if (method === "post" && path === "/api/partner-onboarding/claim") {
+      return toAxiosResponse(config, {
+        success: true,
+        data: buildVisualPartnerInvite(data.inviteCode, { authenticated: true }),
+      });
+    }
+
+    if (method === "post" && path === "/api/partner-onboarding/consents") {
+      const choices = Object.fromEntries(
+        (data.consents || []).map(({ scope, granted }) => [
+          scope,
+          Boolean(granted),
+        ])
+      );
+      return toAxiosResponse(config, {
+        success: true,
+        data: {
+          ...buildVisualPartnerInvite(data.inviteCode, {
+            authenticated: true,
+            consentComplete: true,
+            choices,
+          }),
+          consents: visualConsentScopes.map(({ scope }, index) => ({
+            id: index + 1,
+            consentScope: scope,
+            consentVersion: "partner-acquisition-v1",
+            status: choices[scope] ? "granted" : "withdrawn",
+          })),
+        },
+      });
+    }
+
+    if (method === "post" && path === "/api/partner-onboarding/property") {
+      const invite = buildVisualPartnerInvite(data.inviteCode, {
+        authenticated: true,
+        consentComplete: true,
+      });
+      return toAxiosResponse(config, {
+        success: true,
+        data: {
+          ...invite,
+          member: { ...invite.member, propertyId: data.propertyId },
+        },
+      });
+    }
+
+    if (method === "post" && path === "/api/partner-onboarding/events") {
+      return toAxiosResponse(config, {
+        success: true,
+        data: {
+          eventName: data.eventName,
+          metadata: { path: data.metadata?.path },
+        },
+      });
+    }
 
     if (method === "get" && path === "/api/user-documents") {
       return toAxiosResponse(config, {
@@ -960,7 +1219,14 @@ function installVisualReviewApiMock() {
   window.__HT_VISUAL_REVIEW_API_MOCK__ = true;
 }
 
-function seedVisualSession(role, login) {
+function seedVisualSession(role, login, logout) {
+  if (role === "guest") {
+    logout();
+    localStorage.removeItem("partner_invite_code");
+    localStorage.removeItem("partner_onboarding_context");
+    return;
+  }
+
   const isAdmin = role === "admin";
   const userData = {
     id: isAdmin ? "visual-admin" : "visual-user",
@@ -991,18 +1257,23 @@ export default function VisualReviewHarness() {
   const { role } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
 
   const startReview = (reviewRole, targetPath) => {
     installVisualReviewApiMock();
-    seedVisualSession(reviewRole, login);
+    seedVisualSession(reviewRole, login, logout);
     navigate(targetPath, { replace: true });
   };
 
   useEffect(() => {
-    if (role !== "user" && role !== "admin") return;
+    if (role !== "user" && role !== "admin" && role !== "guest") return;
     const targetPath =
-      searchParams.get("to") || (role === "admin" ? "/admin/dashboard" : "/dashboard");
+      searchParams.get("to") ||
+      (role === "admin"
+        ? "/admin/dashboard"
+        : role === "guest"
+          ? "/partner/insurer-active"
+          : "/dashboard");
     startReview(role, targetPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot route bootstrap
   }, [role, searchParams]);
