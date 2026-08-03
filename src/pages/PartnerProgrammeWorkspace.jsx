@@ -15,6 +15,7 @@ import {
   getPartnerProgrammes,
 } from "../api/api";
 import {
+  auditActorLabel,
   capabilityLabel,
   programmeAccessState,
   roleLabel,
@@ -88,7 +89,7 @@ function AuditPanel({ entry, onClose }) {
             <li key={event.id} className="grid gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4 sm:grid-cols-[1fr_auto]">
               <div>
                 <p className="font-bold text-[var(--color-text-default)]">{event.action.replaceAll(":", " · ").replaceAll("_", " ")}</p>
-                <p className="mt-1 text-sm text-[var(--color-text-muted)]">{event.resourceType.replaceAll("_", " ")} · {event.outcome}{event.reasonCode ? ` · ${event.reasonCode.replaceAll("_", " ")}` : ""}</p>
+                <p className="mt-1 text-sm text-[var(--color-text-muted)]">{auditActorLabel(event.actorType)} · {event.resourceType.replaceAll("_", " ")} · {event.outcome}{event.reasonCode ? ` · ${event.reasonCode.replaceAll("_", " ")}` : ""}</p>
               </div>
               <time className="text-sm text-[var(--color-text-muted)]">{formatDateTime(event.occurredAt)}</time>
             </li>

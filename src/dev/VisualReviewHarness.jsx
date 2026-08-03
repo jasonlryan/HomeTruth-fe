@@ -462,6 +462,7 @@ const visualPartnerAuditEvents = [
     outcome: "allowed",
     reasonCode: null,
     details: { role: "programme_manager" },
+    actorType: "hometruth_operator",
     occurredAt: "2026-08-03T08:30:00Z",
   },
   {
@@ -472,6 +473,7 @@ const visualPartnerAuditEvents = [
     outcome: "denied",
     reasonCode: "individual_data_prohibited",
     details: { role: "programme_manager", resourceClass: "properties" },
+    actorType: "partner_user",
     occurredAt: "2026-08-03T09:05:00Z",
   },
 ];

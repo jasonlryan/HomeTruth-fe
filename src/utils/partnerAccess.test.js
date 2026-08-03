@@ -1,5 +1,6 @@
 import {
   buildAccessGrantPayload,
+  auditActorLabel,
   capabilityLabel,
   programmeAccessState,
   roleLabel,
@@ -40,5 +41,8 @@ describe("partner access utilities", () => {
   test("uses comprehensible role and capability labels", () => {
     expect(roleLabel("privacy_auditor")).toBe("Privacy auditor");
     expect(capabilityLabel("audit:view")).toBe("Access audit");
+    expect(auditActorLabel("hometruth_operator")).toBe("HomeTruth operator");
+    expect(auditActorLabel("partner_user")).toBe("Partner user");
+    expect(auditActorLabel("unexpected_actor")).toBe("Unknown actor");
   });
 });

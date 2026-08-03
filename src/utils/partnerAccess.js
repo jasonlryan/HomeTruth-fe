@@ -17,6 +17,12 @@ export const capabilityLabel = (capability) =>
     "report:definitions:view": "Metric definitions",
   })[capability] || capability;
 
+export const auditActorLabel = (actorType) =>
+  ({
+    hometruth_operator: "HomeTruth operator",
+    partner_user: "Partner user",
+  })[actorType] || "Unknown actor";
+
 export const programmeAccessState = (entry) => {
   if (entry?.assignmentStatus !== "active") {
     return { key: "revoked", label: "Access revoked", operational: false };
