@@ -21,6 +21,7 @@ const userRoutes = [
 
 const adminRoutes = [
   { label: "Admin Dashboard", path: "/admin/dashboard" },
+  { label: "Partner Programmes", path: "/admin/partner-programmes" },
   { label: "Articles", path: "/admin/articles" },
   { label: "Knowledge Base", path: "/admin/knowledge-base" },
   { label: "Data Access", path: "/admin/data-access" },
@@ -262,6 +263,126 @@ const adminArticles = [
     tags: ["survey"],
     status: "draft",
     published_at: null,
+  },
+];
+
+const adminPartners = [
+  {
+    id: 1,
+    name: "Northstar Mutual",
+    partnerType: "insurer",
+    status: "active",
+    reportingMode: "aggregate_only",
+  },
+  {
+    id: 2,
+    name: "Hearthside Building Society",
+    partnerType: "mortgage_provider",
+    status: "active",
+    reportingMode: "aggregate_only",
+  },
+  {
+    id: 3,
+    name: "Common Ground Homes",
+    partnerType: "home_developer",
+    status: "active",
+    reportingMode: "aggregate_only",
+  },
+];
+
+const adminPartnerProgrammes = [
+  {
+    id: 41,
+    programmeKey: "home-ready-2026",
+    name: "Home Ready",
+    status: "active",
+    ownerUserId: "visual-admin",
+    startDate: "2026-09-01",
+    endDate: "2027-08-31",
+    entitlement: { pack: "shared_core", participantLimit: 500 },
+    inviteMode: "both",
+    approvedContentRefs: ["copy/homeowner-promise-v1"],
+    partner: adminPartners[0],
+    campaigns: [
+      {
+        id: 51,
+        campaignKey: "autumn-prevention",
+        name: "Autumn prevention invitation",
+        status: "active",
+        inviteRoute: "/partner/autumn-2026",
+      },
+    ],
+    cohorts: [
+      {
+        id: 61,
+        cohortKey: "autumn-2026",
+        name: "Autumn homeowner cohort",
+        status: "active",
+        targetSize: 500,
+        reportingLevel: "aggregate_only",
+      },
+    ],
+  },
+  {
+    id: 42,
+    programmeKey: "completion-companion",
+    name: "Completion Companion",
+    status: "draft",
+    ownerUserId: "visual-admin",
+    startDate: "2026-10-01",
+    endDate: "2027-09-30",
+    entitlement: { pack: "shared_core", participantLimit: 250 },
+    inviteMode: "cohort_code",
+    approvedContentRefs: ["copy/completion-promise-v1"],
+    partner: adminPartners[1],
+    campaigns: [
+      {
+        id: 52,
+        campaignKey: "completion-q4",
+        name: "Q4 completion invitation",
+        status: "draft",
+        inviteRoute: "/partner/completion-q4",
+      },
+    ],
+    cohorts: [
+      {
+        id: 62,
+        cohortKey: "completion-q4",
+        name: "Q4 completion cohort",
+        status: "planned",
+        targetSize: 250,
+        reportingLevel: "aggregate_only",
+      },
+    ],
+  },
+  {
+    id: 43,
+    programmeKey: "handover-support",
+    name: "Handover Support",
+    status: "paused",
+    ownerUserId: "visual-admin",
+    entitlement: { pack: "shared_core", participantLimit: 120 },
+    inviteMode: "individual_invite",
+    approvedContentRefs: ["copy/handover-promise-v1"],
+    partner: adminPartners[2],
+    campaigns: [
+      {
+        id: 53,
+        campaignKey: "phase-one-handover",
+        name: "Phase one handover",
+        status: "paused",
+      },
+    ],
+    cohorts: [
+      {
+        id: 63,
+        cohortKey: "phase-one-owners",
+        name: "Phase one homeowners",
+        status: "paused",
+        targetSize: 120,
+        reportingLevel: "aggregate_only",
+      },
+    ],
   },
 ];
 
@@ -672,6 +793,57 @@ function installVisualReviewApiMock() {
           ],
         },
       });
+    }
+
+    if (method === "get" && path === "/api/admin/partner-programmes/partners") {
+      return toAxiosResponse(config, { success: true, data: adminPartners });
+    }
+
+    if (method === "get" && path === "/api/admin/partner-programmes/programmes") {
+      return toAxiosResponse(config, { success: true, data: adminPartnerProgrammes });
+    }
+
+    if (method === "post" && path === "/api/admin/partner-programmes/programmes") {
+      const partner = data.partnerId
+        ? adminPartners.find((item) => item.id === data.partnerId)
+        : {
+            id: adminPartners.length + 1,
+            name: data.partner?.name,
+            partnerType: data.partner?.partnerType || "other",
+            status: "active",
+            reportingMode: "aggregate_only",
+          };
+      if (!data.partnerId) adminPartners.push(partner);
+      const programme = {
+        id: Math.max(...adminPartnerProgrammes.map((item) => item.id)) + 1,
+        programmeKey: data.programmeKey,
+        name: data.name,
+        status: "draft",
+        ownerUserId: "visual-admin",
+        startDate: data.startDate,
+        endDate: data.endDate,
+        entitlement: data.entitlement || {},
+        inviteMode: data.inviteMode,
+        approvedContentRefs: data.approvedContentRefs || [],
+        partner,
+        campaigns: [{ id: 70, ...data.campaign, status: "draft" }],
+        cohorts: [{ id: 80, ...data.cohort, status: "planned", reportingLevel: "aggregate_only" }],
+      };
+      adminPartnerProgrammes.unshift(programme);
+      return toAxiosResponse(config, { success: true, data: programme }, 201);
+    }
+
+    if (
+      method === "post" &&
+      path.match(/^\/api\/admin\/partner-programmes\/programmes\/\d+\/transitions$/)
+    ) {
+      const programmeId = Number(path.split("/").at(-2));
+      const programme = adminPartnerProgrammes.find((item) => item.id === programmeId);
+      const childStatus = data.status === "active" ? "active" : data.status;
+      programme.status = data.status;
+      programme.campaigns = programme.campaigns.map((item) => ({ ...item, status: childStatus }));
+      programme.cohorts = programme.cohorts.map((item) => ({ ...item, status: childStatus }));
+      return toAxiosResponse(config, { success: true, data: programme });
     }
 
     if (method === "get" && path.startsWith("/api/admin/dashboard/charts/")) {

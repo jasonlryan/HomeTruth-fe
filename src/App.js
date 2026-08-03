@@ -49,6 +49,7 @@ import Pricing from "./pages/Pricing";
 import HomeTruths from "./pages/HomeTruths";
 import ArticleDetail from "./pages/ArticleDetail";
 import AdminArticleManager from "./pages/AdminArticleManager";
+import PartnerProgrammeAdmin from "./pages/PartnerProgrammeAdmin";
 import VisualReviewHarness from "./dev/VisualReviewHarness";
 // Check if we're in "Coming Soon" mode
 const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
@@ -97,6 +98,17 @@ function App() {
               }
             >
               <Route index element={<AdminDataAccess />} />
+            </Route>
+
+            <Route
+              path="/admin/partner-programmes"
+              element={
+                <AdminProtectedRoute>
+                  <AuthenticatedLayout />
+                </AdminProtectedRoute>
+              }
+            >
+              <Route index element={<PartnerProgrammeAdmin />} />
             </Route>
 
             <Route
@@ -271,6 +283,17 @@ function App() {
             }
           >
             <Route index element={<AdminDataAccess />} />
+          </Route>
+
+          <Route
+            path="/admin/partner-programmes"
+            element={
+              <AdminProtectedRoute>
+                <AuthenticatedLayout />
+              </AdminProtectedRoute>
+            }
+          >
+            <Route index element={<PartnerProgrammeAdmin />} />
           </Route>
 
           <Route
