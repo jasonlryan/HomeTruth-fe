@@ -50,6 +50,7 @@ import HomeTruths from "./pages/HomeTruths";
 import ArticleDetail from "./pages/ArticleDetail";
 import AdminArticleManager from "./pages/AdminArticleManager";
 import PartnerProgrammeAdmin from "./pages/PartnerProgrammeAdmin";
+import PartnerProgrammeWorkspace from "./pages/PartnerProgrammeWorkspace";
 import VisualReviewHarness from "./dev/VisualReviewHarness";
 // Check if we're in "Coming Soon" mode
 const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
@@ -120,6 +121,17 @@ function App() {
               }
             >
               <Route index element={<AdminArticleManager />} />
+            </Route>
+
+            <Route
+              path="/partner-programmes"
+              element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<PartnerProgrammeWorkspace />} />
             </Route>
 
             {/* Public article routes even in Coming Soon mode */}
@@ -245,6 +257,7 @@ function App() {
             <Route path="/budget-calculator" element={<BudgetChat />} />
             <Route path="/budget/view/:id" element={<BudgetChatViewer />} />
             <Route path="/bookmarked" element={<MyBookmarks />} />
+            <Route path="/partner-programmes" element={<PartnerProgrammeWorkspace />} />
           </Route>
 
           {/* Admin Protected Routes */}
