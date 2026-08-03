@@ -732,6 +732,51 @@ export const transitionAdminPartnerProgramme = async (programmeId, status) => {
   return res.data?.data;
 };
 
+export const getAdminPartnerAccessAssignments = async (programmeId) => {
+  const res = await api.get(
+    `/api/admin/partner-programmes/programmes/${programmeId}/access-assignments`
+  );
+  return res.data?.data || [];
+};
+
+export const grantAdminPartnerAccess = async (programmeId, payload) => {
+  const res = await api.post(
+    `/api/admin/partner-programmes/programmes/${programmeId}/access-assignments`,
+    payload
+  );
+  return res.data?.data;
+};
+
+export const changeAdminPartnerAccessRole = async (programmeId, accessId, role) => {
+  const res = await api.patch(
+    `/api/admin/partner-programmes/programmes/${programmeId}/access-assignments/${accessId}`,
+    { role }
+  );
+  return res.data?.data;
+};
+
+export const revokeAdminPartnerAccess = async (programmeId, accessId) => {
+  const res = await api.post(
+    `/api/admin/partner-programmes/programmes/${programmeId}/access-assignments/${accessId}/revoke`
+  );
+  return res.data?.data;
+};
+
+export const getPartnerProgrammes = async () => {
+  const res = await api.get("/api/partner/programmes");
+  return res.data?.data || [];
+};
+
+export const getPartnerProgramme = async (programmeId) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}`);
+  return res.data?.data;
+};
+
+export const getPartnerProgrammeAudit = async (programmeId) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/audit-events`);
+  return res.data?.data || [];
+};
+
 // --- Admin Data Access APIs ---
 export const getAdminUsers = async (params = {}) => {
   const queryParams = new URLSearchParams();

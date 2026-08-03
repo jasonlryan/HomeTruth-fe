@@ -10,11 +10,13 @@ import {
   PauseCircle,
   PlayCircle,
   Plus,
+  KeyRound,
   RefreshCw,
   ShieldCheck,
   Users,
   XCircle,
 } from "lucide-react";
+import PartnerAccessManager from "../components/PartnerAccessManager";
 import {
   createAdminPartnerProgramme,
   getAdminPartnerProgrammes,
@@ -107,6 +109,7 @@ function transitionPresentation(status) {
 }
 
 function ProgrammeCard({ programme, busy, onTransition }) {
+  const [showAccess, setShowAccess] = useState(false);
   const campaign = programme.campaigns?.[0];
   const cohort = programme.cohorts?.[0];
   return (
@@ -129,6 +132,9 @@ function ProgrammeCard({ programme, busy, onTransition }) {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <button type="button" className={secondaryButton} onClick={() => setShowAccess((current) => !current)} aria-expanded={showAccess}>
+              <KeyRound size={16} /> {showAccess ? "Hide access" : "Manage access"}
+            </button>
             {nextProgrammeStatuses(programme.status).map((status) => {
               const { label, Icon } = transitionPresentation(status);
               return (
@@ -183,6 +189,7 @@ function ProgrammeCard({ programme, busy, onTransition }) {
           </div>
         </div>
       </div>
+      {showAccess && <PartnerAccessManager programme={programme} />}
     </article>
   );
 }
