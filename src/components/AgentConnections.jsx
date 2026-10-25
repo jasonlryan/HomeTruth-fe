@@ -2,33 +2,40 @@ import { ArrowRight, FileText, House, KeyRound } from "lucide-react";
 
 const connections = [
   {
+    name: "Instinct",
+    provider: "Personal assistant",
+    status: "UK pilot candidate",
+    availability: "Agent available in the UK",
+    description:
+      "Our starting point for exploring a connection for UK homeowners.",
+    logo: "instinct.ico",
+    lead: true,
+  },
+  {
     name: "ChatGPT / Dots",
     provider: "OpenAI",
-    status: "Planned first",
-    description: "Our first planned route to your preferred assistant.",
-    initial: "01",
+    status: "Planned",
+    availability: "Personal-agent UK launch awaited",
+    description:
+      "A future connection, subject to UK availability and platform support.",
+    logo: "openai.svg",
   },
   {
     name: "Grok Bot",
     provider: "xAI",
     status: "Exploring",
-    description: "Exploring a connection for property questions and evidence.",
-    initial: "02",
+    availability: "Personal-agent UK launch awaited",
+    description: "Exploring property questions and evidence through Grok Bot.",
+    logo: "grok.svg",
   },
   {
     name: "Muse",
     provider: "Meta",
     status: "Exploring",
+    availability: "Personal-agent UK launch awaited",
     description:
-      "Assessing a supported way to bring your home into the conversation.",
-    initial: "03",
-  },
-  {
-    name: "Instinct",
-    provider: "Personal assistant",
-    status: "Exploring",
-    description: "Exploring how HomeTruth could work with Instinct.",
-    initial: "04",
+      "Exploring a supported way to bring your home into the conversation.",
+    logo: "muse.svg",
   },
 ];
 
@@ -40,7 +47,7 @@ export default function AgentConnections() {
       className="scroll-mt-24 bg-[var(--color-surface-default)] px-6 py-14 font-brand text-[var(--color-text-default)] sm:px-8 sm:py-20"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+        <div className="grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
           <div>
             <p className="text-sm font-bold tracking-wide text-[var(--color-secondary)]">
               On our roadmap
@@ -75,34 +82,43 @@ export default function AgentConnections() {
             <p className="mb-2 text-sm font-bold text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
               Connections we’re planning and exploring
             </p>
-            <ul className="divide-y divide-[var(--color-border-default)] border-y border-[var(--color-border-default)]">
+            <ul className="grid gap-4 sm:grid-cols-2">
               {connections.map((connection) => (
-                <li key={connection.name} className="py-5">
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <span
-                      className="pt-1 text-xs font-bold tabular-nums text-[var(--color-secondary)]"
-                      aria-hidden="true"
-                    >
-                      {connection.initial}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                          <p className="text-xs text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
-                            {connection.provider}
-                          </p>
-                          <h3 className="mt-0.5 text-xl font-bold">
-                            {connection.name}
-                          </h3>
-                        </div>
-                        <span className="rounded-[var(--radius-full)] border border-[var(--color-border-default)] bg-[color-mix(in_srgb,var(--color-secondary)_5%,var(--color-surface-default))] px-3 py-1 text-xs font-bold text-[var(--color-secondary)]">
-                          {connection.status}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
-                        {connection.description}
-                      </p>
-                    </div>
+                <li
+                  key={connection.name}
+                  className={`flex flex-col rounded-[var(--radius-lg)] border p-5 sm:p-6 ${connection.lead ? "border-[var(--color-secondary)] bg-[color-mix(in_srgb,var(--color-secondary)_5%,var(--color-surface-default))]" : "border-[var(--color-border-default)] bg-[var(--color-surface-default)]"}`}
+                >
+                  <div className="flex h-16 items-start justify-between gap-3">
+                    <img
+                      src={`/assets/agents/${connection.logo}`}
+                      alt=""
+                      width="48"
+                      height="48"
+                      className="h-12 w-12 object-contain"
+                    />
+                    {connection.lead && (
+                      <span className="rounded-[var(--radius-full)] bg-[var(--color-secondary)] px-3 py-1 text-xs font-bold text-[var(--color-text-on-dark)]">
+                        UK first
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-3 text-xs text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
+                    {connection.provider}
+                  </p>
+                  <h3 className="mt-1 text-2xl font-bold">{connection.name}</h3>
+                  <p className="mt-2 text-xs font-bold text-[var(--color-secondary)]">
+                    {connection.availability}
+                  </p>
+                  <p className="mt-4 flex-1 text-sm leading-6 text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
+                    {connection.description}
+                  </p>
+                  <div className="mt-5 border-t border-[var(--color-border-default)] pt-3">
+                    <p className="text-xs text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
+                      HomeTruth connection
+                    </p>
+                    <p className="mt-1 text-sm font-bold">
+                      {connection.status}
+                    </p>
                   </div>
                 </li>
               ))}
@@ -142,7 +158,9 @@ export default function AgentConnections() {
         <p className="mt-5 max-w-4xl text-sm leading-6 text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
           These connections are not available yet. Availability will depend on
           platform support, permissions and testing. No launch dates are
-          confirmed.
+          confirmed. UK availability above refers to personal-agent products,
+          rather than general chat services. Brand marks belong to their
+          respective owners; no partnership or endorsement is implied.
         </p>
       </div>
     </section>
