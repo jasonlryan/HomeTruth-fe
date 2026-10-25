@@ -873,3 +873,18 @@ export const unpublishArticle = async (id) => {
 };
 
 export default api;
+
+export const getPartnerEvidence = async (programmeId, params = {}) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/evidence`, { params });
+  return res.data?.data;
+};
+
+export const getPartnerEvidenceDefinitions = async (programmeId) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/evidence/definitions`);
+  return res.data?.data;
+};
+
+export const exportPartnerEvidence = async (programmeId, params = {}) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/evidence/export`, { params });
+  return res.data;
+};
