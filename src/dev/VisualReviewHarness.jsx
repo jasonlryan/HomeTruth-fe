@@ -1219,7 +1219,7 @@ function installVisualReviewApiMock() {
         metrics: ["activation", "propertySetup", "documents", "taskGeneration", "taskEngagement", "propertyQuestions", "repeatUse", "feedback"].map((key) => ({ key, label: key.replace(/([A-Z])/g, " $1"), definition: "Distinct participants with recorded activity in this calendar month.", sources: ["fixture_activity"], coverage: "instrumented", unit: "participants" })),
       };
       if (path.endsWith("definitions")) return toAxiosResponse(config, { success: true, data: definitions });
-      if (params.get("denied") === "1") throw Object.assign(new Error("Partner programme access is not permitted"), { response: toAxiosResponse(config, { success: false, message: "Partner programme access is not permitted" }, 403) });
+      if (params.get("denied") === "1") return toAxiosError(config, { success: false, message: "Partner programme access is not permitted" }, 403);
       const state = params.get("evidenceState") || "available";
       const report = {
         state: state === "approval_required" ? state : "available", generatedAt: "2026-10-25T09:00:00Z", month: config.params?.month || "2026-09", definitions,
