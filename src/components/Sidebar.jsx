@@ -12,7 +12,9 @@ import {
   Sliders,
   Bell,
   Lock,
+  KeyRound,
 } from "lucide-react";
+import { getPartnerProgrammeAccessStatus } from "../api/api";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -20,10 +22,25 @@ export default function Sidebar() {
   const [settingsOpen, setSettingsOpen] = useState(
     location.pathname.startsWith("/settings")
   );
+  const [hasPartnerAccess, setHasPartnerAccess] = useState(false);
 
   useEffect(() => {
     setSettingsOpen(location.pathname.startsWith("/settings"));
   }, [location.pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPartnerProgrammeAccessStatus()
+      .then((hasAccess) => {
+        if (!cancelled) setHasPartnerAccess(hasAccess);
+      })
+      .catch(() => {
+        if (!cancelled) setHasPartnerAccess(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="hidden w-80 bg-white border-r p-4 lg:flex lg:flex-col">
@@ -43,6 +60,14 @@ export default function Sidebar() {
           onClick={() => navigate("/dashboard")}
           active={location.pathname === "/dashboard"}
         />
+        {hasPartnerAccess && (
+          <NavItem
+            icon={<KeyRound size={20} />}
+            label="Partner programmes"
+            onClick={() => navigate("/partner-programmes")}
+            active={location.pathname === "/partner-programmes"}
+          />
+        )}
         <NavItem
           icon={<Building2 size={20} />}
           label="Property profile"

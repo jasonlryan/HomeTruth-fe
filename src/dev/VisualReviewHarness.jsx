@@ -9,6 +9,7 @@ const VISUAL_REVIEW_TOKEN = "visual-review-token";
 const userRoutes = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "Partner invitation", path: "/partner/insurer-active" },
+  { label: "Partner programmes", path: "/partner-programmes?partnerRole=programme_manager" },
   { label: "Documents", path: "/documents" },
   { label: "Property Profile", path: "/property-profile" },
   { label: "Ask HomeTruth", path: "/ask-ai" },
@@ -387,6 +388,96 @@ const adminPartnerProgrammes = [
   },
 ];
 
+const visualPartnerAssignments = [
+  {
+    id: 901,
+    role: "programme_manager",
+    status: "active",
+    grantedAt: "2026-08-03T08:30:00Z",
+    revokedAt: null,
+    user: {
+      id: 71,
+      email: "programme.manager@example.com",
+      firstName: "Priya",
+      lastName: "Shah",
+      verified: true,
+    },
+  },
+  {
+    id: 902,
+    role: "analyst",
+    status: "revoked",
+    grantedAt: "2026-08-02T10:00:00Z",
+    revokedAt: "2026-08-03T09:00:00Z",
+    user: {
+      id: 72,
+      email: "former.analyst@example.com",
+      firstName: "Alex",
+      lastName: "Morgan",
+      verified: true,
+    },
+  },
+];
+
+const visualPartnerProgrammeEntry = () => {
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get("partnerRole") || "programme_manager";
+  const status = params.get("programmeStatus") || "active";
+  const partnerType = params.get("partnerType") || "insurer";
+  const auditAllowed = ["programme_manager", "privacy_auditor"].includes(role);
+  const operational = status === "active";
+  return {
+    role,
+    assignmentStatus: "active",
+    capabilities: [
+      ...(operational ? ["programme:view"] : []),
+      ...(auditAllowed ? ["audit:view"] : []),
+    ],
+    programme: {
+      id: 41,
+      programmeKey: "home-ready-2026",
+      name: "Home Ready",
+      status,
+      startDate: "2026-09-01",
+      endDate: "2027-08-31",
+    },
+    partner: {
+      id: 1,
+      name: "Northstar Mutual",
+      partnerType,
+      status: "active",
+      reportingMode: "aggregate_only",
+    },
+    privacyBoundary:
+      "Programme-scoped aggregate access only. No homeowner, property, document, task, profile, chat or behavioural-event rows are available.",
+  };
+};
+
+const visualPartnerAuditEvents = [
+  {
+    id: 1,
+    eventType: "access_granted",
+    action: "access:grant",
+    resourceType: "partner_programme_access",
+    outcome: "allowed",
+    reasonCode: null,
+    details: { role: "programme_manager" },
+    actorType: "hometruth_operator",
+    occurredAt: "2026-08-03T08:30:00Z",
+  },
+  {
+    id: 2,
+    eventType: "access_denied",
+    action: "properties:view",
+    resourceType: "properties",
+    outcome: "denied",
+    reasonCode: "individual_data_prohibited",
+    details: { role: "programme_manager", resourceClass: "properties" },
+    actorType: "partner_user",
+    occurredAt: "2026-08-03T09:05:00Z",
+  },
+];
+
 const visualConsentScopes = [
   {
     scope: "hometruth_processing",
@@ -604,6 +695,15 @@ const toAxiosResponse = (config, data, status = 200) =>
     status,
     statusText: status === 200 ? "OK" : "Error",
   });
+
+const toAxiosError = async (config, data, status) => {
+  const response = await toAxiosResponse(config, data, status);
+  const error = new Error(`Request failed with status code ${status}`);
+  error.config = config;
+  error.response = response;
+  error.isAxiosError = true;
+  throw error;
+};
 
 const parsePayload = (payload) => {
   if (!payload || typeof payload !== "string") return payload || {};
@@ -1060,6 +1160,92 @@ function installVisualReviewApiMock() {
 
     if (method === "get" && path === "/api/admin/partner-programmes/programmes") {
       return toAxiosResponse(config, { success: true, data: adminPartnerProgrammes });
+    }
+
+    const accessAssignmentsMatch = path.match(
+      /^\/api\/admin\/partner-programmes\/programmes\/(\d+)\/access-assignments$/
+    );
+    if (method === "get" && accessAssignmentsMatch) {
+      return toAxiosResponse(config, { success: true, data: visualPartnerAssignments });
+    }
+    if (method === "post" && accessAssignmentsMatch) {
+      const assignment = {
+        id: Math.max(...visualPartnerAssignments.map((item) => item.id)) + 1,
+        role: data.role,
+        status: "active",
+        grantedAt: "2026-08-03T10:00:00Z",
+        revokedAt: null,
+        user: {
+          id: 73,
+          email: data.userEmail,
+          firstName: "New",
+          lastName: "Partner user",
+          verified: true,
+        },
+      };
+      visualPartnerAssignments.unshift(assignment);
+      return toAxiosResponse(config, { success: true, data: assignment }, 201);
+    }
+
+    const changeAccessMatch = path.match(
+      /^\/api\/admin\/partner-programmes\/programmes\/(\d+)\/access-assignments\/(\d+)$/
+    );
+    if (method === "patch" && changeAccessMatch) {
+      const assignment = visualPartnerAssignments.find(
+        (item) => item.id === Number(changeAccessMatch[2])
+      );
+      assignment.role = data.role;
+      return toAxiosResponse(config, { success: true, data: assignment });
+    }
+
+    const revokeAccessMatch = path.match(
+      /^\/api\/admin\/partner-programmes\/programmes\/(\d+)\/access-assignments\/(\d+)\/revoke$/
+    );
+    if (method === "post" && revokeAccessMatch) {
+      const assignment = visualPartnerAssignments.find(
+        (item) => item.id === Number(revokeAccessMatch[2])
+      );
+      assignment.status = "revoked";
+      assignment.revokedAt = "2026-08-03T10:05:00Z";
+      return toAxiosResponse(config, { success: true, data: assignment });
+    }
+
+    if (method === "get" && path === "/api/partner/programmes") {
+      const params = new URLSearchParams(window.location.search);
+      return toAxiosResponse(config, {
+        success: true,
+        data: params.get("empty") === "1" ? [] : [visualPartnerProgrammeEntry()],
+      });
+    }
+    if (method === "get" && path === "/api/partner/programmes/access-status") {
+      const params = new URLSearchParams(window.location.search);
+      return toAxiosResponse(config, {
+        success: true,
+        data: { hasAccess: params.get("empty") !== "1" },
+      });
+    }
+    if (
+      method === "get" &&
+      path.match(/^\/api\/partner\/programmes\/\d+\/audit-events$/)
+    ) {
+      return toAxiosResponse(config, { success: true, data: visualPartnerAuditEvents });
+    }
+    if (method === "get" && path.match(/^\/api\/partner\/programmes\/\d+$/)) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("denied") === "1") {
+        return toAxiosError(
+          config,
+          {
+            success: false,
+            message: "Partner programme access is not permitted",
+          },
+          403
+        );
+      }
+      return toAxiosResponse(config, {
+        success: true,
+        data: visualPartnerProgrammeEntry(),
+      });
     }
 
     if (method === "post" && path === "/api/admin/partner-programmes/programmes") {
