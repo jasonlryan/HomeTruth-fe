@@ -1,3 +1,4 @@
+import AgentConnections from "../components/AgentConnections";
 import { useState } from "react";
 import ComingSoonHeader from "../components/ComingSoonHeader";
 import { joinWaitlist } from "../api/api";
@@ -91,6 +92,8 @@ export default function ComingSoon() {
           </div>
         </div>
       </section>
+
+      <AgentConnections />
 
       {/* Email Modal */}
       {showModal && (
