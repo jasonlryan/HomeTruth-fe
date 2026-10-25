@@ -19,7 +19,8 @@ const connections = [
     name: "Muse",
     provider: "Meta",
     status: "Exploring",
-    description: "Assessing a supported way to bring your home into the conversation.",
+    description:
+      "Assessing a supported way to bring your home into the conversation.",
     initial: "03",
   },
   {
@@ -50,20 +51,20 @@ export default function AgentConnections() {
             >
               Your home. The assistant you choose.
             </h2>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-5 max-w-lg text-lg leading-relaxed text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
               We’re planning connections that bring your HomeTruth property
               record to the personal assistant you already use. Ask about your
               home without explaining its history all over again.
             </p>
             <div className="mt-7 rounded-[var(--radius-lg)] border border-[var(--color-border-default)] bg-[color-mix(in_srgb,var(--color-accent)_6%,var(--color-surface-default))] p-5 sm:p-6">
               <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-secondary)]">
-                <House size={18} aria-hidden="true" />
-                A question we’re building towards
+                <House size={18} aria-hidden="true" />A question we’re building
+                towards
               </div>
               <p className="mt-3 text-xl font-bold leading-snug">
                 “What needs attention in my home over the next three months?”
               </p>
-              <p className="mt-3 text-sm leading-6 text-[var(--color-text-muted)]">
+              <p className="mt-3 text-sm leading-6 text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
                 The aim: an answer grounded in your documents and recorded
                 dates, with sources and a clear explanation of anything missing.
               </p>
@@ -71,27 +72,36 @@ export default function AgentConnections() {
           </div>
 
           <div>
-            <p className="mb-2 text-sm font-bold text-[var(--color-text-muted)]">
+            <p className="mb-2 text-sm font-bold text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
               Connections we’re planning and exploring
             </p>
             <ul className="divide-y divide-[var(--color-border-default)] border-y border-[var(--color-border-default)]">
               {connections.map((connection) => (
                 <li key={connection.name} className="py-5">
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <span className="pt-1 text-xs font-bold tabular-nums text-[var(--color-secondary)]" aria-hidden="true">
+                    <span
+                      className="pt-1 text-xs font-bold tabular-nums text-[var(--color-secondary)]"
+                      aria-hidden="true"
+                    >
                       {connection.initial}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
-                          <p className="text-xs text-[var(--color-text-muted)]">{connection.provider}</p>
-                          <h3 className="mt-0.5 text-xl font-bold">{connection.name}</h3>
+                          <p className="text-xs text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
+                            {connection.provider}
+                          </p>
+                          <h3 className="mt-0.5 text-xl font-bold">
+                            {connection.name}
+                          </h3>
                         </div>
                         <span className="rounded-[var(--radius-full)] border border-[var(--color-border-default)] bg-[color-mix(in_srgb,var(--color-secondary)_5%,var(--color-surface-default))] px-3 py-1 text-xs font-bold text-[var(--color-secondary)]">
                           {connection.status}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">{connection.description}</p>
+                      <p className="mt-2 text-sm leading-6 text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
+                        {connection.description}
+                      </p>
                     </div>
                   </div>
                 </li>
@@ -101,13 +111,38 @@ export default function AgentConnections() {
         </div>
 
         <div className="mt-8 grid gap-4 border-b border-[var(--color-border-default)] pb-6 text-sm sm:grid-cols-3 sm:gap-6">
-          <p className="flex items-start gap-2 leading-6"><KeyRound size={18} className="mt-0.5 flex-none text-[var(--color-secondary)]" aria-hidden="true" /><span>You choose the home and what to share.</span></p>
-          <p className="flex items-start gap-2 leading-6"><FileText size={18} className="mt-0.5 flex-none text-[var(--color-accent)]" aria-hidden="true" /><span>First connections are planned for reading information, with changes kept in your hands.</span></p>
-          <p className="flex items-start gap-2 leading-6"><ArrowRight size={18} className="mt-0.5 flex-none text-[var(--color-action-primary)]" aria-hidden="true" /><span>You’ll still be able to use HomeTruth’s own assistant.</span></p>
+          <p className="flex items-start gap-2 leading-6">
+            <KeyRound
+              size={18}
+              className="mt-0.5 flex-none text-[var(--color-secondary)]"
+              aria-hidden="true"
+            />
+            <span>You choose the home and what to share.</span>
+          </p>
+          <p className="flex items-start gap-2 leading-6">
+            <FileText
+              size={18}
+              className="mt-0.5 flex-none text-[var(--color-accent)]"
+              aria-hidden="true"
+            />
+            <span>
+              First connections are planned for reading information, with
+              changes kept in your hands.
+            </span>
+          </p>
+          <p className="flex items-start gap-2 leading-6">
+            <ArrowRight
+              size={18}
+              className="mt-0.5 flex-none text-[var(--color-action-primary)]"
+              aria-hidden="true"
+            />
+            <span>You’ll still be able to use HomeTruth’s own assistant.</span>
+          </p>
         </div>
-        <p className="mt-5 max-w-4xl text-sm leading-6 text-[var(--color-text-muted)]">
+        <p className="mt-5 max-w-4xl text-sm leading-6 text-[color-mix(in_srgb,var(--color-text-default)_75%,var(--color-surface-default))]">
           These connections are not available yet. Availability will depend on
-          platform support, permissions and testing. No launch dates are confirmed.
+          platform support, permissions and testing. No launch dates are
+          confirmed.
         </p>
       </div>
     </section>
