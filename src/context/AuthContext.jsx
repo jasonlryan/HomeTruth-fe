@@ -48,6 +48,8 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     clearJourney();
+    localStorage.removeItem("userId");
+    for (const key of ["guest_chat_session_id", "guest_chat_message_count", "guest_chat_messages_to_restore"]) sessionStorage.removeItem(key);
     sessionStorage.removeItem("guest_session_id_redirect");
     sessionStorage.removeItem("ask_ai_open_conversation_id");
     localStorage.removeItem("dashboard_query");
