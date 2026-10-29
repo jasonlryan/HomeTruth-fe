@@ -250,6 +250,8 @@ export default function ItemWorkspace({
     e.preventDefault();
     run(async current => {
       requestKey.current ||= crypto.randomUUID();
+      // Persist the retry key before the request: a reload after a lost response must not create another unit.
+      saveItemDraft(draftKey,{mode,method,text,draft,editSection,version:item?.version,intakeDocumentId,keepIntake,intakeRole,docId,requestKey:requestKey.current});
       const result = item ? await updateHomeItem(homeId, item.id, {
         version: item.version,
         record: draft
