@@ -321,7 +321,8 @@ export default function PropertyProfile() {
         const data = await getPropertyRecords();
         if (!isMounted) return;
         setRecords(Array.isArray(data) ? data : []);
-        setSelectedId(data?.[0]?.property?.id || null);
+        const requested = Number(location.state?.propertyId);
+        setSelectedId(data?.find(record => record.property?.id === requested)?.property?.id || data?.[0]?.property?.id || null);
       } catch (loadError) {
         if (!isMounted) return;
         setError(
@@ -337,6 +338,7 @@ export default function PropertyProfile() {
     return () => {
       isMounted = false;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selectedRecord = useMemo(() => {

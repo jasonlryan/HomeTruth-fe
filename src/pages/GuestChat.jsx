@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { askAnonymousAI, askAIChat, saveNote } from "../api/api";
 import { useAuth } from "../context/AuthContext";
+import JourneyReturn from "../features/journey/JourneyReturn";
+import { consumeJourneyQuestion, readJourney } from "../features/journey/context";
 import { MessageCircle, Save } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -58,7 +60,9 @@ function AssistantBubble({ text }) {
 export default function GuestChat() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState(() => readJourney("guest")?.question || "");
+  const [guestSessionId, setGuestSessionId] = useState(() => sessionStorage.getItem("guest_session_id_redirect"));
+  useEffect(() => { consumeJourneyQuestion("guest"); }, []);
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -111,7 +115,12 @@ export default function GuestChat() {
         }
       } else {
         // Use anonymous AI API for guests
-        resp = await askAnonymousAI(q);
+        const result = await askAnonymousAI(q, guestSessionId);
+        resp = result.reply;
+        if (result.session_id) {
+          setGuestSessionId(result.session_id);
+          sessionStorage.setItem("guest_session_id_redirect", result.session_id);
+        }
       }
       
       // Add AI response to chat history
@@ -186,12 +195,13 @@ export default function GuestChat() {
 
   return (
     <div className="chat-system-font min-h-screen bg-gray-50">
+      <JourneyReturn />
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/start")} aria-label="Back to goal selection"
               className="text-gray-500 hover:text-gray-700"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +210,7 @@ export default function GuestChat() {
             </button>
             <MessageCircle className="w-8 h-8 text-ht-cyan" />
             <h1 className="text-xl font-semibold text-gray-800">
-              HomeTruth Assistant
+              AskAI
             </h1>
           </div>
           <div className="flex items-center gap-4">
@@ -321,6 +331,7 @@ export default function GuestChat() {
                     type="text"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
+                    aria-label="AskAI question"
                     placeholder="Type your message here..."
                     className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ht-cyan focus:border-transparent"
                     disabled={loading}
@@ -359,7 +370,7 @@ export default function GuestChat() {
           <p className="text-gray-600 mb-4">Want to save your conversations and get more features?</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/register?redirect=%2Fask-ai")}
               className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg font-medium transition"
             >
               Sign Up for Free
@@ -399,7 +410,7 @@ export default function GuestChat() {
               
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={() => navigate("/register")}
+                  onClick={() => navigate("/register?redirect=%2Fask-ai")}
                   className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-3 rounded-lg font-medium transition flex-1"
                 >
                   Register Now
@@ -417,7 +428,7 @@ export default function GuestChat() {
                 <button
                   onClick={() => {
                     setShowRegisterModal(false);
-                    navigate("/login");
+                    navigate("/login?redirect=%2Fask-ai");
                   }}
                   className="text-ht-cyan hover:text-ht-cyan-light ml-1"
                 >

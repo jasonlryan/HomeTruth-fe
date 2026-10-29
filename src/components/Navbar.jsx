@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -18,6 +20,8 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
+    { label: "Get started", path: "/start" },
+    { label: "AskAI", path: user ? "/ask-ai" : "/chat" },
     { label: "How it works", path: "/#how-it-works" },
     { label: "Home Truths", path: "/home-truths" },
     { label: "Privacy", path: "/privacy-policy" },
@@ -55,10 +59,10 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/login"
+            to={user ? "/dashboard" : "/login"}
             className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-1.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
           >
-            Log in
+            {user ? "My workspace" : "Log in"}
           </Link>
         </div>
 
@@ -106,12 +110,12 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => {
-                  navigate("/login");
+                  navigate(user ? "/dashboard" : "/login");
                   setIsMenuOpen(false);
                 }}
                 className="w-full bg-ht-cyan text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-ht-cyan-light transition-all active:scale-[0.98]"
               >
-                Log in
+                {user ? "My workspace" : "Log in"}
               </button>
             </div>
           </div>
