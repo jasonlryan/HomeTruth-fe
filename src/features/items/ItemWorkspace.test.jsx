@@ -47,3 +47,9 @@ test('a late inventory response after a home change does not show previous home 
  const view=show();view.rerender(<MemoryRouter><ItemWorkspace homeId={43} homeLabel="Other home" canManage askGeneral={jest.fn()} /></MemoryRouter>);
  await screen.findByText('Your first item is a useful place to start.');finish([item]);await waitFor(()=>expect(screen.queryByText('Kitchen washer')).not.toBeInTheDocument());
 });
+
+test('removing evidence clears an answer and its selected source',async()=>{
+ api.askItemAI.mockResolvedValue({statements:[{answer:'Use A',quote:'programme A',sourceId:9}]});api.detachItemEvidence.mockResolvedValue({...item,evidence:[]});show('/my-home/items?item=7');
+ await screen.findByRole('heading',{name:'Kitchen washer'});fireEvent.click(screen.getByLabelText('Washer manual'));fireEvent.change(screen.getByLabelText('Your question'),{target:{value:'Which programme?'}});fireEvent.click(screen.getByRole('button',{name:'Send question'}));await screen.findByText('programme A');
+ fireEvent.click(screen.getByRole('button',{name:'Remove association'}));await waitFor(()=>expect(screen.queryByText('programme A')).not.toBeInTheDocument());expect(screen.getByRole('button',{name:'Send question'})).toBeDisabled();
+});

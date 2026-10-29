@@ -6,7 +6,7 @@ const message = e => e.response?.data?.message || 'This could not be completed. 
 const blank = () => ({ name: '', category: 'appliance', room: '', identity: { brand: '', model: '', serial: '', source: '', method: 'manual' }, purchase: {}, warranty: {}, values: {}, history: [], notes: '' });
 const today = () => new Date().toISOString().slice(0,10);
 const external = value => { try { const u = new URL(value); return u.protocol === 'https:' && !u.username && !u.password ? u.href : null; } catch { return null; } };
-function Field({ label, value, onChange, type = 'text', required = false, maxLength = 180 }) { return <label className="item-field">{label}<input type={type} value={value ?? ''} onChange={e => onChange(e.target.value)} required={required} maxLength={maxLength} /></label>; }
+function Field({ label, value, onChange, type = 'text', required = false, maxLength = 180 }) { return <label className="item-field">{label}<input type={type} step={type === 'number' ? 'any' : undefined} min={type === 'number' ? 0 : undefined} value={value ?? ''} onChange={e => onChange(e.target.value)} required={required} maxLength={maxLength} /></label>; }
 function Money({ title, value, onChange }) {
   const change = (key, v) => onChange({ amount: 0, currency: 'GBP', date: today(), source: 'User estimate', ...value, [key]: v });
   return <fieldset className="item-money"><legend>{title}</legend><p className="journey-note">Leave unknown amounts blank. Supply a date and the receipt, quote or method behind each amount.</p><Field label={`${title} amount`} type="number" value={value?.amount} onChange={v => onChange(v === '' ? null : { currency:'GBP',date:today(),source:'User supplied',...value,amount:Number(v) })} /><Field label={`${title} currency`} value={value?.currency} onChange={v => change('currency',v.toUpperCase())} maxLength={3} /><Field label={`${title} date`} type="date" value={value?.date} onChange={v => change('date',v)} /><Field label={`${title} source or method`} value={value?.source} onChange={v => change('source',v)} maxLength={1000} /></fieldset>;
@@ -26,6 +26,7 @@ export default function ItemWorkspace({ homeId, homeLabel, canManage = false, as
     load.then(result => { if (active) itemId ? setItem(result) : setItems(result); }).catch(e => { if(active) setError(message(e)); }).finally(() => { if(active) setLoading(false); });
     return () => { active = false; };
   },[homeId,itemId,reload]);
+  useEffect(() => { setAnswer(null); setSelectedEvidence([]); },[item?.evidence]);
   useEffect(() => { setBusy(false); return () => { generation.current += 1; }; },[homeId,itemId]);
   const run = async action => {
     const current = generation.current; setBusy(true); setError('');
