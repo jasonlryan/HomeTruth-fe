@@ -873,3 +873,22 @@ export const unpublishArticle = async (id) => {
 };
 
 export default api;
+
+// Selected-home physical records (HT-341). These endpoints require the HT-341 backend.
+const itemPath = homeId => `/api/property-records/${homeId}/items`;
+export const getHomeItems = async homeId => (await api.get(itemPath(homeId))).data.data;
+export const getHomeItem = async (homeId, itemId) => (await api.get(`${itemPath(homeId)}/${itemId}`)).data.data;
+export const createHomeItem = async (homeId, payload) => (await api.post(itemPath(homeId), payload)).data.data;
+export const updateHomeItem = async (homeId, itemId, payload) => (await api.patch(`${itemPath(homeId)}/${itemId}`, payload)).data.data;
+export const identifyHomeItem = async (homeId, formData) => (await api.post(`${itemPath(homeId)}/identify`, formData)).data.data;
+export const attachItemEvidence = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/evidence`, payload)).data.data;
+export const detachItemEvidence = async (homeId, itemId, evidenceId) => (await api.delete(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}`)).data.data;
+export const findItemManual = async (homeId, itemId, requestKey) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`, {requestKey}, {timeout:110000})).data.data;
+export const getApplianceAgentResult = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/agent/latest`)).data.data;
+export const saveAgentManual = async (homeId,itemId,runId,candidateIndex) => (await api.post(`${itemPath(homeId)}/${itemId}/agent/${runId}/save-manual`,{candidateIndex,confirmed:true},{timeout:110000})).data.data;
+export const askItemAI = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/ask`, payload)).data.data;
+export const getItemAnswers = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/answers`)).data.data;
+export const saveItemAnswer = async (homeId,itemId,token) => (await api.post(`${itemPath(homeId)}/${itemId}/answers`,{token})).data.data;
+export const deleteItemAnswer = async (homeId,itemId,answerId) => (await api.delete(`${itemPath(homeId)}/${itemId}/answers/${answerId}`)).data.data;
+
+export const getItemEvidenceFile = async (homeId,itemId,evidenceId) => (await api.get(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}/file`,{responseType:'blob'})).data;

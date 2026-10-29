@@ -12,6 +12,7 @@
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
     "jspdf": "^4.0.0",
+    "jsqr": "^1.4.0",
     "lucide-react": "^0.515.0",
     "pdfjs-dist": "^5.4.149",
     "react": "^19.1.0",
@@ -56,5 +57,12 @@
   "devDependencies": {
     "env-cmd": "^11.0.0",
     "tailwindcss": "^3.4.17"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^react-router-dom$": "<rootDir>/node_modules/react-router-dom/dist/index.js",
+      "^react-router/dom$": "<rootDir>/node_modules/react-router/dist/development/dom-export.js",
+      "^react-router$": "<rootDir>/node_modules/react-router/dist/development/index.js"
+    }
   }
 }

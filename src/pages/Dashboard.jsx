@@ -2,20 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AttitudinalQuizModal from "../components/AttitudinalQuizModal";
-import CompleteProfileModal from "../components/CompleteProfileModal";
+import GoalEntry from "../features/journey/GoalEntry";
+import { journeyOwner, readJourney, writeJourney } from "../features/journey/context";
 import PropertyCard from "../components/PropertyCard";
 import PropertyDetailModal from "../components/PropertyDetailModal";
 import PageTitle from "../components/PageTitle";
 import { getAllSavedItems, getUserDocuments, getDocumentPreview } from "../api/api";
-import { checkQuizCompletion } from "../utils/quizUtils";
 import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [query, setQuery] = useState("");
   const [aiResult] = useState(null);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -25,8 +22,6 @@ export default function Dashboard() {
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [userDocuments, setUserDocuments] = useState([]);
   const [documentsLoading, setDocumentsLoading] = useState(false);
-  const [checkingQuizCompletion, setCheckingQuizCompletion] = useState(false);
-  const [quizCheckedThisSession, setQuizCheckedThisSession] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [documentPreview, setDocumentPreview] = useState(null);
@@ -51,36 +46,6 @@ export default function Dashboard() {
       } finally {
         setIsLoadingPreview(false);
       }
-    }
-  };
-
-  // Function to check quiz completion status
-  // This function is called for existing users (not new users) to check if they have completed the quiz
-  // If the quiz is not completed, the quiz modal will be shown
-  const checkQuizCompletionStatus = async () => {
-    try {
-      setCheckingQuizCompletion(true);
-      const isQuizCompleted = await checkQuizCompletion();
-      
-      if (!isQuizCompleted) {
-        // User hasn't completed the quiz, show the modal
-        setShowQuiz(true);
-      } else {
-        // User has completed the quiz, mark it as completed for future sessions
-        localStorage.setItem("quiz_completed", "true");
-      }
-      
-      // Mark that we've checked quiz completion for this session
-      setQuizCheckedThisSession(true);
-      localStorage.setItem("quiz_checked_this_session", "true");
-    } catch (error) {
-      console.error('Error checking quiz completion:', error);
-      // If there's an error, don't show the quiz to avoid blocking the user
-      // Still mark as checked to avoid repeated attempts
-      setQuizCheckedThisSession(true);
-      localStorage.setItem("quiz_checked_this_session", "true");
-    } finally {
-      setCheckingQuizCompletion(false);
     }
   };
 
@@ -127,52 +92,6 @@ export default function Dashboard() {
       return;
     }
 
-    const needsProfile = localStorage.getItem("require_profile") === "true";
-    const isNewUser = localStorage.getItem("new_user") === "true";
-    const fromWelcomePage = localStorage.getItem("from_welcome_page") === "true";
-
-    if (needsProfile) {
-      setShowProfile(true);
-    } else if (isNewUser && !fromWelcomePage) {
-      // Only redirect if this is a fresh new user (not returning from welcome page)
-      // Check if user has ever been to welcome page before
-      const hasBeenToWelcome = localStorage.getItem("has_been_to_welcome") === "true";
-      if (!hasBeenToWelcome) {
-        navigate("/welcome", { replace: true });
-        return;
-      }
-    }
-    
-    // Clear the from_welcome_page flag after checking
-    if (fromWelcomePage) {
-      localStorage.removeItem("from_welcome_page");
-      // Also ensure new_user flag is cleared when coming from welcome page
-      localStorage.removeItem("new_user");
-      // Trigger storage event to update layout
-      try { window.dispatchEvent(new StorageEvent("storage")); } catch {}
-      // Force a small delay to ensure layout updates
-      setTimeout(() => {
-        try { window.dispatchEvent(new StorageEvent("storage")); } catch {}
-      }, 100);
-    }
-
-    // Check quiz completion for existing users (not new users or profile completion)
-    // Don't check if user just came from welcome page (they already had the chance to take quiz)
-    // Only check once per session to avoid showing modal repeatedly
-    // Also don't check if user has already completed quiz in a previous session
-    if (!needsProfile && !isNewUser && !fromWelcomePage && !quizCheckedThisSession) {
-      // Check if user has already completed quiz in a previous session
-      const hasCompletedQuiz = localStorage.getItem("quiz_completed") === "true";
-     
-      if (!hasCompletedQuiz) {
-        checkQuizCompletionStatus();
-      } else {
-        // Mark as checked for this session to avoid repeated checks
-        setQuizCheckedThisSession(true);
-        localStorage.setItem("quiz_checked_this_session", "true");
-      }
-    } 
-
     // Fetch all saved items (notes + budget calculations)
     getAllSavedItems({ page: 1, limit: 10 })
       .then((response) => {
@@ -200,28 +119,14 @@ export default function Dashboard() {
 
     // Fetch user documents
     fetchUserDocuments();
-  }, [navigate, quizCheckedThisSession, user]);
-
-  const handleProfileComplete = () => {
-    localStorage.removeItem("require_profile");
-    localStorage.setItem("new_user", "true");
-    setShowProfile(false);
-    // Redirect to welcome page instead of showing quiz directly
-    navigate("/welcome", { replace: true });
-  };
-
-  const handleQuizClose = () => {
-    localStorage.setItem("new_user", "false");
-    localStorage.removeItem("from_welcome_page");
-    setShowQuiz(false);
-    // Quiz completion is handled by the AttitudinalQuizModal component
-  };
+  }, [navigate, user]);
 
   const handleSearch = () => {
     if (!query.trim()) return;
 
     // Store the query in localStorage to pass it to Ask HomeTruth page
-    localStorage.setItem("dashboard_query", query);
+    const owner = journeyOwner(user);
+    writeJourney(owner, { intent: readJourney(owner)?.intent || "ask", question: query, propertyId: null, returnTo: "/dashboard" });
 
     // Navigate to Ask HomeTruth page
     navigate("/ask-ai");
@@ -233,38 +138,9 @@ export default function Dashboard() {
     setVisibleIndex(nextIndex >= aiResult.properties.length ? 0 : nextIndex);
   };
 
-  // --- Takeover screens with white background ---
-  if (showProfile) {
-    return (
-      <div className="min-h-screen bg-white">
-        <CompleteProfileModal onComplete={handleProfileComplete} />
-      </div>
-    );
-  }
-
-  if (showQuiz) {
-    return (
-      <div className="min-h-screen bg-white">
-        <AttitudinalQuizModal onClose={handleQuizClose} />
-      </div>
-    );
-  }
-
-  // Show loading state while checking quiz completion
-  if (checkingQuizCompletion) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-cyan mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-  // ---------------------------------------------
-
   return (
     <>
+      <GoalEntry />
       <div className="min-h-screen bg-gray-50 px-8 py-8">
         {/* Ask HomeTruth Title */}
         <PageTitle as="h2" className="mb-6">Ask HomeTruth</PageTitle>

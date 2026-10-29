@@ -46,9 +46,11 @@ export default function Topbar() {
 
 
   return (
-    <div className="flex items-center justify-between px-5 py-2 bg-white border-b relative">
-      <div className="text-ht-dark text-base font-medium">Hi, {userName}!</div>
-      <div className="flex items-center gap-4 min-h-[2.25rem]">
+    <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-2 bg-white border-b relative">
+      <div className="text-ht-dark text-base font-medium whitespace-nowrap">Hi, {userName}!</div>
+      <div className="flex flex-wrap items-center gap-4 min-h-[2.25rem]">
+        <button className="journey-link" onClick={() => navigate("/ask-ai")}>AskAI</button>
+        <button className="journey-link lg:hidden" onClick={() => navigate("/my-home")}>My home</button>
         <div className="relative flex items-center justify-center h-9" ref={dropdownRef}>
           <span
             className="material-symbols-outlined text-ht-mid-grey cursor-pointer hover:text-ht-cyan transition !text-[20px] inline-flex items-center justify-center"

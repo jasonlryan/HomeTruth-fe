@@ -60,6 +60,8 @@ export default function Sidebar() {
           onClick={() => navigate("/dashboard")}
           active={location.pathname === "/dashboard"}
         />
+        <NavItem icon={<Home size={20} />} label="Manage my home" onClick={() => navigate("/my-home")} active={location.pathname.startsWith("/my-home")} />
+        <NavItem icon={<Building2 size={20} />} label="Change my goal" onClick={() => navigate("/start")} active={location.pathname === "/start"} />
         {hasPartnerAccess && (
           <NavItem
             icon={<KeyRound size={20} />}
@@ -114,6 +116,8 @@ export default function Sidebar() {
           {/* Submenu */}
           {settingsOpen && (
             <div className="ml-6 mt-2 space-y-1">
+              <SubNavItem icon={<Settings size={16} />} label="Connections" onClick={() => navigate("/settings/connections")} active={location.pathname === "/settings/connections"} />
+              <SubNavItem icon={<Settings size={16} />} label="Agents" onClick={() => navigate("/settings/agents")} active={location.pathname === "/settings/agents"} />
               <SubNavItem
                 icon={<User size={16} />}
                 label="Account"
@@ -148,9 +152,10 @@ export default function Sidebar() {
 
 function NavItem({ icon, label, active, onClick }) {
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`flex items-center px-4 py-4 rounded-lg cursor-pointer transition-colors duration-150 ${
+      className={`w-full text-left flex items-center px-4 py-4 rounded-lg cursor-pointer transition-colors duration-150 ${
         active
           ? "bg-sky-50 text-ht-cyan font-medium"
           : "hover:bg-gray-100"
@@ -158,15 +163,16 @@ function NavItem({ icon, label, active, onClick }) {
     >
       <div className="mr-2">{icon}</div>
       <span>{label}</span>
-    </div>
+    </button>
   );
 }
 
 function SubNavItem({ icon, label, active, onClick }) {
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`flex items-center px-4 py-3 rounded cursor-pointer text-sm transition-colors duration-150 ${
+      className={`w-full text-left flex items-center px-4 py-3 rounded cursor-pointer text-sm transition-colors duration-150 ${
         active
           ? "text-ht-cyan font-medium bg-sky-50"
           : "hover:bg-gray-100 text-gray-700"
@@ -174,6 +180,6 @@ function SubNavItem({ icon, label, active, onClick }) {
     >
       <div className="mr-2">{icon}</div>
       <span>{label}</span>
-    </div>
+    </button>
   );
 }

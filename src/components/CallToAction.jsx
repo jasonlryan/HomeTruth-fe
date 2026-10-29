@@ -12,7 +12,7 @@ export default function CallToAction({ variant = "cyan" }) {
             ? "bg-white text-ht-cyan shadow-md hover:bg-gray-50"
             : "bg-ht-cyan text-white shadow-[0_4px_6px_-1px_rgba(0,180,216,0.2)] hover:bg-ht-cyan-light hover:shadow-[0_6px_10px_-1px_rgba(0,180,216,0.3)]"
           }`}
-        onClick={() => navigate("/register")}
+        onClick={() => navigate("/start")}
       >
         {isWhite ? "Start Free Today" : "Start Free"}
         <svg
