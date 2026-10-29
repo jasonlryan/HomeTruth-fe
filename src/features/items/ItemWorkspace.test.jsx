@@ -313,3 +313,8 @@ test('extracted receipt and warranty fields are proposed for confirmation', asyn
   expect(screen.getByLabelText('Suggested warranty end')).toHaveValue('2028-10-01');
   expect(api.createHomeItem).not.toHaveBeenCalled();
 });
+
+test('confirmation keeps the explicitly selected source with the new item without re-uploading',async()=>{
+ api.getUserDocuments.mockResolvedValue({data:{documents:[{id:5,name:'Selected manual',status:'ready'}]}});api.identifyHomeItem.mockResolvedValue({candidates:[{name:'Washer',brand:'Bosch',model:'W100',quote:'Bosch W100',method:'document'}]});api.createHomeItem.mockResolvedValue({id:7});api.attachItemEvidence.mockResolvedValue(item);show();
+ fireEvent.click(await screen.findByRole('button',{name:'Add an item'}));fireEvent.click(screen.getByRole('button',{name:'A saved document'}));await screen.findByRole('option',{name:'Selected manual'});fireEvent.change(screen.getByRole('combobox',{name:'Choose your document'}),{target:{value:'5'}});fireEvent.click(screen.getByRole('button',{name:'Find my item'}));fireEvent.click(await screen.findByRole('button',{name:'Review and confirm this item'}));expect(screen.getByRole('checkbox',{name:'Keep the selected document with this item'})).toBeChecked();fireEvent.change(screen.getByRole('combobox',{name:'Selected document type'}),{target:{value:'manual'}});fireEvent.click(screen.getByRole('button',{name:'Confirm and save item'}));await waitFor(()=>expect(api.attachItemEvidence).toHaveBeenCalledWith(42,7,{documentId:5,role:'manual',matchStatus:'unreviewed'}));expect(api.uploadDocument).not.toHaveBeenCalled();
+});

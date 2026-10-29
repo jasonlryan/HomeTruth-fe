@@ -2,7 +2,9 @@ const normal = value => String(value || '').trim().toLowerCase();
 export function existingMatches(candidate, items) {
   return items.filter(item => {
     const known = item.record.identity;
-    return candidate.model && normal(known.model) === normal(candidate.model) && normal(known.brand) === normal(candidate.brand) || candidate.quote?.length > 8 && known.source === candidate.quote;
+    const sameModel=candidate.model && normal(known.model)===normal(candidate.model) && normal(known.brand)===normal(candidate.brand);
+    const sameEvidence=candidate.quote?.length>8 && known.source===candidate.quote;
+    return Boolean(sameModel || sameEvidence);
   });
 }
 export default function IdentificationCandidates({
