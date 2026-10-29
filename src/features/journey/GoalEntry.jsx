@@ -20,8 +20,9 @@ export default function GoalEntry() {
     navigate(user ? '/ask-ai' : '/chat');
   };
   return <section className="journey" aria-labelledby="journey-title">
-    <h1 id="journey-title">What would you like HomeTruth to help with?</h1>
-    <p>Bring your question or the information you have. HomeTruth helps you understand it and keep track of what to do next.</p>
+    <h1 id="journey-title">Your home’s records, together and easier to use.</h1>
+    <p>Find a manual, understand a survey or keep track of a repair. HomeTruth helps you use the information you have and keep useful answers with your home.</p>
+    <h2>What would you like help with?</h2>
     <div className="journey-grid">
       <article className="journey-panel journey-card journey-buy"><Home aria-hidden="true" className="mb-5 text-ht-purple" /><h2>I’m buying a home</h2><p>Understand a survey and keep useful questions together. No survey yet? Ask about buying at any stage.</p><button className="journey-button" onClick={() => begin('buy', '/documents')}>Upload a survey</button><button className="journey-link mt-4" onClick={() => begin('buy', '/buying', true)}>Ask about buying</button></article>
       <article className="journey-panel journey-card journey-sell"><FileText aria-hidden="true" className="mb-5 text-ht-purple" /><h2>I’m selling a home</h2><p>Bring your documents into one place. Review what you have, ask about them and keep track of information you still need.</p><button className="journey-button" onClick={() => begin('sell', '/documents')}>Upload your documents</button><button className="journey-link mt-4" onClick={() => begin('sell', '/selling', true)}>Ask about selling</button></article>

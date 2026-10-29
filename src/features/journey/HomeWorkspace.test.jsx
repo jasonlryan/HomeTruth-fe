@@ -1,13 +1,13 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import HomeWorkspace from './HomeWorkspace';
-import { getPropertyRecords, getPropertyTasks, getHomeItems, getHomeItem } from '../../api/api';
+import { getPropertyRecords, getPropertyTasks, getHomeItems, getHomeItem, getItemAnswers } from '../../api/api';
 import { readJourney, writeJourney } from './context';
-jest.mock('../../api/api', () => ({ getPropertyRecords: jest.fn(), getPropertyTasks: jest.fn(), getHomeItems: jest.fn(), getHomeItem: jest.fn() }));
+jest.mock('../../api/api', () => ({ getPropertyRecords: jest.fn(), getPropertyTasks: jest.fn(), getHomeItems: jest.fn(), getHomeItem: jest.fn(), getItemAnswers: jest.fn().mockResolvedValue([]) }));
 jest.mock('../../context/AuthContext', () => ({ useAuth: () => ({ user: { id: 1 } }) }));
 const homes = [42, 43].map(id => ({ property: { id }, currentAddress: { addressLine1: `Home ${id}` }, relationship: { relationshipType: 'owner', permissionLevel: 'admin' } }));
 function workspace(path = '/my-home') { return render(<MemoryRouter initialEntries={[path]}><Routes><Route path="/my-home" element={<HomeWorkspace />} /><Route path="/my-home/:section" element={<HomeWorkspace />} /><Route path="/settings/connections" element={<HomeWorkspace settings="connections" />} /><Route path="/settings/agents" element={<HomeWorkspace settings="agents" />} /><Route path="/documents" element={<h1>Existing documents service</h1>} /><Route path="/ask-ai" element={<h1>Existing AskAI</h1>} /></Routes></MemoryRouter>); }
-beforeEach(() => { sessionStorage.clear(); jest.clearAllMocks(); getPropertyRecords.mockResolvedValue(homes); getPropertyTasks.mockResolvedValue([]); getHomeItems.mockResolvedValue([]); });
+beforeEach(() => { sessionStorage.clear(); jest.clearAllMocks(); getPropertyRecords.mockResolvedValue(homes); getPropertyTasks.mockResolvedValue([]); getHomeItems.mockResolvedValue([]);getItemAnswers.mockResolvedValue([]); });
 test('hub retains every agreed category and settings, not an appliance form', async () => {
   workspace(); await waitFor(() => expect(screen.getByLabelText('Selected home')).toHaveValue('42'));
   for (const label of ['Home details', 'Appliances, devices and systems', 'Connected devices', 'Documents and records', 'Maintenance and repairs', 'Costs and value', 'Home performance', 'AskAI', 'Connections', 'Agents']) expect(screen.getByRole('link', { name: label, exact: true })).toBeInTheDocument();

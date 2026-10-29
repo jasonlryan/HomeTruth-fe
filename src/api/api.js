@@ -885,3 +885,8 @@ export const attachItemEvidence = async (homeId, itemId, payload) => (await api.
 export const detachItemEvidence = async (homeId, itemId, evidenceId) => (await api.delete(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}`)).data.data;
 export const findItemManual = async (homeId, itemId) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`)).data.data;
 export const askItemAI = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/ask`, payload)).data.data;
+export const getItemAnswers = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/answers`)).data.data;
+export const saveItemAnswer = async (homeId,itemId,token) => (await api.post(`${itemPath(homeId)}/${itemId}/answers`,{token})).data.data;
+export const deleteItemAnswer = async (homeId,itemId,answerId) => (await api.delete(`${itemPath(homeId)}/${itemId}/answers/${answerId}`)).data.data;
+
+export const getItemEvidenceFile = async (homeId,itemId,evidenceId) => (await api.get(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}/file`,{responseType:'blob'})).data;

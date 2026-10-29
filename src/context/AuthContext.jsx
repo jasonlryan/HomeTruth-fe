@@ -1,3 +1,4 @@
+import { clearItemDrafts } from '../features/items/itemDraft';
 import { clearJourney } from "../features/journey/context";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -11,6 +12,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const loadUser = () => {
       const token = localStorage.getItem(TOKEN_KEY);
+      // Retire fixture authentication when moving from visual review to the real API.
+      if (token === 'visual-review-token' && process.env.REACT_APP_VISUAL_REVIEW !== 'true') {
+        for (const key of ['token','userId','user_name','user_email','user_role']) localStorage.removeItem(key);
+        clearJourney();clearItemDrafts();setLoading(false);return;
+      }
       if (token) {
         // Load user data from localStorage
         const userRole = localStorage.getItem("user_role");
@@ -48,6 +54,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     clearJourney();
+    clearItemDrafts();
     localStorage.removeItem("userId");
     for (const key of ["guest_chat_session_id", "guest_chat_message_count", "guest_chat_messages_to_restore"]) sessionStorage.removeItem(key);
     sessionStorage.removeItem("guest_session_id_redirect");
