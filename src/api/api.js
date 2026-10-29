@@ -883,7 +883,9 @@ export const updateHomeItem = async (homeId, itemId, payload) => (await api.patc
 export const identifyHomeItem = async (homeId, formData) => (await api.post(`${itemPath(homeId)}/identify`, formData)).data.data;
 export const attachItemEvidence = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/evidence`, payload)).data.data;
 export const detachItemEvidence = async (homeId, itemId, evidenceId) => (await api.delete(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}`)).data.data;
-export const findItemManual = async (homeId, itemId) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`)).data.data;
+export const findItemManual = async (homeId, itemId, requestKey) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`, {requestKey}, {timeout:110000})).data.data;
+export const getApplianceAgentResult = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/agent/latest`)).data.data;
+export const saveAgentManual = async (homeId,itemId,runId,candidateIndex) => (await api.post(`${itemPath(homeId)}/${itemId}/agent/${runId}/save-manual`,{candidateIndex,confirmed:true},{timeout:110000})).data.data;
 export const askItemAI = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/ask`, payload)).data.data;
 export const getItemAnswers = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/answers`)).data.data;
 export const saveItemAnswer = async (homeId,itemId,token) => (await api.post(`${itemPath(homeId)}/${itemId}/answers`,{token})).data.data;

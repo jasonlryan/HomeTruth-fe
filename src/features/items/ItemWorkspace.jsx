@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { attachItemEvidence, askItemAI, createHomeItem, detachItemEvidence, findItemManual, getHomeItem, getHomeItems, getUserDocuments, identifyHomeItem, updateHomeItem, uploadDocument, getItemAnswers, saveItemAnswer, deleteItemAnswer, getItemEvidenceFile } from '../../api/api';
+import { attachItemEvidence, askItemAI, createHomeItem, detachItemEvidence, getHomeItem, getHomeItems, getUserDocuments, identifyHomeItem, updateHomeItem, uploadDocument, getItemAnswers, saveItemAnswer, deleteItemAnswer, getItemEvidenceFile } from '../../api/api';
 import './Items.css';
 import CodeScanner from './CodeScanner';
+import ApplianceAgent from './ApplianceAgent';
 import IdentificationCandidates from './IdentificationCandidates';
 import RecordPreview from './RecordPreview';
 import { itemDraftKey, readItemDraft, saveItemDraft, clearItemDraft } from './itemDraft';
@@ -93,8 +94,7 @@ export default function ItemWorkspace({
     [match, setMatch] = useState('unreviewed');
   const [question, setQuestion] = useState(''),
     [selectedEvidence, setSelectedEvidence] = useState([]),
-    [answer, setAnswer] = useState(null),
-    [manuals, setManuals] = useState(null);
+    [answer, setAnswer] = useState(null);
   const [intakeDocumentId, setIntakeDocumentId] = useState(null),
     [keepIntake, setKeepIntake] = useState(true),
     [intakeRole, setIntakeRole] = useState('other'),
@@ -136,7 +136,6 @@ export default function ItemWorkspace({
     setItems([]);
     setAnswer(null);
     setSelectedEvidence([]);
-    setManuals(null);
     setMode('list');
     const load = itemId ? getHomeItem(homeId, itemId) : getHomeItems(homeId);
     load.then(result => {
@@ -447,14 +446,7 @@ export default function ItemWorkspace({
             })}>Download original</button><Link className="item-spaced" to="/documents" onClick={rememberItem}>Open document library</Link>{canManage && <button className="journey-link item-spaced" onClick={() => run(async current => {
               const result = await detachItemEvidence(homeId, item.id, e.id);
               if (current()) setItem(result);
-            })}>Remove association</button>}</article>)}<div className="journey-actions"><button className="journey-button" onClick={() => run(async current => {
-              const result = await findItemManual(homeId, item.id);
-              if (current()) setManuals(result);
-            })}>Find my manual</button>{canManage && <button className="journey-link" onClick={() => {
-              setMode('evidence');
-              setDocId('');
-              loadDocuments();
-            }}>I have a manual or related record</button>}</div>{manuals && <div aria-live="polite"><p>{manuals.notice}</p><p>Model to match: {manuals.brand} {manuals.model}</p><button type="button" className="journey-link" onClick={()=>run(async()=>{if(!navigator.clipboard)throw new Error('Select the model number above to copy it.');await navigator.clipboard.writeText(manuals.model);setNotice('Model number copied. Paste it into the manufacturer finder.');})}>Copy model number</button>{external(manuals.officialFinder) && <p><a href={external(manuals.officialFinder)} target="_blank" rel="noreferrer">Open the official manufacturer finder ↗</a></p>}{external(manuals.manualLibrarySearch) && <p><a href={external(manuals.manualLibrarySearch)} target="_blank" rel="noreferrer">Search ManualsLib for this model ↗</a></p>}{external(manuals.searchLink) && <p><a href={external(manuals.searchLink)} target="_blank" rel="noreferrer">Search for this exact model ↗</a></p>}{!manuals.sources?.length && <p>No candidates returned. Try the manufacturer’s manual finder or attach your own manual.</p>}{manuals.sources?.map((s, i) => external(s.url) && <p key={i}><a href={external(s.url)} target="_blank" rel="noreferrer">{s.title} ↗</a></p>)}</div>}</section>
+            })}>Remove association</button>}</article>)}{canManage && <ApplianceAgent key={`${homeId}:${item.id}:${item.version}`} homeId={homeId} itemId={item.id} onSaved={()=>setReload(n=>n+1)} />}{canManage && <button type="button" className="journey-link" onClick={() => {setMode('evidence');setDocId('');loadDocuments();}}>I have a manual or related record</button>}</section>
       {previewId && <RecordPreview documentId={previewId} onClose={() => setPreviewId(null)} />}
       <section className="journey-panel item-intake"><h2>AskAI about this item</h2><p>Choose the confirmed records you want included. An online manual link has not been read or attached.</p><form onSubmit={e => {
             e.preventDefault();

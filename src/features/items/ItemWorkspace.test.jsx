@@ -12,6 +12,8 @@ jest.mock('../../api/api', () => ({
   attachItemEvidence: jest.fn(),
   detachItemEvidence: jest.fn(),
   findItemManual: jest.fn(),
+  getApplianceAgentResult: jest.fn().mockResolvedValue(null),
+  saveAgentManual: jest.fn(),
   askItemAI: jest.fn(),
   uploadDocument: jest.fn(),
   getItemAnswers: jest.fn(),
