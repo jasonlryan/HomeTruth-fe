@@ -28,7 +28,7 @@ test('selected receipt identification proposes a match before saving',async()=>{
  expect(screen.getByLabelText('Full model or variant')).toHaveValue('W100');expect(api.createHomeItem).not.toHaveBeenCalled();
 });
 test('shows distinct values and sends only explicitly selected evidence',async()=>{
- api.askItemAI.mockResolvedValue({statements:[{answer:'Use A',quote:'programme A',sourceId:9}]});show('/my-home/items?item=7');
+ api.askItemAI.mockResolvedValue({statements:[{answer:'Use A',quote:'programme A',sourceId:9}]});show('/my-home/items?item=7&home=42');
  expect(await screen.findByText('Purchase price: GBP 500 · 2026-10-29 · Receipt')).toBeInTheDocument();
  expect(screen.getByText('Estimated current value: GBP 250 · 2026-10-29 · User estimate')).toBeInTheDocument();
  expect(screen.getByText('Replacement cost estimate: GBP 600 · 2026-10-29 · Quote')).toBeInTheDocument();
@@ -40,7 +40,7 @@ test('load failure does not masquerade as an empty working inventory',async()=>{
  api.getHomeItems.mockRejectedValue(new Error('offline'));show();expect(await screen.findByRole('alert')).toBeInTheDocument();expect(screen.queryByText('Your first item is a useful place to start.')).not.toBeInTheDocument();
 });
 test('read-only home access does not expose record-changing actions',async()=>{
- show('/my-home/items?item=7',{canManage:false});await screen.findByRole('heading',{name:'Kitchen washer'});expect(screen.queryByRole('button',{name:'Edit item details'})).not.toBeInTheDocument();expect(screen.queryByText('Archive this item')).not.toBeInTheDocument();
+ show('/my-home/items?item=7&home=42',{canManage:false});await screen.findByRole('heading',{name:'Kitchen washer'});expect(screen.queryByRole('button',{name:'Edit item details'})).not.toBeInTheDocument();expect(screen.queryByText('Archive this item')).not.toBeInTheDocument();
 });
 test('a late inventory response after a home change does not show previous home items',async()=>{
  let finish;api.getHomeItems.mockImplementationOnce(()=>new Promise(resolve=>{finish=resolve;})).mockResolvedValueOnce([]);
@@ -49,7 +49,7 @@ test('a late inventory response after a home change does not show previous home 
 });
 
 test('removing evidence clears an answer and its selected source',async()=>{
- api.askItemAI.mockResolvedValue({statements:[{answer:'Use A',quote:'programme A',sourceId:9}]});api.detachItemEvidence.mockResolvedValue({...item,evidence:[]});show('/my-home/items?item=7');
+ api.askItemAI.mockResolvedValue({statements:[{answer:'Use A',quote:'programme A',sourceId:9}]});api.detachItemEvidence.mockResolvedValue({...item,evidence:[]});show('/my-home/items?item=7&home=42');
  await screen.findByRole('heading',{name:'Kitchen washer'});fireEvent.click(screen.getByLabelText('Washer manual'));fireEvent.change(screen.getByLabelText('Your question'),{target:{value:'Which programme?'}});fireEvent.click(screen.getByRole('button',{name:'Send question'}));await screen.findByText('programme A');
  fireEvent.click(screen.getByRole('button',{name:'Remove association'}));await waitFor(()=>expect(screen.queryByText('programme A')).not.toBeInTheDocument());expect(screen.getByRole('button',{name:'Send question'})).toBeDisabled();
 });

@@ -41,7 +41,9 @@ export default function HomeWorkspace({ intent: routeIntent = 'manage', settings
       if (!current) return;
       const list = Array.isArray(result) ? result : [];
       setRecords(list);
-      const previous = list.find(r => r.property?.id === draft?.propertyId);
+      const requestedHome = new URLSearchParams(location.search).get('home');
+      const requested = section === 'items' && /^[1-9]\d*$/.test(requestedHome || '') ? list.find(r => r.property?.id === Number(requestedHome)) : null;
+      const previous = requested || list.find(r => r.property?.id === draft?.propertyId);
       const id = previous?.property.id || (intent === 'manage' ? list[0]?.property?.id : null) || null;
       setSelectedId(id);
       writeJourney(owner, { intent, propertyId: id, returnTo: location.pathname });

@@ -13,7 +13,7 @@ function Money({ title, value, onChange }) {
 }
 export default function ItemWorkspace({ homeId, homeLabel, canManage = false, askGeneral, rememberItem }) {
   const [params, setParams] = useSearchParams();
-  const itemId = /^[1-9]\d*$/.test(params.get('item') || '') ? Number(params.get('item')) : null;
+  const itemId = params.get('home') === String(homeId) && /^[1-9]\d*$/.test(params.get('item') || '') ? Number(params.get('item')) : null;
   const [items,setItems] = useState([]), [item,setItem] = useState(null), [loading,setLoading] = useState(true), [error,setError] = useState(''), [busy,setBusy] = useState(false), [reload,setReload] = useState(0);
   const [mode,setMode] = useState('list'), [method,setMethod] = useState('photo'), [text,setText] = useState(''), [photo,setPhoto] = useState(null), [proposals,setProposals] = useState(null), [draft,setDraft] = useState(blank), [editSection,setEditSection] = useState('identity');
   const [documents,setDocuments] = useState([]), [docId,setDocId] = useState(''), [role,setRole] = useState('manual'), [match,setMatch] = useState('unreviewed');
@@ -46,7 +46,7 @@ export default function ItemWorkspace({ homeId, homeLabel, canManage = false, as
   const save = e => { e.preventDefault(); run(async current => {
     requestKey.current ||= crypto.randomUUID();
     const result = item ? await updateHomeItem(homeId,item.id,{ version:item.version,record:draft }) : await createHomeItem(homeId,{ requestKey:requestKey.current,record:draft });
-    if(current()) { setParams({item:String(result.id)}); setMode('list'); setReload(n=>n+1); }
+    if(current()) { setParams({item:String(result.id),home:String(homeId)}); setMode('list'); setReload(n=>n+1); }
   }); };
   const edit = section => { setDraft(JSON.parse(JSON.stringify(item.record))); setEditSection(section); setMode('edit'); };
   const set = (key,value) => setDraft(d=>({...d,[key]:value}));
@@ -67,7 +67,7 @@ export default function ItemWorkspace({ homeId, homeLabel, canManage = false, as
     {!loading && !itemId && mode === 'list' && <>
       {!error && !items.length && <div className="journey-panel"><h2>Your first item is a useful place to start.</h2><p>Bring a label photo, selected receipt or warranty. HomeTruth will suggest the item for you to confirm.</p></div>}
       <div className="journey-actions">{canManage && <button className="journey-button" onClick={start}>Add an item</button>}<button className="journey-link" onClick={()=>askGeneral('Help me understand the information I have for an appliance or device.')}>Ask about my equipment</button></div>
-      <div className="journey-grid">{items.map(row=><article className="journey-panel" key={row.id}><h2>{row.record.name}</h2><p>{[row.record.identity.brand,row.record.identity.model,row.record.room].filter(Boolean).join(' · ') || 'Identity details can be added later.'}</p><button className="journey-link" onClick={()=>setParams({item:String(row.id)})}>Open item →</button></article>)}</div>
+      <div className="journey-grid">{items.map(row=><article className="journey-panel" key={row.id}><h2>{row.record.name}</h2><p>{[row.record.identity.brand,row.record.identity.model,row.record.room].filter(Boolean).join(' · ') || 'Identity details can be added later.'}</p><button className="journey-link" onClick={()=>setParams({item:String(row.id),home:String(homeId)})}>Open item →</button></article>)}</div>
     </>}
     {mode === 'identify' && <><h2>Let’s find your item.</h2><p>Choose a source. You’ll review the suggested match before anything is saved.</p>
       <div className="journey-actions" role="group" aria-label="Identify from">{[['photo','Label photo'],['code','QR or barcode'],['text','Receipt, email or warranty text'],['document','A saved document'],['online','Find online']].map(([value,label])=><button key={value} className={`journey-button ${method===value?'':'journey-secondary'}`} aria-pressed={method===value} onClick={()=>{setMethod(value);setProposals(null);if(value==='document')loadDocuments();}}>{label}</button>)}</div>
