@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import PageTitle from "../components/PageTitle";
+import { consumeJourneyQuestion, journeyQuestionForProperty } from "../features/journey/context";
 import {
   askAIChat,
   getAIChatConversations,
@@ -144,8 +145,9 @@ export default function AskAI() {
   const [propertyContext, setPropertyContext] = useState(() =>
     getPropertyContextFromLocation(location)
   );
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(() => journeyQuestionForProperty(String(localStorage.getItem("userId") || localStorage.getItem("user_email") || "signed-in"), getPropertyContextFromLocation(location)?.id || null));
   const [messages, setMessages] = useState([]);
+  useEffect(() => { consumeJourneyQuestion(String(localStorage.getItem("userId") || localStorage.getItem("user_email") || "signed-in")); }, []);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
   const [paywallModal, setPaywallModal] = useState(null);
@@ -480,7 +482,7 @@ export default function AskAI() {
     // Check if there's a query from Dashboard
     const dashboardQuery = localStorage.getItem("dashboard_query");
     if (dashboardQuery) {
-      setInput(dashboardQuery);
+      setInput(current => current || dashboardQuery);
       localStorage.removeItem("dashboard_query"); // Clear it after using
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

@@ -1,3 +1,4 @@
+import { clearJourney } from "../features/journey/context";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -46,6 +47,10 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    clearJourney();
+    sessionStorage.removeItem("guest_session_id_redirect");
+    sessionStorage.removeItem("ask_ai_open_conversation_id");
+    localStorage.removeItem("dashboard_query");
     // Clear all authentication related data
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem("user_name");

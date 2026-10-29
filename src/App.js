@@ -41,6 +41,8 @@ import MyBookmarks from "./pages/Bookmark";
 import ForgotPassword from "./pages/ForgetPassword";
 import GuestChat from "./pages/GuestChat";
 import WelcomePage from "./pages/WelcomePage";
+import StartPage from "./pages/StartPage";
+import HomeWorkspace from "./features/journey/HomeWorkspace";
 import KnowledgeBaseAdmin from "./pages/KnowledgeBaseAdmin";
 import AdminReportingDashboard from "./pages/AdminReportingDashboard";
 import AdminDataAccess from "./pages/AdminDataAccess";
@@ -154,6 +156,7 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
+          <Route path="/start" element={<StartPage />} />
           <Route
             path="/"
             element={
@@ -234,6 +237,12 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route path="my-home" element={<HomeWorkspace />} />
+            <Route path="my-home/:section" element={<HomeWorkspace />} />
+            <Route path="buying" element={<HomeWorkspace intent="buy" />} />
+            <Route path="selling" element={<HomeWorkspace intent="sell" />} />
+            <Route path="settings/connections" element={<HomeWorkspace settings="connections" />} />
+            <Route path="settings/agents" element={<HomeWorkspace settings="agents" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="welcome" element={<WelcomePage />} />
             <Route path="ask-ai" element={<AskAI />} />

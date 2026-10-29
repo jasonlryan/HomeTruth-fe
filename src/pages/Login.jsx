@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { loginUser, claimGuestSession } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import Footer from "../components/Footer";
+import { adoptGuestJourney, journeyOwner, safeReturnTo } from "../features/journey/context";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ export default function Login() {
 
       if (!token) throw new Error("Token not found in response.");
 
+      const journey = adoptGuestJourney(journeyOwner(user || { email }));
       login(token, user);
 
       if (userRole) {
@@ -118,17 +120,12 @@ export default function Login() {
         }
       }
 
-      // Check if this is a new user
-      const isNewUser = localStorage.getItem("new_user") === "true";
-      
-      if (isNewUser) {
-        // Redirect new users to welcome page
-        navigate("/welcome", { replace: true });
-      } else if (redirectTo?.startsWith("/")) {
-        navigate(redirectTo, { replace: true });
+      const destination = safeReturnTo(redirectTo) || journey?.returnTo;
+      if (destination) {
+        localStorage.removeItem("new_user");
+        navigate(destination, { replace: true });
       } else {
-        // Default behavior (normal login) - Dashboard will check for quiz completion
-        navigate("/dashboard", { replace: true });
+        navigate(localStorage.getItem("new_user") === "true" ? "/welcome" : "/dashboard", { replace: true });
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -203,9 +200,10 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-8">
             {/* Email Input */}
             <div className="w-full">
-              <label className="block text-black text-lg sm:text-xl mb-2">Email</label>
+              <label htmlFor="login-email" className="block text-black text-lg sm:text-xl mb-2">Email</label>
               <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full">
                 <input
+                  id="login-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -221,9 +219,10 @@ export default function Login() {
 
             {/* Password Input */}
             <div className="w-full">
-              <label className="block text-black text-lg sm:text-xl mb-2">Password</label>
+              <label htmlFor="login-password" className="block text-black text-lg sm:text-xl mb-2">Password</label>
               <div className="border-b-2 border-gray-300 focus-within:border-ht-cyan transition-colors w-full relative">
                 <input
+                  id="login-password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

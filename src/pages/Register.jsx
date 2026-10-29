@@ -65,9 +65,9 @@ export default function Register() {
 
       await registerUser(registrationData);
 
-      setSuccess("Registration successful! Redirecting to quiz...");
+      setSuccess("Account created. Sign in to continue your task.");
 
-      // Set new user flag to trigger quiz after login
+      // Welcome reuses goal entry; it does not launch a quiz.
       localStorage.setItem("new_user", "true");
       localStorage.setItem("user_email", email);
       localStorage.setItem("user_name", `${firstName} ${lastName}`);

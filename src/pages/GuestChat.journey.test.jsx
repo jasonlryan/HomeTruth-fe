@@ -1,0 +1,20 @@
+import { StrictMode } from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import GuestChat from './GuestChat';
+import { askAnonymousAI } from '../api/api';
+import { writeJourney } from '../features/journey/context';
+jest.mock('../api/api', () => ({ askAnonymousAI: jest.fn(), askAIChat: jest.fn(), saveNote: jest.fn() }));
+jest.mock('../context/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
+jest.mock('react-markdown', () => ({__esModule:true,default:({children})=><div>{children}</div>}));
+jest.mock('remark-gfm', () => ({__esModule:true,default:()=>{}}));
+beforeEach(()=>{sessionStorage.clear();jest.clearAllMocks();});
+test('StrictMode preserves the starting question and guest reply/session can be claimed', async () => {
+  writeJourney('guest',{intent:'buy',question:'What should I ask at a viewing?',returnTo:'/buying'});
+  askAnonymousAI.mockResolvedValue({reply:'Ask about the roof repairs.',session_id:'guest-42'});
+  render(<StrictMode><MemoryRouter><GuestChat /></MemoryRouter></StrictMode>);
+  const input = screen.getByRole('textbox', { name: 'AskAI question' });
+  expect(input).toHaveValue('What should I ask at a viewing?'); fireEvent.submit(input.closest('form'));
+  expect(await screen.findByText('Ask about the roof repairs.')).toBeInTheDocument();
+  expect(sessionStorage.getItem('guest_session_id_redirect')).toBe('guest-42');
+});
