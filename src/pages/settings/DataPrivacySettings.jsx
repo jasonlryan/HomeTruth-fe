@@ -40,14 +40,6 @@ export default function DataPrivacySettings() {
   const toggle = (key) =>
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  const _handleRetentionChange = (e) => {
-    const value = parseInt(e.target.value, 10) || 0;
-    setSettings((prev) => ({
-      ...prev,
-      documentRetentionPeriod: value,
-    }));
-  };
-
   const saveSettings = async () => {
     if (settings.documentRetentionPeriod < 0) {
       setSaveStatus("error");

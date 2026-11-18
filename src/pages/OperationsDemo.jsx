@@ -1,3 +1,5 @@
+import PageTitle from "../components/PageTitle";
+import "../components/workspace.css";
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import {
@@ -72,8 +74,7 @@ const sections = [
 ];
 const panel =
   "rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5 sm:p-6";
-const button =
-  "inline-flex min-h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-4 py-2 text-sm hover:border-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]";
+const button = "ht-workspace-control";
 
 export default function OperationsDemo() {
   const { user } = useAuth();
@@ -114,8 +115,8 @@ export default function OperationsDemo() {
           <p className="text-sm text-[var(--color-secondary)]">
             HomeTruth workspace
           </p>
-          <h1 className="mt-2 text-3xl">Operations</h1>
-          <p className="mt-3 max-w-2xl text-[var(--color-text-muted)]">
+          <PageTitle className="mt-2">Operations</PageTitle>
+          <p className="mt-3 max-w-2xl ht-workspace-muted">
             Support a useful home record, trusted guidance and programmes that
             put homeowners in control.
           </p>
@@ -134,7 +135,7 @@ export default function OperationsDemo() {
             key={value}
             aria-pressed={section === value}
             onClick={() => changeSection(value)}
-            className={`${button} ${section === value ? "bg-[var(--color-accent)] text-[var(--color-text-on-dark)]" : ""}`}
+            className={`${button} ${section === value ? "ht-workspace-selected" : ""}`}
           >
             {value}
           </button>
@@ -154,19 +155,15 @@ export default function OperationsDemo() {
               ["Guidance in review", "1", "Source quality before publication"],
             ].map(([label, value, detail]) => (
               <div className={panel} key={label}>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  {label}
-                </p>
+                <p className="text-sm ht-workspace-muted">{label}</p>
                 <p className="my-3 text-4xl">{value}</p>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  {detail}
-                </p>
+                <p className="text-sm ht-workspace-muted">{detail}</p>
               </div>
             ))}
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             <section className={panel}>
-              <h2 className="text-xl">
+              <h2 className="text-lg font-semibold">
                 From first document to a lasting home record
               </h2>
               <ol className="mt-5 space-y-4">
@@ -189,7 +186,7 @@ export default function OperationsDemo() {
               </Link>
             </section>
             <section className={panel}>
-              <h2 className="text-xl">Work to review</h2>
+              <h2 className="text-lg font-semibold">Work to review</h2>
               <div className="mt-4 space-y-4">
                 {homes.map((home) => (
                   <button
@@ -201,7 +198,7 @@ export default function OperationsDemo() {
                     }}
                   >
                     <p>{home.event}</p>
-                    <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                    <p className="mt-1 text-sm ht-workspace-muted">
                       {home.name} · {home.address}
                     </p>
                     <p className="mt-1 text-sm text-[var(--color-secondary)]">
@@ -213,14 +210,14 @@ export default function OperationsDemo() {
             </section>
           </div>
           <section className={`${panel} mt-6`}>
-            <h2 className="flex items-center gap-2 text-xl">
+            <h2 className="flex items-center gap-2 text-lg font-semibold">
               <ShieldCheck size={20} />
               Two clear data boundaries
             </h2>
             <div className="mt-4 grid gap-5 md:grid-cols-2">
               <div>
                 <h3>Homeowner record</h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+                <p className="mt-2 text-sm leading-6 ht-workspace-muted">
                   Individual documents, notes and home history belong in the
                   owner’s experience. Sharing needs a specific choice and
                   purpose.
@@ -228,7 +225,7 @@ export default function OperationsDemo() {
               </div>
               <div>
                 <h3>Partner programme</h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+                <p className="mt-2 text-sm leading-6 ht-workspace-muted">
                   Programme reporting uses aggregate activity. Sponsoring a
                   programme does not grant access to an individual home.
                 </p>
@@ -240,7 +237,7 @@ export default function OperationsDemo() {
       {section === "Home records" && (
         <section className={panel}>
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="flex items-center gap-2 text-xl">
+            <h2 className="flex items-center gap-2 text-lg font-semibold">
               <Building2 size={20} />
               Home records
             </h2>
@@ -262,7 +259,7 @@ export default function OperationsDemo() {
                   {["Owner", "Home", "Documents", "Latest activity", ""].map(
                     (title, index) => (
                       <th
-                        className="border-b border-[var(--color-border-default)] p-3 font-normal text-[var(--color-text-muted)]"
+                        className="border-b border-[var(--color-border-default)] p-3 font-normal ht-workspace-muted"
                         key={index}
                       >
                         {title}
@@ -296,7 +293,7 @@ export default function OperationsDemo() {
           </div>
           {selected && (
             <div className="mt-5 border-t border-[var(--color-border-default)] pt-5">
-              <h3 className="text-xl">
+              <h3 className="text-lg font-semibold">
                 {selected.name} · {selected.address}
               </h3>
               <p className="mt-3 text-sm">{selected.review}</p>
@@ -313,7 +310,7 @@ export default function OperationsDemo() {
                   </Link>
                 </div>
               ) : (
-                <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+                <p className="mt-3 text-sm ht-workspace-muted">
                   {selected.documents} documents · {selected.event}
                 </p>
               )}
@@ -323,11 +320,11 @@ export default function OperationsDemo() {
       )}
       {section === "Knowledge" && (
         <section className={panel}>
-          <h2 className="flex items-center gap-2 text-xl">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
             <BookOpen size={20} />
             Knowledge library
           </h2>
-          <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-3 text-sm ht-workspace-muted">
             Prepare, review and organise the guidance behind homeowner answers.
           </p>
           <div className="mt-5 grid gap-3">
@@ -339,7 +336,7 @@ export default function OperationsDemo() {
               >
                 <div>
                   <h3>{item.title}</h3>
-                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-1 text-sm ht-workspace-muted">
                     {item.category} · Updated {item.date}
                   </p>
                 </div>
@@ -356,7 +353,7 @@ export default function OperationsDemo() {
                 Review the original source, the claims it supports, its date and
                 any limits before publishing it as guidance.
               </p>
-              <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+              <p className="mt-3 text-sm ht-workspace-muted">
                 Workflow: received → extracted → reviewed → published
               </p>
             </div>
@@ -366,11 +363,11 @@ export default function OperationsDemo() {
       {section === "Programmes" && (
         <div className="grid gap-5 lg:grid-cols-2">
           <section className={panel}>
-            <h2 className="flex items-center gap-2 text-xl">
+            <h2 className="flex items-center gap-2 text-lg font-semibold">
               <Users size={20} />
               Partner programmes
             </h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--color-text-muted)]">
+            <p className="mt-3 text-sm leading-6 ht-workspace-muted">
               One shared programme model for mortgage providers, insurers and
               home developers: invitation, owner choice, useful home support and
               aggregate reporting.
@@ -408,8 +405,8 @@ export default function OperationsDemo() {
             </div>
           </section>
           <section className={panel}>
-            <h2 className="text-xl">Programme reporting</h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--color-text-muted)]">
+            <h2 className="text-lg font-semibold">Programme reporting</h2>
+            <p className="mt-3 text-sm leading-6 ht-workspace-muted">
               Track invitation, activation, first useful answer and return
               visits at cohort level. Show reporting thresholds and missing
               data, rather than exposing individual property activity.
@@ -435,11 +432,11 @@ export default function OperationsDemo() {
       {section === "Connections" && (
         <div className="grid gap-5 lg:grid-cols-2">
           <section className={panel}>
-            <h2 className="flex items-center gap-2 text-xl">
+            <h2 className="flex items-center gap-2 text-lg font-semibold">
               <ShieldCheck size={20} />
               Owner-controlled sharing
             </h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--color-text-muted)]">
+            <p className="mt-3 text-sm leading-6 ht-workspace-muted">
               Choose the information you would include in a home summary.
               Preferences do not send information to another service.
             </p>
@@ -481,7 +478,7 @@ export default function OperationsDemo() {
             </button>
           </section>
           <section className={panel}>
-            <h2 className="text-xl">A continuing home record</h2>
+            <h2 className="text-lg font-semibold">A continuing home record</h2>
             <div className="mt-5 space-y-5">
               {[
                 [
@@ -503,7 +500,7 @@ export default function OperationsDemo() {
               ].map(([title, body]) => (
                 <div key={title}>
                   <h3>{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+                  <p className="mt-2 text-sm leading-6 ht-workspace-muted">
                     {body}
                   </p>
                 </div>
@@ -514,11 +511,11 @@ export default function OperationsDemo() {
       )}
       {section === "Content" && (
         <section className={panel}>
-          <h2 className="flex items-center gap-2 text-xl">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
             <FileText size={20} />
             Homeowner content
           </h2>
-          <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-3 text-sm ht-workspace-muted">
             Practical guidance for each stage of owning a home.
           </p>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -531,7 +528,7 @@ export default function OperationsDemo() {
                   {item.category} · {item.status}
                 </p>
                 <h3 className="mt-3 text-lg">{item.title}</h3>
-                <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+                <p className="mt-3 text-sm ht-workspace-muted">
                   Updated {item.date}
                 </p>
                 <button

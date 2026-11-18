@@ -1,3 +1,4 @@
+import "../components/workspace.css";
 import { getNoteExcerpt } from '../utils/noteExcerpt';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -220,7 +221,7 @@ export default function SavedNotes() {
 
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-8">
-      <div className="flex justify-between items-start mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
         <div>
           <PageTitle as="h2">Saved Notes</PageTitle>
           <p className="text-sm text-gray-500">Keep your AI insights in one place</p>
@@ -228,11 +229,7 @@ export default function SavedNotes() {
         <button
           onClick={() => navigate("/ask-ai")}
           disabled={notes.length >= 5}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-md 
-            ${notes.length >= 5
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-ht-cyan text-white hover:bg-ht-cyan-light"
-            }`}
+          className="ht-workspace-primary"
         >
           <span className="material-symbols-outlined text-sm">stars_2</span>
           Ask HomeTruth to save notes
@@ -271,7 +268,7 @@ export default function SavedNotes() {
                     setShowEditModal(true);
                   }
                 }}
-                className="absolute top-3 right-3 text-ht-cyan hover:text-ht-cyan-light"
+                className="absolute top-3 right-3 text-[var(--color-secondary)]"
                 title={isBudgetItem(note) ? "Edit in budget chat" : "Edit title"}
               >
                 <span className="material-symbols-outlined text-xl">edit</span>
@@ -279,13 +276,13 @@ export default function SavedNotes() {
 
               <p className="mb-3 text-xs text-[var(--color-secondary)]">{isBudgetItem(note) ? "Budget calculation" : "Saved answer"}</p>
               <h3 className="mb-3 pr-6 text-lg leading-6 line-clamp-2">{getItemTitle(note)}</h3>
-              <p className="mb-5 text-sm leading-6 text-[var(--color-text-muted)] line-clamp-3">{getNoteExcerpt(isBudgetItem(note) ? getBudgetPreview(note) : getItemTextContent(note))}</p>
+              <p className="mb-5 text-sm leading-6 ht-workspace-muted line-clamp-3">{getNoteExcerpt(isBudgetItem(note) ? getBudgetPreview(note) : getItemTextContent(note))}</p>
 
               <div className="flex justify-between items-center mt-auto">
-                <p className="text-xs text-gray-400">{getItemDate(note)}</p>
+                <p className="text-xs ht-workspace-muted">{getItemDate(note)}</p>
                 <button
                   onClick={() => handleView(note)}
-                  className="text-ht-cyan text-sm hover:underline"
+                  className="ht-workspace-link text-sm"
                 >
                   View
                 </button>
@@ -296,8 +293,8 @@ export default function SavedNotes() {
       )}
 
       {showModal && selectedNote && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[80vh] relative flex flex-col">
+        <div className="fixed inset-0 bg-[var(--color-surface-dark)]/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-6 w-full max-w-xl max-h-[80vh] relative flex flex-col">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-black"
               onClick={() => setShowModal(false)}
@@ -313,14 +310,14 @@ export default function SavedNotes() {
                 setShowModal(false);
                 setShowEditModal(true);
               }}
-              className="absolute top-3 right-10 text-ht-cyan hover:text-ht-cyan-light"
+              className="absolute top-3 right-10 text-[var(--color-secondary)]"
               title="Edit"
             >
               <span className="material-symbols-outlined text-lg">edit</span>
             </button>
 
-            <h2 className="text-lg font-bold mb-2 flex-shrink-0">{getItemTitle(selectedNote)}</h2>
-            <div className="text-gray-700 mb-4 flex-1 overflow-y-auto">
+            <h2 className="text-lg font-semibold mb-4 pr-16 flex-shrink-0">{getItemTitle(selectedNote)}</h2>
+            <div className="text-[var(--color-text-default)] mb-4 flex-1 overflow-y-auto">
               {isBudgetItem(selectedNote) ? (
                 loadingConversation ? (
                   <div className="h-40 flex items-center justify-center">
@@ -380,8 +377,8 @@ export default function SavedNotes() {
       )}
 
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+        <div className="fixed inset-0 bg-[var(--color-surface-dark)]/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-6 w-full max-w-md relative">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-black"
               onClick={() => setShowEditModal(false)}
@@ -389,7 +386,7 @@ export default function SavedNotes() {
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
 
-            <h2 className="text-lg font-bold mb-2">Edit Your Saved Notes Title</h2>
+            <h2 className="text-lg font-semibold mb-2 pr-8">Edit Your Saved Notes Title</h2>
             <p className="text-sm text-gray-600 mb-4">
               Update the title for this saved conversation.
             </p>
@@ -403,7 +400,7 @@ export default function SavedNotes() {
             />
 
             <button
-              className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-4 py-2 rounded-md"
+              className="ht-workspace-primary"
               onClick={async () => {
                 try {
                   if (isBudgetItem({ type: editNoteType })) {

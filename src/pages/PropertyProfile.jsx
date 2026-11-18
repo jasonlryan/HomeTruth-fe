@@ -1,3 +1,4 @@
+import PageTitle from "../components/PageTitle";
 import HomeHistory from '../components/HomeHistory';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -520,9 +521,9 @@ export default function PropertyProfile() {
           </p>
           <div className="mt-2 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
             <div>
-              <h1 className="text-3xl font-normal tracking-normal text-[var(--color-text-default)]">
+              <PageTitle>
                 {selectedRecord ? "Your home record" : "Set up your property"}
-              </h1>
+              </PageTitle>
               <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--color-text-muted)]">
                 {selectedRecord ? "Documents, work history and useful next steps, together in one place." : "Create the home record that documents, facts and actions will attach to."}
               </p>

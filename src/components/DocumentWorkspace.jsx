@@ -1,3 +1,4 @@
+import "./workspace.css";
 import { useEffect, useRef, useState } from "react";
 import { FileText, Loader2, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -152,8 +153,7 @@ export default function DocumentWorkspace({
       if (alive.current) setAsking(false);
     }
   }
-  const button =
-    "rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]";
+  const button = "ht-workspace-control";
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-surface-dark)]/50 p-2 sm:p-6"
@@ -177,11 +177,11 @@ export default function DocumentWorkspace({
             </p>
             <h2
               id="document-workspace-title"
-              className="mt-2 break-words text-xl sm:text-2xl"
+              className="mt-2 break-words text-xl font-semibold"
             >
               {doc.name}
             </h2>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            <p className="mt-1 text-sm ht-workspace-muted">
               {doc.doc_type || doc.category || "Property document"}
             </p>
           </div>
@@ -229,7 +229,7 @@ export default function DocumentWorkspace({
               aria-controls={`document-panel-${value}`}
               tabIndex={tab === value ? 0 : -1}
               onClick={() => switchTab(value)}
-              className={`${button} ${tab === value ? "bg-[var(--color-accent)] text-[var(--color-text-on-dark)]" : ""}`}
+              className={`${button} ${tab === value ? "ht-workspace-selected" : ""}`}
             >
               {label}
             </button>
@@ -256,7 +256,7 @@ export default function DocumentWorkspace({
                 <>
                   {preview.type === "text" ? (
                     <div>
-                      <p className="mb-3 text-sm text-[var(--color-text-muted)]">
+                      <p className="mb-3 text-sm ht-workspace-muted">
                         Source text
                         {preview.complete === false
                           ? " · extracted preview"
@@ -285,7 +285,7 @@ export default function DocumentWorkspace({
                   )}
                   {preview.download && (
                     <a
-                      className="mt-4 inline-block text-sm text-[var(--color-accent)] underline"
+                      className="mt-4 inline-block text-sm ht-workspace-link"
                       href={preview.url}
                       download={doc.name}
                     >
@@ -302,7 +302,7 @@ export default function DocumentWorkspace({
               hidden={tab !== "chat"}
               className="font-chat"
             >
-              <p className="mb-4 text-sm leading-6 text-[var(--color-text-muted)]">
+              <p className="mb-4 text-sm leading-6 ht-workspace-muted">
                 Questions here use this document. Switch to Preview to check the
                 source.
               </p>
@@ -321,7 +321,7 @@ export default function DocumentWorkspace({
                   />
                   <button
                     disabled={asking || historyLoading || !question.trim()}
-                    className={`${button} bg-[var(--color-accent)] text-[var(--color-text-on-dark)] disabled:opacity-50`}
+                    className={"ht-workspace-primary"}
                   >
                     Ask
                   </button>
@@ -352,7 +352,7 @@ export default function DocumentWorkspace({
                 </p>
               )}
               {!historyLoading && !historyError && !history.length && (
-                <p className="mt-6 text-sm text-[var(--color-text-muted)]">
+                <p className="mt-6 text-sm ht-workspace-muted">
                   No questions yet. Ask about the findings, amounts or limits in
                   this document.
                 </p>
@@ -393,14 +393,14 @@ export default function DocumentWorkspace({
                 ["Tags", Array.isArray(doc.tags) ? doc.tags.join(", ") : null],
               ].map(([label, value]) => (
                 <div key={label}>
-                  <dt className="text-[var(--color-text-muted)]">{label}</dt>
+                  <dt className="ht-workspace-muted">{label}</dt>
                   <dd className="mt-1 break-words">
                     {value || "Not recorded"}
                   </dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-6 text-sm leading-6 text-[var(--color-text-muted)]">
+            <p className="mt-6 text-sm leading-6 ht-workspace-muted">
               A document records its stated scope. A quotation is proposed work;
               an invoice alone does not prove payment.
             </p>

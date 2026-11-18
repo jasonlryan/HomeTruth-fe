@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search, Filter, ChevronDown, FileText, MoreVertical } from "lucide-react";
 import PageTitle from "../components/PageTitle";
-import { getUserDocuments, deleteDocument, uploadDocument } from "../api/api";
+import { getUserDocuments, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
 
 export default function Documents() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,17 +73,25 @@ export default function Documents() {
     fetchDocuments();
   }, [fetchDocuments]);
 
-  // Handle preview parameter from URL
+  // Resolve deep links independently of the current list page/filter.
   useEffect(() => {
-    const previewId = searchParams.get('preview');
-    if (previewId && documents.length > 0) {
-      const documentToPreview = documents.find(doc => doc.id.toString() === previewId);
-      if (documentToPreview) {
-        handleDocumentClick(documentToPreview);
+    const id = searchParams.get('preview');
+    if (!id) { setSelectedDocument(null); return; }
+    const controller = new AbortController();
+    let active = true;
+    setSelectedDocument(current => String(current?.id) === id ? current : null);
+    getUserDocumentRecord(id, controller.signal).then(response => {
+      if (!active) return;
+      if (!response?.success || !response?.data?.id) throw new Error('Unavailable');
+      setSelectedDocument(response.data);
+    }).catch(err => {
+      if (active && err.code !== 'ERR_CANCELED') {
+        setSelectedDocument(null);
+        setError('This document could not be opened. It may be unavailable or outside your access.');
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run when URL or documents change
-  }, [searchParams, documents]);
+    });
+    return () => { active = false; controller.abort(); };
+  }, [searchParams]);
 
   // Close context menu when clicking outside
   useEffect(() => {

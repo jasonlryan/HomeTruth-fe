@@ -879,3 +879,8 @@ export const getDocumentPreviewFile = async (documentId, signal) => {
   const res = await api.get(`/api/user-documents/${documentId}/preview`, { responseType: 'blob', signal });
   return res.data;
 };
+
+export const getUserDocumentRecord = async (id, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(id)}`, { signal });
+  return res.data;
+};
