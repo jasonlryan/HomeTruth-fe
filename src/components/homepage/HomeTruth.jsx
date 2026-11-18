@@ -53,6 +53,10 @@ export function Panel({ children, ...props }) {
   return <section className="ht-panel" {...props}>{children}</section>;
 }
 
-export function Status({ tone, icon, children }) {
-  return <span className="ht-status" data-tone={tone}>{icon && <HTIcon name={icon} />}{children}</span>;
+export function Status({ tone, icon, appearance, children }) {
+  return <span className="ht-status" data-tone={tone} data-appearance={appearance}>{icon && <HTIcon name={icon} />}{children}</span>;
+}
+
+export function Badge({ icon, children }) {
+  return <span className="ht-badge">{icon && <HTIcon name={icon} />}{children}</span>;
 }

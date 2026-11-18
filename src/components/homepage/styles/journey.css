@@ -32,7 +32,7 @@
 .ht-composer .ht-button[data-variant=cyan] {color:var(--color-text-on-dark);background:var(--color-accent)}
 .ht-composer .ht-button[data-variant=cyan]:hover:enabled {background:color-mix(in srgb,var(--color-accent) 90%,var(--ht-black))}
 .ht-composer .ht-button[data-variant=cyan]:disabled {opacity:.72;cursor:default}
-.ht-hero-more {display:inline-flex;align-items:center;gap:var(--space-2);margin-top:var(--space-6);text-decoration:none}
+.ht-hero-more {display:inline-grid;grid-auto-flow:column;align-items:first baseline;align-content:center;gap:var(--space-2);margin-top:var(--space-6);text-decoration:none}
 .ht-hero-more:hover {text-decoration:underline}
 .ht-journey-flow {display:grid;gap:var(--space-3);padding-bottom:var(--space-16)}
 .ht-journey-flow .ht-panel {padding:var(--space-6)}
@@ -64,7 +64,7 @@
 }
 @container (max-width:535px) {
   .ht-composer .ht-route {font-size:13px}
-  .ht-composer .ht-route > span {flex-direction:column;justify-content:center;min-height:58px;gap:5px}
+  .ht-composer .ht-route > span {display:flex;align-items:center;flex-direction:column;justify-content:center;min-height:58px;gap:5px}
 }
 @container (max-width:380px) {
   .ht-composer .ht-route-full {display:none}

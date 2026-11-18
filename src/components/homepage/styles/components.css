@@ -17,7 +17,7 @@
 .ht-ui :focus-visible {outline:2px solid var(--route-ink);outline-offset:2px}
 .ht-ui :is(button,a,input,summary,select,textarea) {scroll-margin-block:20px}
 .ht-button {
-  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+  display:inline-grid;grid-auto-flow:column;align-items:first baseline;align-content:center;justify-content:center;gap:var(--space-2);
   min-height:40px;padding:7px var(--space-3);border:1px solid transparent;
   border-radius:var(--radius-md);cursor:pointer;background:var(--color-action-primary);
   color:var(--color-text-on-dark);font:inherit;text-decoration:none;
@@ -41,11 +41,11 @@
 .ht-route-list {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;border-bottom:1px solid var(--color-border-default)}
 .ht-route {position:relative;cursor:pointer;text-align:center;white-space:nowrap}
 .ht-route input {position:absolute;inset:0;margin:0;width:100%;height:100%;opacity:0;cursor:pointer}
-.ht-route > span {display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:5px;border-bottom:2px solid transparent}
+.ht-route > span {display:grid;grid-auto-flow:column;align-items:first baseline;align-content:center;justify-content:center;gap:6px;min-height:44px;padding:5px;border-bottom:2px solid transparent}
 .ht-route input:checked + span {color:var(--route-ink);border-bottom-color:var(--color-accent)}
 .ht-route input:focus-visible + span {outline:2px solid var(--route-ink);outline-offset:-2px}
 .ht-route svg,.ht-route img {width:16px;height:16px}
-.ht-status {display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--reading-ink)}
+.ht-status {display:inline-grid;grid-auto-flow:column;align-items:first baseline;align-content:center;gap:5px;font-size:12px;color:var(--reading-ink)}
 .ht-status img {width:15px;height:15px}
 .ht-status[data-tone=success] {color:var(--status-success-ink)}
 .ht-status[data-tone=review] {color:var(--status-review-ink)}
@@ -55,3 +55,18 @@
 .ht-table :is(th,td) {padding:10px 12px;border-bottom:1px solid var(--color-border-default);font-weight:400}
 .ht-table th {background:var(--surface-subtle)}
 .ht-scroll-table {overflow:auto}
+
+.ht-status[data-appearance=pill],.ht-badge {
+  display:inline-grid;grid-auto-flow:column;align-items:first baseline;align-content:center;gap:4px;min-height:24px;padding:2px var(--space-2);
+  font-size:12px;line-height:1.35;vertical-align:middle;
+}
+.ht-status[data-appearance=pill] {border-radius:var(--radius-full);background:var(--surface-subtle)}
+.ht-status[data-appearance=pill] img {width:14px;height:14px}
+.ht-status[data-tone=progress] {color:var(--route-ink)}
+.ht-status[data-appearance=pill][data-tone=progress] {background:color-mix(in srgb,var(--ht-cyan) 15%,var(--color-surface-default))}
+.ht-status[data-appearance=pill][data-tone=success] {background:color-mix(in srgb,var(--ht-green) 15%,var(--color-surface-default))}
+.ht-status[data-appearance=pill][data-tone=review] {background:color-mix(in srgb,var(--ht-orange) 15%,var(--color-surface-default))}
+.ht-status[data-appearance=pill][data-tone=error] {background:color-mix(in srgb,var(--status-error-ink) 10%,var(--color-surface-default))}
+.ht-badge {color:var(--reading-ink);border:1px solid var(--color-border-default);border-radius:var(--radius-sm);background:var(--color-surface-default)}
+
+.ht-badge img {width:14px;height:14px}
