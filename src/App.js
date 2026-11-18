@@ -1,3 +1,4 @@
+import DemoEntry from './pages/DemoEntry';
 import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -155,6 +156,7 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
+          <Route path="/demo" element={<DemoEntry />} />
           <Route
             path="/"
             element={

@@ -1,3 +1,5 @@
+import { demoEntryEnabled } from '../utils/demoEntry';
+import '../components/workspace.css';
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { loginUser, claimGuestSession } from "../api/api";
@@ -200,6 +202,7 @@ export default function Login() {
           </div>
 
           {/* Form */}
+{demoEntryEnabled() && <div className="flex flex-wrap justify-center gap-3 p-4"><a className="ht-workspace-primary" href="/demo">Open Maya’s home</a><a className="ht-workspace-control" href="/demo?to=operations">Open Operations</a></div>}
           <form onSubmit={handleLogin} className="space-y-8">
             {/* Email Input */}
             <div className="w-full">
