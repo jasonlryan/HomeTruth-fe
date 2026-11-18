@@ -1,3 +1,4 @@
+import AgentConnections from "../components/AgentConnections";
 import Navbar from "../components/Navbar";
 import AiAssistant from "../components/Aiassistant";
 import HowItWorks from "../components/HowItWorks";
@@ -35,6 +36,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <AgentConnections />
 
       <section className="relative isolate overflow-hidden py-5 bg-gray-50">
         <div className=" w-full relative mx-auto max-w-xl px-6 my-5 text-center">
