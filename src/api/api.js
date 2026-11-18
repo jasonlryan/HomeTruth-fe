@@ -874,7 +874,7 @@ export const unpublishArticle = async (id) => {
 
 export default api;
 
-// Authenticated binary preview; keep the existing JSON helper for other callers.
+// Authenticated preview payload: JSON text/image or raw file bytes.
 export const getDocumentPreviewFile = async (documentId, signal) => {
   const res = await api.get(`/api/user-documents/${documentId}/preview`, { responseType: 'blob', signal });
   return res.data;

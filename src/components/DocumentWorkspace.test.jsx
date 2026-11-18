@@ -136,3 +136,27 @@ test("renders the actual backend JSON text preview without a false file download
     screen.queryByText("Download source document"),
   ).not.toBeInTheDocument();
 });
+test("focus wraps only through active-tab controls, never the inactive tab or background", async () => {
+  const geometry = jest
+    .spyOn(HTMLElement.prototype, "getClientRects")
+    .mockReturnValue([{}]);
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      onClose={() => {}}
+    />,
+  );
+  await screen.findByTitle("Preview of survey.pdf");
+  const close = screen.getByRole("button", { name: "Close document" });
+  close.focus();
+  fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
+  expect(
+    screen.getByRole("link", { name: "Download source document" }),
+  ).toHaveFocus();
+  fireEvent.keyDown(
+    screen.getByRole("link", { name: "Download source document" }),
+    { key: "Tab" },
+  );
+  expect(close).toHaveFocus();
+  geometry.mockRestore();
+});

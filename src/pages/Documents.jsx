@@ -6,13 +6,12 @@ import PageTitle from "../components/PageTitle";
 import { getUserDocuments, deleteDocument, uploadDocument } from "../api/api";
 
 export default function Documents() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("earliest"); // "earliest" | "latest" | "name"
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [showContextMenu, setShowContextMenu] = useState(null);
-  const [workspaceTab, setWorkspaceTab] = useState('preview');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     category: [],
@@ -187,7 +186,11 @@ export default function Documents() {
 
   const handleDocumentClick = (doc) => {
     setSelectedDocument(doc);
-    setWorkspaceTab('preview');
+    if (searchParams.get('preview') !== String(doc.id)) {
+      const next = new URLSearchParams(searchParams);
+      next.set('preview', String(doc.id));
+      setSearchParams(next, { replace: true });
+    }
     setShowContextMenu(null);
   };
 
@@ -505,20 +508,17 @@ export default function Documents() {
               documents.map((document) => (
                 <div
                   key={document.id}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Open ${document.name}`}
-                  onKeyDown={(event) => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); handleDocumentClick(document); } }}
                   className={`flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:bg-sky-50 cursor-pointer ${
                     document.selected ? "bg-sky-50" : ""
                   }`}
-                  onClick={() => handleDocumentClick(document)}
                 >
+                  <button type="button" aria-label={`Open ${document.name}`} onClick={() => handleDocumentClick(document)} className="flex min-w-0 flex-1 items-center text-left">
                   <FileText className="w-8 h-8 text-gray-400 mr-4" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 truncate">{document.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{document.doc_type || document.category || "Document"}</p>
                   </div>
+                  </button>
 
                   <div className="flex items-center gap-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(document.status)}`}>
@@ -591,7 +591,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
         </div>
       </div>
 
-      {selectedDocument && <DocumentWorkspace key={selectedDocument.id} document={selectedDocument} initialTab={workspaceTab} onClose={() => setSelectedDocument(null)} />}
+      {selectedDocument && <DocumentWorkspace key={selectedDocument.id} document={selectedDocument} onClose={() => { setSelectedDocument(null); const next = new URLSearchParams(searchParams); next.delete("preview"); setSearchParams(next, { replace: true }); }} />}
     </div>
   );
 }

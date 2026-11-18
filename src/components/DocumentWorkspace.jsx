@@ -100,7 +100,12 @@ export default function DocumentWorkspace({
       ...dialog.current.querySelectorAll(
         "button:not([disabled]),input:not([disabled]),a[href],iframe",
       ),
-    ].filter((el) => el.getClientRects().length);
+    ].filter(
+      (el) =>
+        !el.closest("[hidden]") &&
+        el.tabIndex >= 0 &&
+        el.getClientRects().length,
+    );
     const first = targets[0],
       last = targets[targets.length - 1];
     if (event.shiftKey && window.document.activeElement === first) {
