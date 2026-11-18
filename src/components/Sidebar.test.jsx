@@ -35,3 +35,15 @@ test('collapsed navigation retains settings destinations and accessible names', 
  fireEvent.click(screen.getByRole('button',{name:'Data Privacy'}));
  expect(mockNavigate).toHaveBeenCalledWith('/settings/data-privacy');
 });
+
+test('mobile drawer traps focus including the brand link and restores it after backdrop close', () => {
+ window.innerWidth=390;
+ render(<Sidebar/>);
+ fireEvent.click(screen.getByRole('button',{name:'Expand navigation'}));
+ const brand=screen.getByRole('link',{name:'HomeTruth dashboard'});
+ brand.focus();
+ fireEvent.keyDown(brand,{key:'Tab',shiftKey:true});
+ expect(screen.getByRole('button',{name:'Settings'})).toHaveFocus();
+ fireEvent.click(screen.getByRole('button',{name:'Close navigation'}));
+ expect(screen.getByRole('button',{name:'Expand navigation'})).toHaveFocus();
+});

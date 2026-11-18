@@ -39,14 +39,14 @@ export default function Sidebar() {
     if (!narrow || collapsed) return;
     if (event.key === 'Escape') { setCollapsed(true); event.currentTarget.querySelector('[data-nav-toggle]').focus(); }
     if (event.key === 'Tab') {
-      const controls = [...event.currentTarget.querySelectorAll('button:not([disabled])')];
+      const controls = [...event.currentTarget.querySelectorAll('a[href], button:not([disabled])')];
       const first = controls[0], last = controls[controls.length - 1];
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   };
   return <div className="ht-sidebar-shell" data-collapsed={collapsed}>
-    {narrow && !collapsed && <button type="button" className="ht-sidebar-backdrop" tabIndex={-1} aria-label="Close navigation" onClick={() => setCollapsed(true)} />}
+    {narrow && !collapsed && <button type="button" className="ht-sidebar-backdrop" tabIndex={-1} aria-label="Close navigation" onClick={event => { const toggle = event.currentTarget.parentElement.querySelector('[data-nav-toggle]'); setCollapsed(true); toggle.focus(); }} />}
     <aside className="ht-sidebar" onKeyDown={handleKeys} role={narrow && !collapsed ? 'dialog' : undefined}
       aria-modal={narrow && !collapsed ? 'true' : undefined} aria-label="HomeTruth navigation">
       <a href="/dashboard" className="ht-sidebar-brand" aria-label="HomeTruth dashboard" title="HomeTruth dashboard">
