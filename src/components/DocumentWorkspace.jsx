@@ -229,7 +229,7 @@ export default function DocumentWorkspace({
               aria-controls={`document-panel-${value}`}
               tabIndex={tab === value ? 0 : -1}
               onClick={() => switchTab(value)}
-              className={`${button} ${tab === value ? "ht-workspace-selected" : ""}`}
+              className="ht-content-tab"
             >
               {label}
             </button>

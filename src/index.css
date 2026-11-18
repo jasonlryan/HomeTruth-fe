@@ -1,3 +1,5 @@
+@import "./components/homepage/styles/navigation.css";
+
 /* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -201,8 +203,7 @@ code {
 
 /* Keep inline icons on the first text baseline, even when a label wraps. */
 :is(button, a, [role="tab"], [role="button"], h1, h2, h3, span.inline-flex).items-center:has(> svg):not(.flex-col, .flex-col-reverse, .flex-wrap, .flex-row-reverse),
-:is(.ht-workspace-control, .ht-workspace-primary):has(> svg),
-.ht-nav-item.ht-nav-item {
+:is(.ht-workspace-control, .ht-workspace-primary):has(> svg) {
   display: grid;
   grid-auto-flow: column;
   align-items: first baseline;
@@ -212,8 +213,4 @@ code {
 :is(button, a, [role="tab"], [role="button"], h1, h2, h3, span.inline-flex).inline-flex.items-center:has(> svg):not(.flex-col, .flex-col-reverse, .flex-wrap, .flex-row-reverse),
 :is(.ht-workspace-control, .ht-workspace-primary):has(> svg) {
   display: inline-grid;
-}
-
-.ht-nav-item {
-  justify-content: start;
 }

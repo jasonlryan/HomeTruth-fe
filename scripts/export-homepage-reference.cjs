@@ -53,6 +53,7 @@ compiler.run((error, stats) => {
 <title>HomeTruth · Homepage journey</title>
 <link rel="stylesheet" href="src/components/homepage/styles/tokens.css">
 <link rel="stylesheet" href="src/components/homepage/styles/components.css">
+<link rel="stylesheet" href="src/components/homepage/styles/navigation.css">
 <link rel="stylesheet" href="src/components/homepage/styles/journey.css">
 <style>
 body{margin:0;font-family:Inter,system-ui,sans-serif}
