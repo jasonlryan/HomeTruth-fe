@@ -4,6 +4,7 @@ const form = byId("setup-form");
 const address = byId("address");
 const relationship = byId("relationship");
 const save = byId("save");
+const saveLabel = byId("save-label");
 let saved = false;
 let didFail = false;
 let saving = false;
@@ -40,7 +41,7 @@ function showScenario() {
   byId("thread-reply").hidden = !answerAvailable;
   byId("empty-thread").hidden = answerAvailable;
   byId("answer-notice").hidden = answerAvailable;
-  byId("question-card-title").lastChild.textContent = answerAvailable ? "Your homepage question" : "Homepage question";
+  byId("question-card-label").textContent = answerAvailable ? "Your homepage question" : "Homepage question";
   document.querySelector(".question-copy").hidden = !answerAvailable;
 
   if (scenario.value === "existing") {
@@ -84,7 +85,7 @@ form.addEventListener("submit", async event => {
   save.disabled = true;
   scenario.disabled = true;
   form.setAttribute("aria-busy", "true");
-  save.textContent = "Saving…";
+  saveLabel.textContent = "Saving…";
   byId("save-error").hidden = true;
   await new Promise(resolve => setTimeout(resolve, 350));
 
@@ -104,5 +105,5 @@ form.addEventListener("submit", async event => {
   save.disabled = false;
   scenario.disabled = false;
   form.removeAttribute("aria-busy");
-  save.textContent = "Save home record";
+  saveLabel.textContent = "Save home record";
 });

@@ -10,5 +10,5 @@ The app layout, APIs, authentication and record permissions are outside this pro
 
 - Ask for address line 1 and a deliberate relationship on the first screen. Keep postcode visible and optional, with the other supported fields under Additional property details.
 - Put the recovered homepage question beside the setup form. Users can reopen it before or after saving, and return to the form in the same visit.
-- Use the purple record action from the account handoff. Use the established navigation, field, focus and status styles. On mobile, place the recovered question above the form so it remains easy to find.
+- Use Cabin Regular for headings and Inter Regular for body copy, fields and buttons. Use the HomeTruth SVGs for navigation, actions, validation, select indicators and disclosure controls. Align icons next to text to the first-line baseline. Use the purple record action from the account handoff and the shared navigation, focus and status styles. On mobile, place the recovered question above the form so it remains easy to find.
 - Check an existing record, a recoverable save failure and a failed answer recovery using the scenario selector.

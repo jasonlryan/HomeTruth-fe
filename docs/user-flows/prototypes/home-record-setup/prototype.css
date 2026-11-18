@@ -4,11 +4,10 @@ body {margin:0;background:var(--surface-subtle)}
 a {color:var(--route-ink);text-underline-offset:3px}
 h1,h2,p,dl,dd {margin:0}
 h1 {font-size:clamp(32px,4vw,44px)}
-h2 {font-size:21px}
+h2 {font-size:20px}
 .skip-link {position:absolute;inset-inline-start:12px;top:6px;padding:8px;background:white;transform:translateY(-150%);z-index:3}
 .skip-link:focus {transform:none}
 .review-bar {display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;padding:10px clamp(16px,3vw,40px);background:var(--color-surface-dark);color:white;font-size:13px}
-.review-bar strong {font-weight:600}
 .review-bar p span {margin-inline-start:12px;color:#cbd5e1}
 .review-actions {display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
 .review-actions select {padding:4px 6px;border:1px solid var(--color-border-default);border-radius:var(--radius-sm);color:var(--color-text-default);background:white;font:inherit}
@@ -31,7 +30,9 @@ h2 {font-size:21px}
 .required {font-size:12px;color:var(--reading-ink);margin-inline-start:4px}
 .postcode-field {max-width:200px}
 .extra-fields {border-block:1px solid var(--color-border-default);padding:var(--space-3) 0}
-.extra-fields summary {cursor:pointer;width:fit-content}
+.extra-fields summary {cursor:pointer;width:fit-content;list-style:none}
+.extra-fields summary::-webkit-details-marker {display:none}
+.extra-fields[open] summary img {transform:rotate(90deg)}
 .extra-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3);margin-top:var(--space-4)}
 .ht-field input:focus,.ht-field select:focus {border-color:var(--route-ink)}
 .save-row {display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap}
@@ -39,8 +40,23 @@ h2 {font-size:21px}
 .ht-button.record-action:hover:enabled {background:color-mix(in srgb,var(--color-secondary) 88%,var(--ht-black))}
 .ht-button.record-action:disabled {background:var(--surface-subtle);color:var(--reading-ink)}
 .answer-card {display:grid;gap:var(--space-3)}
-.icon-heading,.question-link {display:inline-grid;grid-auto-flow:column;align-items:first baseline;justify-content:start;gap:var(--space-2)}
-.icon-heading img,.question-link img {width:16px;height:16px}
+.icon-heading,.icon-label,.question-link {display:inline-grid;grid-auto-flow:column;align-items:first baseline;justify-content:start;gap:var(--space-2)}
+.icon-label img,.question-link img,.record-action img {width:var(--icon-size-sm);height:var(--icon-size-sm)}
+.icon-heading img {width:20px;height:20px}
+.record-action img {filter:brightness(0) invert(1)}
+.record-action:disabled img {filter:none}
+.ht-field select,.review-actions select {
+  appearance:none;
+  background-image:url("/admin/design-system/assets/icons/ht-chevron-down.svg");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  background-size:var(--icon-size-sm);
+  padding-inline-end:34px;
+}
+@media(forced-colors:active) {
+  .ht-field select,.review-actions select {appearance:auto;background-image:none}
+  .record-action img {filter:none}
+}
 .question-copy {color:var(--reading-ink)}
 #answer-notice {color:var(--reading-ink)}
 .saved-record {display:grid;justify-items:start;gap:var(--space-2)}
@@ -51,6 +67,7 @@ h2 {font-size:21px}
 .guest-question {justify-self:end;margin-left:25%;border-radius:var(--radius-md);background:color-mix(in srgb,var(--ht-cyan) 12%,white);padding:var(--space-3) var(--space-4)}
 .original-reply {padding:var(--space-6)}
 .specification {width:min(1120px,92%);margin:auto;padding:var(--space-8) 0 var(--space-12);border-top:1px solid var(--color-border-default)}
+.specification h2 {font-size:24px}
 .specification p {margin-block:var(--space-2) var(--space-4)}
 .specification table {min-width:620px;background:white}
 .specification th,.specification td {vertical-align:top}

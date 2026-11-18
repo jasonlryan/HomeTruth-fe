@@ -13,7 +13,7 @@
 <body class="ht-ui">
   <a class="skip-link" href="#prototype-main">Skip to content</a>
   <div class="review-bar">
-    <p><strong>UX proposal</strong> <span>HT-FLOW-001 · Demo data</span></p>
+    <p>UX proposal <span>HT-FLOW-001 · Demo data</span></p>
     <div class="review-actions">
       <label for="scenario">Preview state</label>
       <select id="scenario">
@@ -50,7 +50,7 @@
 
         <div class="record-grid">
           <form id="setup-form" class="ht-panel setup-form" novalidate>
-            <h2>Property details</h2>
+            <h2 class="icon-heading"><img src="/admin/design-system/assets/icons/ht-home.svg" alt="">Property details</h2>
             <div class="ht-field">
               <label for="address">Address line 1 <span class="required">Required</span></label>
               <input id="address" name="addressLine1" autocomplete="address-line1" placeholder="e.g. 12 Example Road" required aria-describedby="address-error">
@@ -74,7 +74,10 @@
             </div>
 
             <details class="extra-fields">
-              <summary>Additional property details</summary>
+              <summary class="icon-label">
+                <img src="/admin/design-system/assets/icons/ht-chevron-right.svg" alt="">
+                <span>Additional property details</span>
+              </summary>
               <div class="extra-grid">
                 <div class="ht-field"><label for="address-extra">Address line 2</label><input id="address-extra" name="addressLine2" autocomplete="address-line2"></div>
                 <div class="ht-field"><label for="town">Town or city</label><input id="town" name="townCity" autocomplete="address-level2"></div>
@@ -84,9 +87,15 @@
                 <div class="ht-field"><label for="tenure">Tenure</label><select id="tenure" name="tenure"><option value="unknown">Not sure yet</option><option value="freehold">Freehold</option><option value="leasehold">Leasehold</option><option value="share_of_freehold">Share of freehold</option><option value="commonhold">Commonhold</option></select></div>
               </div>
             </details>
-            <p id="save-error" class="ht-error" role="alert" hidden>We couldn’t save the record. Your details are still here. Try again.</p>
+            <p id="save-error" class="ht-error icon-label" role="alert" hidden>
+              <img src="/admin/design-system/assets/icons/ht-warning.svg" alt="">
+              <span>We couldn’t save the record. Your details are still here. Try again.</span>
+            </p>
             <div class="save-row">
-              <button id="save" type="submit" class="ht-button record-action">Save home record</button>
+              <button id="save" type="submit" class="ht-button record-action">
+                <img src="/admin/design-system/assets/icons/ht-save.svg" alt="">
+                <span id="save-label">Save home record</span>
+              </button>
             </div>
           </form>
 
@@ -101,13 +110,16 @@
 
           <aside class="ht-panel answer-card" aria-labelledby="question-card-title">
             <h2 id="question-card-title" class="icon-heading">
-              <img src="/admin/design-system/assets/icons/ht-assistant.svg" alt="">Your homepage question
+              <img src="/admin/design-system/assets/icons/ht-assistant.svg" alt=""><span id="question-card-label">Your homepage question</span>
             </h2>
             <p class="question-copy">What should I ask after a survey flags a problem?</p>
             <a class="question-link" href="#answer" id="continue-question">Continue your homepage question
               <img src="/admin/design-system/assets/icons/ht-arrow-right.svg" alt="">
             </a>
-            <p id="answer-notice" role="status" hidden>We couldn’t reopen your homepage answer. You can still set up the record.</p>
+            <p id="answer-notice" class="icon-label" role="status" hidden>
+              <img src="/admin/design-system/assets/icons/ht-info.svg" alt="">
+              <span>We couldn’t reopen your homepage answer. You can still set up the record.</span>
+            </p>
           </aside>
         </div>
       </section>
