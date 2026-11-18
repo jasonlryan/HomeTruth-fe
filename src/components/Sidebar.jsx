@@ -1,3 +1,5 @@
+import { useAuth } from '../context/AuthContext';
+import { isDemoWorkspaceUser } from '../utils/demoHomeHistory';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -18,6 +20,7 @@ import { getPartnerProgrammeAccessStatus } from "../api/api";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const location = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(
     location.pathname.startsWith("/settings")
@@ -54,6 +57,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="space-y-2 text-sm text-gray-700">
+        {isDemoWorkspaceUser(user?.email) && <NavItem icon={<Building2 size={20} />} label="Operations" onClick={() => navigate('/operations')} active={location.pathname === '/operations'} />}
         <NavItem
           icon={<Home size={20} />}
           label="Dashboard"
@@ -148,32 +152,13 @@ export default function Sidebar() {
 
 function NavItem({ icon, label, active, onClick }) {
   return (
-    <div
-      onClick={onClick}
-      className={`flex items-center px-4 py-4 rounded-lg cursor-pointer transition-colors duration-150 ${
-        active
-          ? "bg-sky-50 text-ht-cyan font-medium"
-          : "hover:bg-gray-100"
-      }`}
-    >
-      <div className="mr-2">{icon}</div>
-      <span>{label}</span>
-    </div>
+    <button type="button" aria-current={active ? "page" : undefined} onClick={onClick}
+      className={`flex w-full items-center rounded-[var(--radius-md)] px-4 py-4 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-secondary)] ${active ? "bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-text-default)] font-medium" : "hover:bg-gray-100"}`}>
+      <span className="mr-2" aria-hidden="true">{icon}</span><span>{label}</span>
+    </button>
   );
 }
 
 function SubNavItem({ icon, label, active, onClick }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`flex items-center px-4 py-3 rounded cursor-pointer text-sm transition-colors duration-150 ${
-        active
-          ? "text-ht-cyan font-medium bg-sky-50"
-          : "hover:bg-gray-100 text-gray-700"
-      }`}
-    >
-      <div className="mr-2">{icon}</div>
-      <span>{label}</span>
-    </div>
-  );
+  return <NavItem icon={icon} label={label} active={active} onClick={onClick} />;
 }

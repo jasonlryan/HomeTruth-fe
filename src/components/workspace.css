@@ -1,0 +1,59 @@
+/* HomeTruth semantic tokens; readable text and consistent 44px controls. */
+.ht-workspace-muted {
+  color: color-mix(
+    in srgb,
+    var(--color-text-default) 75%,
+    var(--color-surface-default)
+  );
+}
+.ht-workspace-control,
+.ht-workspace-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border-default);
+  font-size: 0.875rem;
+  color: var(--color-text-default);
+  background: var(--color-surface-default);
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+.ht-workspace-control:hover {
+  border-color: var(--color-accent);
+}
+.ht-workspace-primary {
+  background: var(--color-action-primary);
+  border-color: var(--color-action-primary);
+}
+.ht-workspace-primary:hover {
+  background: var(--color-action-primary-hover);
+}
+.ht-workspace-control:focus-visible,
+.ht-workspace-primary:focus-visible,
+.ht-workspace-link:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+.ht-workspace-control:disabled,
+.ht-workspace-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.ht-workspace-selected {
+  background: color-mix(
+    in srgb,
+    var(--color-accent) 12%,
+    var(--color-surface-default)
+  );
+  border-color: var(--color-accent);
+}
+.ht-workspace-link {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

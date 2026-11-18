@@ -1,26 +1,17 @@
+import DocumentWorkspace from '../components/DocumentWorkspace';
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, FileText, MoreVertical, Sparkles } from "lucide-react";
+import { Search, Filter, ChevronDown, FileText, MoreVertical } from "lucide-react";
 import PageTitle from "../components/PageTitle";
-import { getUserDocuments, deleteDocument, uploadDocument, askDocumentAI, getDocumentPreview, getDocumentChats } from "../api/api";
+import { getUserDocuments, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
 
 export default function Documents() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("earliest"); // "earliest" | "latest" | "name"
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [showContextMenu, setShowContextMenu] = useState(null);
-  const [showAskAI, setShowAskAI] = useState(false);
-  const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [askAIQuestion, setAskAIQuestion] = useState("");
-  const [isAskingAI, setIsAskingAI] = useState(false);
-  const [chatHistory, setChatHistory] = useState([]);
-  const [chatPagination, setChatPagination] = useState({ page: 1, limit: 20, total: 0 });
-  const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(false);
-  const [documentPreview, setDocumentPreview] = useState(null);
-  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
-  const [previewError, setPreviewError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     category: [],
@@ -82,33 +73,25 @@ export default function Documents() {
     fetchDocuments();
   }, [fetchDocuments]);
 
-  // Handle preview parameter from URL
+  // Resolve deep links independently of the current list page/filter.
   useEffect(() => {
-    const previewId = searchParams.get('preview');
-    if (previewId && documents.length > 0) {
-      const documentToPreview = documents.find(doc => doc.id.toString() === previewId);
-      if (documentToPreview) {
-        handleDocumentClick(documentToPreview);
+    const id = searchParams.get('preview');
+    if (!id) { setSelectedDocument(null); return; }
+    const controller = new AbortController();
+    let active = true;
+    setSelectedDocument(current => String(current?.id) === id ? current : null);
+    getUserDocumentRecord(id, controller.signal).then(response => {
+      if (!active) return;
+      if (!response?.success || !response?.data?.id) throw new Error('Unavailable');
+      setSelectedDocument(response.data);
+    }).catch(err => {
+      if (active && err.code !== 'ERR_CANCELED') {
+        setSelectedDocument(null);
+        setError('This document could not be opened. It may be unavailable or outside your access.');
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run when URL or documents change
-  }, [searchParams, documents]);
-
-  // Lock background scroll when Ask AI is open
-  useEffect(() => {
-    if (showAskAI) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => (document.body.style.overflow = prev);
-    }
-  }, [showAskAI]);
-
-  // ESC to close
-  useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && setShowAskAI(false);
-    if (showAskAI) window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [showAskAI]);
+    });
+    return () => { active = false; controller.abort(); };
+  }, [searchParams]);
 
   // Close context menu when clicking outside
   useEffect(() => {
@@ -209,13 +192,14 @@ export default function Documents() {
 
   const removeFile = (index) => setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
 
-  const handleDocumentClick = async (document) => {
-    setSelectedDocument(document);
-    setDocuments((prev) => prev.map((d) => ({ ...d, selected: d.id === document.id })));
-    setShowAskAI(true);
-    
-    // Load chat history for this document
-    await loadChatHistory(document.id);
+  const handleDocumentClick = (doc) => {
+    setSelectedDocument(doc);
+    if (searchParams.get('preview') !== String(doc.id)) {
+      const next = new URLSearchParams(searchParams);
+      next.set('preview', String(doc.id));
+      setSearchParams(next, { replace: true });
+    }
+    setShowContextMenu(null);
   };
 
   const handleContextMenu = (e, documentId) => {
@@ -223,127 +207,13 @@ export default function Documents() {
     setShowContextMenu(documentId);
   };
 
-  const handleOpenDocument = async (document) => {
-    setSelectedDocument(document);
-    setShowContextMenu(null);
-    setShowDocumentModal(true);
-    setDocumentPreview(null);
-    setPreviewError(null);
-    
-    // Fetch document preview
-    if (document?.id) {
-      setIsLoadingPreview(true);
-      try {
-        const preview = await getDocumentPreview(document.id);
-        setDocumentPreview(preview);
-      } catch (error) {
-       
-        setPreviewError(`Failed to load document preview: ${error.response?.data?.message || error.message}`);
-      } finally {
-        setIsLoadingPreview(false);
-      }
-    }
-  };
+  const handleOpenDocument = handleDocumentClick;
 
   const handleSortChange = (sortType) => {
     setSortBy(sortType);
     setShowSortDropdown(false);
   };
 
-
-  const handleCloseAskAI = () => {
-    setShowAskAI(false);
-    setAskAIQuestion("");
-    setChatHistory([]);
-  };
-
-  const loadChatHistory = async (documentId, page = 1) => {
-    setIsLoadingChatHistory(true);
-    try {
-      const response = await getDocumentChats(documentId, {
-        page,
-        limit: chatPagination.limit
-      });
-      
-      if (response?.data?.chats && Array.isArray(response.data.chats)) {
-        const formattedHistory = response.data.chats.map(chat => ({
-          id: chat.id,
-          question: chat.question || chat.user_message,
-          answer: chat.answer || chat.assistant_reply,
-          created_at: chat.created_at,
-          has_context: chat.has_context || false
-        }));
-        
-        setChatHistory(formattedHistory);
-        setChatPagination(prev => ({
-          ...prev,
-          page,
-          total: response.data.total || response.total || 0
-        }));
-      } else {
-        setChatHistory([]);
-      }
-    } catch (error) {
-      console.error("Error loading chat history:", error);
-      setChatHistory([]);
-    } finally {
-      setIsLoadingChatHistory(false);
-    }
-  };
-
-  const handleAskAISubmit = async () => {
-    if (!askAIQuestion.trim() || !selectedDocument?.id || isAskingAI) return;
-    
-    setIsAskingAI(true);
-    
-    try {
-      const response = await askDocumentAI(selectedDocument.id, askAIQuestion);
-      
-      // Handle new API response structure
-      if (response?.success && response?.data) {
-        const { current_answer } = response.data;
-        
-        // Add the new Q&A to chat history immediately
-        const newChatEntry = {
-          id: `temp_${Date.now()}`,
-          question: askAIQuestion,
-          answer: current_answer || "No response received",
-          created_at: new Date().toISOString(),
-          has_context: false
-        };
-        
-        setChatHistory(prev => [newChatEntry, ...prev]);
-        
-        // Clear the input field after successful response
-        setAskAIQuestion("");
-        
-        // Reload chat history to get the updated list from server
-        setTimeout(async () => {
-          await loadChatHistory(selectedDocument.id);
-        }, 1000);
-      } else {
-        // Fallback for old API structure
-        
-        // Add the new Q&A to chat history immediately
-        const newChatEntry = {
-          id: `temp_${Date.now()}`,
-          question: askAIQuestion,
-          answer: response?.data?.answer || response?.answer || "No response received",
-          created_at: new Date().toISOString(),
-          has_context: false
-        };
-        
-        setChatHistory(prev => [newChatEntry, ...prev]);
-        
-        // Clear the input field after successful response
-        setAskAIQuestion("");
-      }
-    } catch (error) {
-      console.error("Error asking AI:", error);
-    } finally {
-      setIsAskingAI(false);
-    }
-  };
 
   const filterOptions = {
     category: ["Financial", "Legal", "Maintenance", "Compliance", "Surveys & Reports", "Property Details"],
@@ -649,13 +519,14 @@ export default function Documents() {
                   className={`flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:bg-sky-50 cursor-pointer ${
                     document.selected ? "bg-sky-50" : ""
                   }`}
-                  onClick={() => handleDocumentClick(document)}
                 >
+                  <button type="button" aria-label={`Open ${document.name}`} onClick={() => handleDocumentClick(document)} className="flex min-w-0 flex-1 items-center text-left">
                   <FileText className="w-8 h-8 text-gray-400 mr-4" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 truncate">{document.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{document.doc_type || document.category || "Document"}</p>
                   </div>
+                  </button>
 
                   <div className="flex items-center gap-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(document.status)}`}>
@@ -728,276 +599,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
         </div>
       </div>
 
-      {/* Ask HomeTruth overlay */}
-      {showAskAI && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/30" onClick={handleCloseAskAI} />
-          <div
-            className="absolute right-0 top-0 h-full w-full sm:w-[28rem] lg:w-[32rem] bg-white border-l border-gray-200 shadow-2xl
-                       transform transition-transform duration-300 ease-out translate-x-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="font-chat h-full overflow-y-auto p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
-                  Ask HomeTruth about {selectedDocument ? selectedDocument.name : "Document"}
-                </h2>
-                <button onClick={handleCloseAskAI} className="text-gray-400 hover:text-gray-600" aria-label="Close">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <FileText className="w-8 h-8 text-gray-400" />
-                  <div>
-                    <h3 className="font-medium text-gray-900">{selectedDocument ? selectedDocument.name : "No document selected"}</h3>
-                    <p className="text-sm text-gray-500">
-                      {selectedDocument ? selectedDocument.doc_type || selectedDocument.category || "Document" : "Select a document"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Ask a Question related to your document:</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={askAIQuestion}
-                    onChange={(e) => setAskAIQuestion(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleAskAISubmit()}
-                    placeholder="e.g. 'When does my tenancy agreement expire?'"
-                    className="w-full px-4 py-3 pr-14 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-ht-cyan"
-                  />
-                  <button
-                    onClick={handleAskAISubmit}
-                    disabled={isAskingAI || !askAIQuestion.trim()}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-ht-cyan text-white rounded-full flex items-center justify-center hover:bg-ht-cyan-light transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isAskingAI ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    ) : (
-                    <Sparkles className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Chat History - No scroll, full display */}
-              {chatHistory.length > 0 && (
-                <div className="mb-6">
-                  <div className="space-y-4">
-                    {chatHistory.map((chat, index) => (
-                      <div key={chat.id || index} className="border-b border-gray-200 pb-4 last:border-b-0">
-                        <div className="mb-2">
-                          <p className="font-semibold text-gray-900">Q: {chat.question}</p>
-                        </div>
-                        <div className="mb-2">
-                          <p className="font-semibold text-gray-900">A: {chat.answer}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Loading Chat History */}
-              {isLoadingChatHistory && (
-                <div className="mb-6">
-                  <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan"></div>
-                    <span className="ml-2 text-gray-600">Loading chat history...</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Loading State */}
-              {isAskingAI && (
-                <div className="mb-6">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan"></div>
-                      <span className="text-gray-600">Reviewing your question…</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Document Preview Modal */}
-      {showDocumentModal && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setShowDocumentModal(false)} />
-          <div
-            className="absolute inset-0 flex items-center justify-center p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-gray-400" />
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{selectedDocument?.name}</h2>
-                    <p className="text-sm text-gray-500">{selectedDocument?.doc_type || selectedDocument?.category || "Document"}</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setShowDocumentModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Modal Content */}
-              <div className="p-6">
-                {/* Document Preview Area */}
-                <div className="mb-6">
-                  <div className="bg-gray-100 rounded-lg h-96 flex items-center justify-center border-2 border-dashed border-gray-300 overflow-hidden">
-                    {isLoadingPreview ? (
-                      <div className="text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mx-auto mb-4"></div>
-                        <p className="text-gray-500">Loading document preview...</p>
-                      </div>
-                    ) : previewError ? (
-                      <div className="text-center">
-                        <FileText className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                        <p className="text-red-500 text-lg">Preview Error</p>
-                        <p className="text-red-400 text-sm">{previewError}</p>
-                      </div>
-                    ) : documentPreview ? (
-                      <div className="w-full h-full flex items-center justify-center">
-                        {documentPreview.imageUrl || documentPreview.image || documentPreview.preview_url ? (
-                          <img 
-                            src={documentPreview.imageUrl || documentPreview.image || documentPreview.preview_url} 
-                            alt="Document Preview" 
-                            className="max-w-full max-h-full object-contain"
-                          />
-                        ) : documentPreview.preview_content ? (
-                          <div className="p-4 text-left w-full h-full overflow-auto">
-                            <div className="whitespace-pre-wrap text-sm text-gray-700">
-                              {documentPreview.preview_content}
-                            </div>
-                          </div>
-                        ) : documentPreview.text || documentPreview.content ? (
-                          <div className="p-4 text-left w-full h-full overflow-auto">
-                            <div className="whitespace-pre-wrap text-sm text-gray-700">
-                              {documentPreview.text || documentPreview.content}
-                            </div>
-                          </div>
-                        ) : documentPreview.url || documentPreview.previewUrl ? (
-                          <iframe 
-                            src={documentPreview.url || documentPreview.previewUrl} 
-                            className="w-full h-full border-0"
-                            title="Document Preview"
-                          />
-                        ) : (
-                          <div className="text-center">
-                            <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                            <p className="text-gray-500 text-lg">Document Preview</p>
-                            <p className="text-gray-400 text-sm">Preview format not supported</p>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-500 text-lg">First Page Preview</p>
-                        <p className="text-gray-400 text-sm">Document preview will be available here</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Document Details */}
-                <div className="mb-6">
-                  <div className="space-y-3">
-                    {/* Document Name */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-900 font-medium">{selectedDocument?.name}</span>
-                      <span className="text-gray-600">{selectedDocument?.doc_type || selectedDocument?.category || "Document"}</span>
-                    </div>
-                    
-                    {/* Status */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Status</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedDocument?.status)}`}>
-                        {selectedDocument?.status || "Ready"}
-                      </span>
-                    </div>
-                    
-                    {/* File Size */}
-                    {selectedDocument?.file_size && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">File Size</span>
-                        <span className="text-gray-900">{selectedDocument.file_size}</span>
-                      </div>
-                    )}
-                    
-                    {/* File Type */}
-                    {selectedDocument?.file_type && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">File Type</span>
-                        <span className="text-gray-900">{selectedDocument.file_type}</span>
-                      </div>
-                    )}
-                    
-                    {/* Tags */}
-                    {selectedDocument?.tags && Array.isArray(selectedDocument.tags) && selectedDocument.tags.length > 0 && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Tags</span>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedDocument.tags.map((tag, index) => (
-                            <span key={`tag-${selectedDocument.id}-${index}`} className="px-2 py-1 bg-sky-50 text-ht-cyan text-xs rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Added Date */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Added</span>
-                      <span className="text-gray-900">
-                        {selectedDocument?.created_at ? new Date(selectedDocument.created_at).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric', 
-                          year: 'numeric' 
-                        }) : "No date"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-3">
-                  <button
-                    onClick={() => {
-                      setShowDocumentModal(false);
-                      setShowAskAI(true);
-                    }}
-                    className="flex items-center gap-2 px-6 py-3 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light active:bg-ht-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ht-cyan transition-colors"
-                  >
-                    <Sparkles className="w-5 h-5" />
-                    Ask HomeTruth
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {selectedDocument && <DocumentWorkspace key={selectedDocument.id} document={selectedDocument} onClose={() => { setSelectedDocument(null); const next = new URLSearchParams(searchParams); next.delete("preview"); setSearchParams(next, { replace: true }); }} />}
     </div>
   );
 }

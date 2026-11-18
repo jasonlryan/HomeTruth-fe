@@ -1,3 +1,5 @@
+import PageTitle from "../components/PageTitle";
+import HomeHistory from '../components/HomeHistory';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -519,12 +521,11 @@ export default function PropertyProfile() {
           </p>
           <div className="mt-2 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
             <div>
-              <h1 className="text-3xl font-normal tracking-normal text-[var(--color-text-default)]">
-                Set up your property
-              </h1>
+              <PageTitle>
+                {selectedRecord ? "Your home record" : "Set up your property"}
+              </PageTitle>
               <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--color-text-muted)]">
-                Create the home record that documents, facts and actions will
-                attach to.
+                {selectedRecord ? "Documents, work history and useful next steps, together in one place." : "Create the home record that documents, facts and actions will attach to."}
               </p>
             </div>
             {records.length > 1 && (
@@ -799,6 +800,8 @@ export default function PropertyProfile() {
                   />
                 </div>
               </div>
+
+              <HomeHistory record={selectedRecord} />
 
               <PreventionTasksPanel
                 tasks={openTasks}

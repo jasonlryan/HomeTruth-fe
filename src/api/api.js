@@ -601,10 +601,10 @@ export const uploadDocument = async (formData) => {
   return res.data;
 };
 
-export const askDocumentAI = async (documentId, question) => {
+export const askDocumentAI = async (documentId, question, signal) => {
   const res = await api.post(`/api/user-documents/${documentId}/chat`, {
     question,
-  });
+  }, { signal });
   return res.data;
 };
 
@@ -873,3 +873,14 @@ export const unpublishArticle = async (id) => {
 };
 
 export default api;
+
+// Authenticated preview payload: JSON text/image or raw file bytes.
+export const getDocumentPreviewFile = async (documentId, signal) => {
+  const res = await api.get(`/api/user-documents/${documentId}/preview`, { responseType: 'blob', signal });
+  return res.data;
+};
+
+export const getUserDocumentRecord = async (id, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(id)}`, { signal });
+  return res.data;
+};
