@@ -62,7 +62,16 @@
 .ht-nav-item:is(.ht-nav-active, [aria-current="page"], [data-preview-state="selected"]) {
   color: var(--nav-ink);
   background: var(--nav-selected-surface);
-  box-shadow: inset 3px 0 var(--color-accent);
+}
+
+.ht-nav-item:is(.ht-nav-active, [aria-current="page"], [data-preview-state="selected"])::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--color-accent);
+  pointer-events: none;
 }
 
 .ht-ui .ht-route input:focus-visible + span,
