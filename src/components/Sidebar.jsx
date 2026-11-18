@@ -76,6 +76,10 @@ export default function Sidebar() {
           {item(Bell, 'Notifications', '/settings/notifications')}
           {item(LockKeyhole, 'Data Privacy', '/settings/data-privacy')}
         </div>}
+        {user?.role === 'admin' && (
+          <NavItem icon={<img src="/assets/brand/ht-lock.svg" alt="" width={24} height={24} />} label="Admin tools"
+            collapsed={collapsed} active={location.pathname.startsWith('/admin/')} onClick={() => go('/admin/knowledge-base')} />
+        )}
       </nav>
     </aside>
   </div>;

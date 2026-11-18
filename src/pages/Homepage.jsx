@@ -13,7 +13,6 @@ const accountLinks = {
 
 export default function Homepage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
   const sessionId = useRef(getHomeRecordGuestSession());
   const { hash } = useLocation();
 
@@ -33,7 +32,7 @@ export default function Homepage() {
 
   return (
     <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks}
-      loginHref={isAdmin ? "/admin/knowledge-base" : "/login"} loginLabel={isAdmin ? "Back to admin" : undefined}
+      loginHref={user ? "/dashboard" : "/login"} loginLabel={user ? "Go to dashboard" : undefined}
       onAccountHandoff={() => setHomeRecordGuestSession(sessionId.current)} />
   );
 }

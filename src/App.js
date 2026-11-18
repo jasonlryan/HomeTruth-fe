@@ -12,7 +12,6 @@ import ScrollToTop from "./components/ScrollToTop"; // ✅ Import scroll helper
 
 // Pages
 import Login from "./pages/Login";
-import AdminLogin from "./pages/AdminLogin";
 import Register from "./pages/Register";
 import HowHomeTruthWorks from "./pages/LandingPage";
 import ProFeature from "./pages/ProFeatures";
@@ -76,8 +75,8 @@ function App() {
           <ScrollToTop />
           <Routes>
             {uxSpecificationsRoute}
-            {/* Allow admin login even in Coming Soon mode */}
-            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/login" element={<Login comingSoon />} />
+            <Route path="/admin/login" element={<Navigate to="/login" replace />} />
 
             {/* Admin Protected Routes - accessible during Coming Soon mode */}
             <Route
@@ -217,14 +216,7 @@ function App() {
             }
           />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/admin/login"
-            element={
-              <PublicRoute>
-                <AdminLogin />
-              </PublicRoute>
-            }
-          />
+          <Route path="/admin/login" element={<Navigate to="/login" replace />} />
           <Route path="/privacy-policy" element={<PublicRoute allowAdmin><PrivacyPolicyPage /></PublicRoute>} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/chat" element={<PublicRoute><GuestChat /></PublicRoute>} />

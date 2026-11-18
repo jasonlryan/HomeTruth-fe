@@ -9,7 +9,11 @@ import "./account-entry.css";
 
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
 
-export default function Login() {
+function comingSoonDestination(user) {
+  return user?.role === "admin" ? "/admin/knowledge-base" : "/";
+}
+
+export default function Login({ comingSoon = false }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login, user: signedInUser, loading: checkingSession } = useAuth();
@@ -86,16 +90,8 @@ export default function Login() {
         return;
       }
 
-      // If admin login, redirect to knowledge base admin and skip all onboarding
-      if (userRole === "admin") {
-        // Clear any onboarding flags for admin
-        localStorage.removeItem("require_profile");
-        localStorage.removeItem("new_user");
-        localStorage.removeItem("quiz_modal_active");
-        localStorage.removeItem("onboarding_lock");
-        localStorage.setItem("quiz_completed", "true");
-        localStorage.setItem("quiz_checked_this_session", "true");
-        navigate("/admin/knowledge-base", { replace: true });
+      if (comingSoon) {
+        navigate(comingSoonDestination(user), { replace: true });
         return;
       }
 
@@ -165,7 +161,11 @@ export default function Login() {
   };
 
   if (checkingSession) return null;
-  if (signedInUser && !loginSucceeded.current) return <Navigate to="/dashboard" replace />;
+  if (signedInUser && !loginSucceeded.current) {
+    if (comingSoon) return <Navigate to={comingSoonDestination(signedInUser)} replace />;
+    if (startingRecord) return <Navigate to={HOME_RECORD_PATH} replace state={{ claimHomepageAnswer: true }} />;
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const registrationHref = partnerInvite
     ? `/register?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
@@ -194,7 +194,7 @@ export default function Login() {
           {error && <p className="ht-error" role="alert">{error}</p>}
           <Button variant="cyan" type="submit" pending={pending}>{pending ? "Logging in…" : "Log in"}</Button>
         </form>
-        <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>
+        {!comingSoon && <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>}
       </main>
       <PublicFooter assetBase={assetBase} homeHref="/" />
     </div>

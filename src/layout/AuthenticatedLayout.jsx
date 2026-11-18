@@ -6,21 +6,16 @@ import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { recordPilotDailyActivity } from "../api/api";
 
+const comingSoon = process.env.REACT_APP_COMING_SOON === "true";
+
 const pilotActivityStorageKey = (userId) =>
   `hometruth:pilot-activity:${userId}:${new Date().toISOString().slice(0, 10)}`;
 
 export default function AuthenticatedLayout() {
   const location = useLocation();
   const { user } = useAuth();
+  const showProductNavigation = !comingSoon || !location.pathname.startsWith("/admin/");
   const [onboardingMode, setOnboardingMode] = useState(() => {
-    // Check if user is admin - admins never enter onboarding mode
-    const userRole = user?.role || localStorage.getItem("user_role");
-    const isAdmin = userRole === "admin";
-    
-    if (isAdmin) {
-      return false; // Admins always see the normal layout
-    }
-
     const needsProfile = localStorage.getItem("require_profile") === "true";
     const isNewUser = localStorage.getItem("new_user") === "true";
     const isWelcomePage = location.pathname === "/welcome";
@@ -36,15 +31,6 @@ export default function AuthenticatedLayout() {
   });
 
   useEffect(() => {
-    // Check if user is admin - admins never enter onboarding mode
-    const userRole = user?.role || localStorage.getItem("user_role");
-    const isAdmin = userRole === "admin";
-    
-    if (isAdmin) {
-      setOnboardingMode(false);
-      return;
-    }
-
     // Update when other tabs change localStorage
     const onStorage = () => {
       const needsProfile = localStorage.getItem("require_profile") === "true";
@@ -102,23 +88,19 @@ export default function AuthenticatedLayout() {
     );
   }
 
-  // Check if user is admin
-  const userRole = user?.role || localStorage.getItem("user_role");
-  const isAdmin = userRole === "admin";
-
   // Normal chrome layout
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div className="flex flex-1 min-w-0">
-        {!isAdmin && <Sidebar />}
+        {showProductNavigation && <Sidebar />}
         <div className="flex-1 min-w-0 flex flex-col">
-          {!isAdmin && <Topbar />}
+          {showProductNavigation && <Topbar />}
           <main className="flex-1 min-w-0 relative">
             <Outlet />
           </main>
         </div>
       </div>
-      {!isAdmin && (
+      {showProductNavigation && (
         <div className="flex-shrink-0">
           <Footer />
         </div>

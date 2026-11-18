@@ -18,7 +18,7 @@ export default function AdminProtectedRoute({ children }) {
 
   // Check if user is authenticated
   if (!user) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   // Check if user is admin

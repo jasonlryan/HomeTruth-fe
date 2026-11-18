@@ -355,14 +355,6 @@ export default function ComingSoon() {
           <p className="text-gray-300 text-sm">
             © 2025 HomeTruth. All rights reserved.
           </p>
-          {/* Discreet Admin Access Link */}
-          <a
-            href="/admin/login"
-            className="text-gray-600 hover:text-gray-400 text-xs mt-2 inline-block transition-colors"
-            title="Admin Access"
-          >
-            •
-          </a>
         </div>
       </footer>
     </div>

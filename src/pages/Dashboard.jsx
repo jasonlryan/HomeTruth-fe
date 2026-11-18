@@ -106,27 +106,6 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    // Check if user is admin - admins skip all onboarding flows
-    const userRole = user?.role || localStorage.getItem("user_role");
-    const isAdmin = userRole === "admin";
-
-    // If admin, skip all onboarding and redirect to knowledge base if not already there
-    if (isAdmin) {
-      // Clear any onboarding flags for admin
-      localStorage.removeItem("require_profile");
-      localStorage.removeItem("new_user");
-      localStorage.removeItem("quiz_modal_active");
-      localStorage.removeItem("onboarding_lock");
-      localStorage.setItem("quiz_completed", "true");
-      localStorage.setItem("quiz_checked_this_session", "true");
-      
-      // Redirect admin to knowledge base if they're on dashboard
-      if (window.location.pathname === "/dashboard") {
-        navigate("/admin/knowledge-base", { replace: true });
-      }
-      return;
-    }
-
     const needsProfile = localStorage.getItem("require_profile") === "true";
     const isNewUser = localStorage.getItem("new_user") === "true";
     const fromWelcomePage = localStorage.getItem("from_welcome_page") === "true";
