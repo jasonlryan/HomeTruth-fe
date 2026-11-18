@@ -1,4 +1,12 @@
 .ht-question-options .ht-route-list {margin-bottom:var(--space-3)}
+.ht-question-options .ht-route > span {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-1);
+  min-height:58px;
+}
 
 .ht-question-options-list {
   display:grid;
