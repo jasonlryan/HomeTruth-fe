@@ -1,6 +1,7 @@
 import DemoEntry from './pages/DemoEntry';
 import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -57,6 +58,9 @@ import VisualReviewHarness from "./dev/VisualReviewHarness";
 // Check if we're in "Coming Soon" mode
 const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
 const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
+const HomepagePreview = process.env.NODE_ENV === "development" || isVisualReviewMode
+  ? lazy(() => import("./pages/HomepagePreview"))
+  : null;
 
 function App() {
   // If Coming Soon mode is enabled, show only the Coming Soon page (except admin routes)
@@ -156,6 +160,13 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
+          {HomepagePreview && (
+            <Route path="/homepage-preview" element={
+              <PublicRoute>
+                <Suspense fallback={null}><HomepagePreview /></Suspense>
+              </PublicRoute>
+            } />
+          )}
           <Route path="/demo" element={<DemoEntry />} />
           <Route
             path="/"

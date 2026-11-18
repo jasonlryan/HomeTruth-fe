@@ -1,0 +1,57 @@
+@font-face {font-family:Cabin;src:url("../assets/fonts/cabin-regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face {font-family:Inter;src:url("../assets/fonts/inter-regular.woff2") format("woff2");font-weight:400;font-display:swap}
+
+:root {
+  --font-heading:Cabin,"Gill Sans",sans-serif;
+  --font-reading:Inter,system-ui,sans-serif;
+  --reading-ink:#48515d;
+  --surface-subtle:#f5f7f8;
+  --status-success-ink:#27631b;
+  --status-error-ink:#8a3225;
+  --status-review-ink:#6c4a1b;
+  --route-ink:color-mix(in srgb,var(--color-accent) 55%,var(--color-surface-dark));
+}
+.ht-ui {font:400 14px/1.55 var(--font-reading);color:var(--color-text-default);font-synthesis:none}
+.ht-ui :is(h1,h2,h3,h4) {font-family:var(--font-heading);font-weight:400;line-height:1.12}
+.ht-ui :is(input,textarea,select,button) {font:inherit}
+.ht-ui :focus-visible {outline:2px solid var(--route-ink);outline-offset:2px}
+.ht-ui :is(button,a,input,summary,select,textarea) {scroll-margin-block:20px}
+.ht-button {
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+  min-height:40px;padding:7px var(--space-3);border:1px solid transparent;
+  border-radius:var(--radius-md);cursor:pointer;background:var(--color-action-primary);
+  color:var(--color-text-on-dark);font:inherit;text-decoration:none;
+}
+.ht-button:hover {background:var(--color-action-primary-hover)}
+.ht-button[data-variant=cyan] {background:var(--color-accent)}
+.ht-button[data-variant=cyan]:hover {background:var(--color-accent-hover)}
+.ht-button[data-variant=secondary] {background:var(--color-surface-default);border-color:var(--color-border-default);color:var(--color-surface-dark)}
+.ht-button[data-variant=text] {background:transparent;color:var(--route-ink)}
+.ht-button[data-variant=secondary]:hover,.ht-button[data-variant=text]:hover {background:var(--surface-subtle)}
+.ht-button:disabled {background:var(--surface-subtle);color:var(--reading-ink);border-color:var(--color-border-default);cursor:default}
+.ht-field {display:grid;gap:var(--space-1)}
+.ht-field :is(input,textarea,select) {width:100%;min-width:0;border:1px solid var(--color-border-default);border-radius:var(--radius-md);padding:8px 12px;min-height:42px;color:inherit;background:var(--color-surface-default)}
+.ht-field textarea {resize:vertical}
+.ht-field small {font-size:12px;color:var(--reading-ink)}
+.ht-field [aria-invalid=true] {border-color:var(--status-error-ink)}
+.ht-field .ht-error {color:var(--status-error-ink)}
+.ht-panel {background:var(--color-surface-default);border:1px solid var(--color-border-default);border-radius:var(--radius-md);padding:var(--space-4)}
+.ht-routes {border:0;padding:0;margin:0;min-width:0}
+.ht-routes legend {margin-bottom:var(--space-2)}
+.ht-route-list {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;border-bottom:1px solid var(--color-border-default)}
+.ht-route {position:relative;cursor:pointer;text-align:center;white-space:nowrap}
+.ht-route input {position:absolute;inset:0;margin:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.ht-route > span {display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:5px;border-bottom:2px solid transparent}
+.ht-route input:checked + span {color:var(--route-ink);border-bottom-color:var(--color-accent)}
+.ht-route input:focus-visible + span {outline:2px solid var(--route-ink);outline-offset:-2px}
+.ht-route svg,.ht-route img {width:16px;height:16px}
+.ht-status {display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--reading-ink)}
+.ht-status img {width:15px;height:15px}
+.ht-status[data-tone=success] {color:var(--status-success-ink)}
+.ht-status[data-tone=review] {color:var(--status-review-ink)}
+.ht-status[data-tone=error] {color:var(--status-error-ink)}
+.ht-answer {white-space:pre-wrap;overflow-wrap:anywhere}
+.ht-table {width:100%;border-collapse:collapse;text-align:left}
+.ht-table :is(th,td) {padding:10px 12px;border-bottom:1px solid var(--color-border-default);font-weight:400}
+.ht-table th {background:var(--surface-subtle)}
+.ht-scroll-table {overflow:auto}
