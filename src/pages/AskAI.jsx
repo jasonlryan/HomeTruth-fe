@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -150,12 +151,7 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
             } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300`}
           disabled={isSaved}
         >
-          <img
-            src={isSaved ? "/assets/saved.svg" : "/assets/Notsaved.svg"}
-            alt=""
-            aria-hidden="true"
-            className="w-[10px] h-[14px]"
-          />
+          <HTGlyph name="bookmark" size={16} className={isSaved ? "text-ht-cyan" : undefined} />
         </button>
       </div>}
     </div>
@@ -1134,7 +1130,7 @@ export default function AskAI() {
           <div className="flex-shrink-0 px-4 py-3 text-xs text-gray-500 flex items-center justify-between">
             <div className="flex flex-col space-y-1">
               <div className="flex items-center space-x-2">
-                <span className="material-symbols-outlined text-gray-400 text-sm">schedule</span>
+                <HTGlyph name="clock" size={16} className="text-gray-400 " />
                 <span>Chat history will be deleted after 7 days.</span>
               </div>
               <span
@@ -1149,17 +1145,13 @@ export default function AskAI() {
               className="text-gray-400 hover:text-gray-600 transition-colors"
               title={isChatHistoryVisible ? "Hide sidebar" : "Show sidebar"}
             >
-              <img
-                src="/assets/expand.png"
-                alt={isChatHistoryVisible ? "Hide sidebar" : "Show sidebar"}
-                className="w-5 h-5"
-              />
+              <HTGlyph name="collapse" size={20} />
             </button>
           </div>
 
           <div className="flex-shrink-0 px-4 pb-2">
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">search</span>
+              <HTGlyph name="search" size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 " />
               <input
                 type="text"
                 placeholder="Search Chats"
@@ -1211,9 +1203,7 @@ export default function AskAI() {
                           onClick={(e) => handleDeleteSession(s.id, e)}
                           title="Delete session"
                         >
-                          <span className="material-symbols-outlined text-sm">
-                            delete
-                          </span>
+                          <HTGlyph name="delete" size={16} />
                         </button>
                       )}
                     </div>
@@ -1288,11 +1278,7 @@ export default function AskAI() {
                 className="w-fit rounded-lg p-2 transition-all flex items-center justify-center"
                 title="Show sidebar"
               >
-                <img
-                  src="/assets/expand.png"
-                  alt="Show sidebar"
-                  className="w-5 h-5"
-                />
+                <HTGlyph name="expand" size={20} />
               </button>
             )}
             <PageTitle>Ask HomeTruth</PageTitle>
@@ -1381,12 +1367,13 @@ export default function AskAI() {
                         handleSubmit();
                       }}
                       disabled={questionLimitReached}
+                      aria-label="Send question"
                       className={`absolute top-1/2 right-3 -translate-y-1/2 h-8 w-8 rounded-full text-white flex items-center justify-center ${questionLimitReached
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-ht-cyan"
                         }`}
                     >
-                      →
+                      <HTGlyph name="send" size={16} />
                     </button>
                   </div>
 
@@ -1406,20 +1393,7 @@ export default function AskAI() {
                       style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className={`size-4 transition-colors ${searchWeb ? "text-white" : "text-gray-600"}`}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
-                          />
-                        </svg>
+                        <HTGlyph name="globe" size={16} />
                         <span className="font-medium">Search the web</span>
                       </div>
                       <div className={`flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full text-xs font-bold transition-all ${searchWeb
@@ -1435,14 +1409,7 @@ export default function AskAI() {
 
               <div className="bg-gradient-to-r from-sky-50 to-gray-50 border border-sky-100 rounded-xl p-4 mb-4 shrink-0">
                 <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-ht-cyan flex-shrink-0"
-                  >
-                    <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
-                  </svg>
+                  <HTGlyph name="suggestion" size={20} className="text-ht-cyan flex-shrink-0" />
                   <p className="text-sm font-medium text-ht-dark">
                     You've got 3 months of unlimited questions, explore freely while it's active!
                   </p>
@@ -1463,16 +1430,7 @@ export default function AskAI() {
 
               {/* <div className="bg-sky-50 border border-sky-100 text-ht-cyan text-sm p-4 rounded-lg shrink-0">
                 <div className="flex items-center space-x-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      fill="var(--ht-cyan)"
-                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-112c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
-                    />
-                  </svg>{" "}
+                  <HTGlyph name="info" size={20} />{" "}
                   <p className="font-medium text-gray-600">Welcome to Ask HomeTruth!</p>
                 </div>
 
@@ -1607,7 +1565,7 @@ export default function AskAI() {
                           : "bg-ht-cyan"
                         }`}
                     >
-                      →
+                      <HTGlyph name="send" size={16} />
                     </button>
                   </div>
 
@@ -1627,20 +1585,7 @@ export default function AskAI() {
                       style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className={`size-4 transition-colors ${searchWeb ? "text-white" : "text-gray-600"}`}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
-                          />
-                        </svg>
+                        <HTGlyph name="globe" size={16} />
                         <span className="font-medium">Search the web</span>
                       </div>
                       <div className={`flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full text-xs font-bold transition-all ${searchWeb
@@ -1656,14 +1601,7 @@ export default function AskAI() {
 
               <div className="bg-gradient-to-r from-sky-50 to-gray-50 border border-sky-100 rounded-xl p-4 mt-4 shrink-0">
                 <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-ht-cyan flex-shrink-0"
-                  >
-                    <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
-                  </svg>
+                  <HTGlyph name="suggestion" size={20} className="text-ht-cyan flex-shrink-0" />
                   <p className="text-sm font-medium text-ht-dark">
                     You've got 3 months of unlimited questions, explore freely while it's active!
                   </p>
@@ -1713,28 +1651,13 @@ export default function AskAI() {
               onClick={() => setSaveSuccess(null)}
               aria-label="Close"
             >
-              ✕
+              <HTGlyph name="close" size={20} />
             </button>
 
             {/* Success Icon */}
             <div className="flex items-center justify-center mb-4">
               <div className="bg-green-100 p-3 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  className="text-green-500"
-                >
-                  <path
-                    d="M6.75 9L8.25 10.5L11.25 7.5M15.75 9C15.75 12.7279 12.7279 15.75 9 15.75C5.27208 15.75 2.25 12.7279 2.25 9C2.25 5.27208 5.27208 2.25 9 2.25C12.7279 2.25 15.75 5.27208 15.75 9Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="success" size={20} className="text-green-500" />
               </div>
             </div>
 
@@ -1768,21 +1691,7 @@ export default function AskAI() {
             {/* Icon */}
             <div className="flex items-center justify-center mb-4">
               <div className="bg-sky-50 p-2 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="24"
-                  viewBox="0 0 18 24"
-                  fill="none"
-                >
-                  <path
-                    d="M6 3.83333H4C2.89543 3.83333 2 4.878 2 6.16667V20.1667C2 21.4554 2.89543 22.5 4 22.5H14C15.1046 22.5 16 21.4554 16 20.1667V6.16667C16 4.878 15.1046 3.83333 14 3.83333H12M6 3.83333C6 5.122 6.89543 6.16667 8 6.16667H10C11.1046 6.16667 12 5.122 12 3.83333M6 3.83333C6 2.54467 6.89543 1.5 8 1.5H10C11.1046 1.5 12 2.54467 12 3.83333M6 14.3333H12M6 19H10"
-                    stroke="var(--ht-cyan)"
-                    strokeWidth="2.3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="checklist" size={24} />
               </div>
             </div>
 
@@ -1808,18 +1717,7 @@ export default function AskAI() {
             >
               Upgrade to Pro
               <span className="text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="16"
-                  viewBox="0 0 18 16"
-                  fill="none"
-                >
-                  <path
-                    d="M9.65625 3.3125C10.0125 3.09375 10.25 2.69687 10.25 2.25C10.25 1.55937 9.69063 1 9 1C8.30937 1 7.75 1.55937 7.75 2.25C7.75 2.7 7.9875 3.09375 8.34375 3.3125L6.55312 6.89375C6.26875 7.4625 5.53125 7.625 5.03438 7.22813L2.25 5C2.40625 4.79063 2.5 4.53125 2.5 4.25C2.5 3.55938 1.94062 3 1.25 3C0.559375 3 0 3.55938 0 4.25C0 4.94062 0.559375 5.5 1.25 5.5H1.27188L2.7 13.3562C2.87188 14.3062 3.7 15 4.66875 15H13.3313C14.2969 15 15.125 14.3094 15.3 13.3562L16.7281 5.5H16.75C17.4406 5.5 18 4.94062 18 4.25C18 3.55938 17.4406 3 16.75 3C16.0594 3 15.5 3.55938 15.5 4.25C15.5 4.53125 15.5938 4.79063 15.75 5L12.9656 7.22813C12.4688 7.625 11.7312 7.4625 11.4469 6.89375L9.65625 3.3125Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <HTGlyph name="premium" size={18} />
               </span>
             </button>
           </div>
@@ -1854,28 +1752,13 @@ export default function AskAI() {
               onClick={cancelDeleteSession}
               aria-label="Close"
             >
-              ✕
+              <HTGlyph name="close" size={20} />
             </button>
 
             {/* Warning Icon */}
             <div className="flex items-center justify-center mb-4">
               <div className="bg-red-100 p-3 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="text-red-500"
-                >
-                  <path
-                    d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="warning" size={24} className="text-red-500" />
               </div>
             </div>
 

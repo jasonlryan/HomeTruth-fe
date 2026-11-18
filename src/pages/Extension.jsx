@@ -1,12 +1,11 @@
+import HTGlyph from "../components/HTGlyph";
 export default function ExtensionPage() {
   return (
     <div className=" flex flex-col items-center justify-center text-center px-4">
       {/* Logo Header */}
       <div className="absolute top-6 left-6 flex items-center gap-2">
         <div className="w-9 h-9 bg-purple-50 rounded-full flex items-center justify-center">
-          <span className="material-symbols-outlined text-ht-cyan">
-            extension
-          </span>
+          <HTGlyph name="extension" size={24} className="text-ht-cyan" />
         </div>
 
         <h1 className="text-lg font-semibold text-gray-800">

@@ -1,7 +1,7 @@
+import HTGlyph from "../components/HTGlyph";
 import DocumentWorkspace from '../components/DocumentWorkspace';
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, FileText, MoreVertical } from "lucide-react";
 import PageTitle from "../components/PageTitle";
 import { getUserDocuments, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
 
@@ -282,7 +282,7 @@ export default function Documents() {
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-4">
             <div className="relative w-full sm:flex-1 sm:min-w-[18rem] sm:max-w-3xl">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <HTGlyph name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search document..."
@@ -298,7 +298,7 @@ export default function Documents() {
                 onClick={() => setShowFilters(!showFilters)}
                 className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 whitespace-nowrap"
               >
-                <Filter className="w-4 h-4" />
+                <HTGlyph name="filter" className="w-4 h-4" />
                 Filter
               </button>
 
@@ -403,7 +403,7 @@ export default function Documents() {
                 className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 whitespace-nowrap"
               >
                 Sort {sortBy === "earliest" ? "Earliest" : sortBy === "latest" ? "Latest" : "Name"}
-                <ChevronDown className="w-4 h-4" />
+                <HTGlyph name="chevron-down" className="w-4 h-4" />
               </button>
 
               {showSortDropdown && (
@@ -444,7 +444,7 @@ export default function Documents() {
         >
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-gray-400 text-7xl">upload</span>
+              <HTGlyph name="upload" size={48} className="text-gray-400 " />
             </div>
             <p className="text-gray-700 text-lg mb-2">Drag and drop your documents here</p>
             <p className="text-gray-500 text-sm">Supports PDF, DOCX, JPG (max 10MB)</p>
@@ -467,16 +467,12 @@ export default function Documents() {
               {uploadedFiles.map((file, index) => (
                 <div key={`uploaded-${file.name}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <HTGlyph name="document" size={20} className="text-gray-500" />
                     <span className="text-sm text-gray-700">{file.name}</span>
                     <span className="text-xs text-gray-500">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
                   </div>
-                  <button onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700 transition">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                  <button aria-label={`Remove ${file.name}`} onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700 transition">
+                    <HTGlyph name="close" size={16} />
                   </button>
                 </div>
               ))}
@@ -509,7 +505,7 @@ export default function Documents() {
           <div className="space-y-4">
             {!Array.isArray(documents) || documents.length === 0 ? (
               <div className="text-center py-8">
-                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <HTGlyph name="document" className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500">No documents found</p>
               </div>
             ) : (
@@ -521,7 +517,7 @@ export default function Documents() {
                   }`}
                 >
                   <button type="button" aria-label={`Open ${document.name}`} onClick={() => handleDocumentClick(document)} className="flex min-w-0 flex-1 items-center text-left">
-                  <FileText className="w-8 h-8 text-gray-400 mr-4" />
+                  <HTGlyph name="document" className="w-8 h-8 text-gray-400 mr-4" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 truncate">{document.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{document.doc_type || document.category || "Document"}</p>
@@ -537,14 +533,14 @@ export default function Documents() {
                     </span>
 
                     <div className="relative context-menu-container" ref={contextMenuRef}>
-                      <button
+                      <button aria-label="Document actions"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleContextMenu(e, document.id);
                         }}
                         className="p-1 hover:bg-gray-200 rounded"
                       >
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
+                        <HTGlyph name="more" className="w-4 h-4 text-gray-400" />
                       </button>
 
                       {showContextMenu === document.id && (

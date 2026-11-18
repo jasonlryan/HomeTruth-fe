@@ -1,3 +1,4 @@
+import HTGlyph from "../../components/HTGlyph";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../../components/PageTitle";
@@ -96,9 +97,7 @@ export default function PreferenceSettings() {
         <Section
           title="Communication Tone & Style"
           icon={
-            <span className="material-symbols-outlined mt-2 text-ht-cyan text-xl">
-              chat_bubble
-            </span>
+            <HTGlyph name="assistant" size={20} className="mt-2 text-ht-cyan " />
           }
         >
           <div className="mb-4">
@@ -141,9 +140,7 @@ export default function PreferenceSettings() {
         <Section
           title="Assistant behaviour settings"
           icon={
-            <span className="material-symbols-outlined mt-1 text-ht-cyan">
-              brightness_5
-            </span>
+            <HTGlyph name="preferences" className="mt-1 text-ht-cyan" />
           }
         >
           <p className="mb-2 text-ht-black">
@@ -173,21 +170,7 @@ export default function PreferenceSettings() {
         <Section
           title={
             <div className="flex items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-              >
-                <path
-                  d="M16.5 8.38341C16.5029 9.4833 16.2459 10.5683 15.75 11.5501C15.162 12.7265 14.2581 13.7161 13.1395 14.4078C12.021 15.0996 10.7319 15.4662 9.41667 15.4667C8.31678 15.4696 7.23176 15.2126 6.25 14.7167L1.5 16.3001L3.08333 11.5501C2.58744 10.5683 2.33047 9.4833 2.33333 8.38341C2.33384 7.0682 2.70051 5.77911 3.39227 4.66053C4.08402 3.54195 5.07355 2.63805 6.25 2.05007C7.23176 1.55418 8.31678 1.2972 9.41667 1.30007H9.83333C11.5703 1.3959 13.2109 2.12904 14.441 3.35912C15.671 4.5892 16.4042 6.22978 16.5 7.96674V8.38341Z"
-                  stroke="var(--ht-cyan)"
-                  strokeWidth="1.66667"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <HTGlyph name="preferences" size={18} className="text-ht-cyan" />
               <span>Personalization Settings</span>
             </div>
           }
@@ -222,9 +205,7 @@ export default function PreferenceSettings() {
             </div>
 
             <div className="bg-sky-50 text-ht-cyan text-sm px-4 py-2 rounded-md flex items-start gap-2 mt-1">
-              <span className="material-symbols-outlined text-base">
-                shield
-              </span>
+              <HTGlyph name="consent" size={16} />
               <span>
                 Turning this off disables adaptive checklists and tone
                 personalization.
@@ -237,9 +218,7 @@ export default function PreferenceSettings() {
         <Section
           title="Questionnaire"
           icon={
-            <span className="material-symbols-outlined text-ht-cyan text-xl">
-              quiz
-            </span>
+            <HTGlyph name="checklist" size={20} className="text-ht-cyan " />
           }
         >
           <div className="flex items-center justify-between">

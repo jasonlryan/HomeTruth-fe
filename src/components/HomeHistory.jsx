@@ -1,5 +1,5 @@
+import HTGlyph from "./HTGlyph";
 import "./workspace.css";
-import { FileText, History } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getDemoHomeHistory } from "../utils/demoHomeHistory";
@@ -26,7 +26,7 @@ export default function HomeHistory({ record }) {
             id="home-history-title"
             className="mt-1 flex items-center gap-2 text-lg font-semibold text-[var(--color-text-default)]"
           >
-            <History size={21} aria-hidden="true" />
+            <HTGlyph name="history" size={21} aria-hidden="true" />
             Home history
           </h3>
         </div>
@@ -68,7 +68,7 @@ export default function HomeHistory({ record }) {
                 className="mt-3 inline-flex items-center gap-2 text-sm ht-workspace-link"
                 to={`/documents?preview=${encodeURIComponent(entry.documentId)}`}
               >
-                <FileText size={15} aria-hidden="true" />
+                <HTGlyph name="document" size={15} aria-hidden="true" />
                 Open {entry.file}
               </Link>
             ) : (

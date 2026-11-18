@@ -1,20 +1,5 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useEffect, useCallback } from "react";
-import {
-  Users,
-  UserCheck,
-  Crown,
-  FileText,
-  MessageSquare,
-  ClipboardList,
-  TrendingUp,
-  TrendingDown,
-  RefreshCw,
-  Mail,
-  ShieldCheck,
-  CheckCircle2,
-  AlertTriangle,
-  ClipboardCheck,
-} from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -76,14 +61,14 @@ function TrendBadge({ value }) {
         isUp ? "text-green-600" : "text-red-500"
       }`}
     >
-      {isUp ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+      {isUp ? <HTGlyph name="trend-up" size={14} /> : <HTGlyph name="trend-down" size={14} />}
       {isUp ? "+" : ""}
       {value}%
     </span>
   );
 }
 
-function KPICard({ icon: Icon, label, value, subtitle, trend, color = "purple" }) {
+function KPICard({ icon, label, value, subtitle, trend, color = "purple" }) {
   const colorMap = {
     purple: "bg-purple-50 text-ht-purple",
     blue: "bg-sky-50 text-ht-cyan",
@@ -99,7 +84,7 @@ function KPICard({ icon: Icon, label, value, subtitle, trend, color = "purple" }
     <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorMap[color]}`}>
-          <Icon size={20} />
+          <HTGlyph name={icon} size={20} />
         </div>
         <TrendBadge value={trend} />
       </div>
@@ -192,44 +177,44 @@ function PilotReadinessPanel({ report, loading }) {
               : "border-green-200 bg-green-50 text-green-700"
           }`}
         >
-          {isBlocked ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+          {isBlocked ? <HTGlyph name="warning" size={16} /> : <HTGlyph name="success" size={16} />}
           {recommendation.replaceAll("_", " ")}
         </span>
       </div>
 
       <div className="mt-5 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
         <KPICard
-          icon={Users}
+          icon="household"
           label="Target Size"
           value={formatNumber(metrics.targetSize)}
           color="purple"
         />
         <KPICard
-          icon={UserCheck}
+          icon="user-confirmed"
           label="Invited Members"
           value={formatNumber(metrics.invitedMembers)}
           color="blue"
         />
         <KPICard
-          icon={ShieldCheck}
+          icon="consent"
           label="Consent Rate"
           value={`${metrics.consentRate || 0}%`}
           color="green"
         />
         <KPICard
-          icon={ClipboardCheck}
+          icon="checklist"
           label="Properties Linked"
           value={formatNumber(metrics.propertiesLinked)}
           color="teal"
         />
         <KPICard
-          icon={ClipboardList}
+          icon="task"
           label="Tasks Generated"
           value={formatNumber(metrics.tasksGenerated)}
           color="amber"
         />
         <KPICard
-          icon={CheckCircle2}
+          icon="success"
           label="Tasks Completed"
           value={formatNumber(metrics.taskCompleted)}
           color="green"
@@ -426,7 +411,7 @@ export default function AdminReportingDashboard() {
             className="p-2 text-gray-500 hover:text-ht-purple hover:bg-purple-50 rounded-lg transition-colors"
             title="Refresh"
           >
-            <RefreshCw size={18} />
+            <HTGlyph name="refresh" size={18} />
           </button>
         </div>
       </div>
@@ -447,40 +432,40 @@ export default function AdminReportingDashboard() {
       ) : kpis ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <KPICard
-            icon={Users}
+            icon="household"
             label="Total Users"
             value={formatNumber(kpis.totalUsers)}
             trend={kpis.trends?.totalUsers}
             color="purple"
           />
           <KPICard
-            icon={UserCheck}
+            icon="user-confirmed"
             label="Free Users"
             value={formatNumber(kpis.freeUsers)}
             color="blue"
           />
           <KPICard
-            icon={Crown}
+            icon="premium"
             label="Pro Users"
             value={formatNumber(kpis.proUsers)}
             color="amber"
           />
           <KPICard
-            icon={TrendingUp}
+            icon="trend-up"
             label="Pro User Rate"
             value={`${kpis.proUserRate}%`}
             subtitle="of users are on Pro"
             color="green"
           />
           <KPICard
-            icon={ClipboardList}
+            icon="task"
             label="Quiz Completed"
             value={formatNumber(kpis.quizCompletedCount)}
             subtitle={`of ${formatNumber(kpis.totalQuizUsers)} users`}
             color="indigo"
           />
           <KPICard
-            icon={FileText}
+            icon="document"
             label="Documents Uploaded"
             value={formatNumber(kpis.documentsUploaded)}
             subtitle={`${formatNumber(kpis.documentAIChats)} document AI chats`}
@@ -488,14 +473,14 @@ export default function AdminReportingDashboard() {
             color="teal"
           />
           <KPICard
-            icon={MessageSquare}
+            icon="assistant"
             label="AI Chat Records"
             value={formatNumber(kpis.aiChatRecords)}
             trend={kpis.trends?.aiChatRecords}
             color="sky"
           />
           <KPICard
-            icon={Mail}
+            icon="mail"
             label="Waitlist Signups"
             value={formatNumber(kpis.waitlistSignups)}
             trend={kpis.trends?.waitlistSignups}

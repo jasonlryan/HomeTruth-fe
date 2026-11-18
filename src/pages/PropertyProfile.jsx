@@ -1,24 +1,8 @@
+import HTGlyph from "../components/HTGlyph";
 import PageTitle from "../components/PageTitle";
 import HomeHistory from '../components/HomeHistory';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  AlertCircle,
-  CalendarClock,
-  Check,
-  CheckCircle2,
-  CircleOff,
-  ClipboardList,
-  FileText,
-  Home,
-  Loader2,
-  MapPin,
-  MessageCircle,
-  RefreshCw,
-  ShieldCheck,
-  Wrench,
-  X,
-} from "lucide-react";
 import {
   attachPartnerOnboardingProperty,
   createPropertyRecord,
@@ -114,11 +98,11 @@ function DetailRow({ label, value }) {
   );
 }
 
-function SummaryMetric({ icon: Icon, label, value }) {
+function SummaryMetric({ icon, label, value }) {
   return (
     <div className="flex min-h-24 items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-4">
       <span className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-accent)]">
-        <Icon size={20} aria-hidden="true" />
+        <HTGlyph name={icon} size={20} aria-hidden="true" />
       </span>
       <div>
         <p className="text-sm text-[var(--color-text-muted)]">{label}</p>
@@ -130,12 +114,12 @@ function SummaryMetric({ icon: Icon, label, value }) {
   );
 }
 
-function StatusPanel({ title, body, icon: Icon }) {
+function StatusPanel({ title, body, icon }) {
   return (
     <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5">
       <div className="flex items-start gap-3">
         <span className="flex h-9 w-9 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-secondary)_12%,var(--color-surface-default))] text-[var(--color-secondary)]">
-          <Icon size={18} aria-hidden="true" />
+          <HTGlyph name={icon} size={18} aria-hidden="true" />
         </span>
         <div>
           <h3 className="text-base font-normal text-[var(--color-text-default)]">
@@ -164,7 +148,7 @@ function PreventionTasksPanel({
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
         <div className="flex items-start gap-3">
           <span className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-accent)]">
-            <Wrench size={20} aria-hidden="true" />
+            <HTGlyph name="repair" size={20} aria-hidden="true" />
           </span>
           <div>
             <p className="text-sm text-[var(--color-secondary)]">
@@ -185,7 +169,7 @@ function PreventionTasksPanel({
           disabled={loading || generating}
           className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-default)] transition hover:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <RefreshCw
+          <HTGlyph name="refresh"
             className={generating ? "animate-spin" : ""}
             size={16}
             aria-hidden="true"
@@ -196,7 +180,7 @@ function PreventionTasksPanel({
 
       {error && (
         <div className="mt-4 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_10%,var(--color-surface-default))] p-3 text-sm text-[var(--color-text-default)]">
-          <AlertCircle
+          <HTGlyph name="warning"
             className="mt-0.5 flex-none text-[var(--color-action-primary)]"
             size={16}
           />
@@ -206,7 +190,7 @@ function PreventionTasksPanel({
 
       {loading ? (
         <div className="mt-5 flex min-h-32 items-center justify-center rounded-[var(--radius-md)] border border-dashed border-[var(--color-border-default)] text-sm text-[var(--color-text-muted)]">
-          <Loader2 className="mr-2 animate-spin" size={18} />
+          <HTGlyph name="loading" className="mr-2 animate-spin" size={18} />
           Loading actions
         </div>
       ) : tasks.length === 0 ? (
@@ -238,7 +222,7 @@ function PreventionTasksPanel({
                         {formatLabel(task.priority)}
                       </span>
                       <span className="inline-flex items-center gap-1 rounded-[var(--radius-full)] border border-[var(--color-border-default)] px-2.5 py-1 text-xs text-[var(--color-text-muted)]">
-                        <CalendarClock size={13} aria-hidden="true" />
+                        <HTGlyph name="reminder" size={13} aria-hidden="true" />
                         {formatTaskDate(task.dueDate)}
                       </span>
                     </div>
@@ -264,9 +248,9 @@ function PreventionTasksPanel({
                       className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-success)] px-3 py-2 text-sm text-[var(--color-text-on-dark)] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isUpdating ? (
-                        <Loader2 className="animate-spin" size={15} />
+                        <HTGlyph name="loading" className="animate-spin" size={15} />
                       ) : (
-                        <Check size={15} aria-hidden="true" />
+                        <HTGlyph name="check" size={15} aria-hidden="true" />
                       )}
                       Complete
                     </button>
@@ -276,7 +260,7 @@ function PreventionTasksPanel({
                       disabled={isUpdating}
                       className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-default)] disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      <X size={15} aria-hidden="true" />
+                      <HTGlyph name="close" size={15} aria-hidden="true" />
                       Dismiss
                     </button>
                     <button
@@ -285,7 +269,7 @@ function PreventionTasksPanel({
                       disabled={isUpdating}
                       className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-3 py-2 text-sm text-[var(--color-text-default)] disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      <CircleOff size={15} aria-hidden="true" />
+                      <HTGlyph name="blocked" size={15} aria-hidden="true" />
                       Not relevant
                     </button>
                   </div>
@@ -577,14 +561,14 @@ export default function PropertyProfile() {
         )}
         {error && (
           <div className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_10%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <AlertCircle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} />
+            <HTGlyph name="warning" className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} />
             <p>{error}</p>
           </div>
         )}
 
         {success && (
           <div className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-success)] bg-[color-mix(in_srgb,var(--color-success)_10%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <CheckCircle2 className="mt-0.5 flex-none text-[var(--color-success)]" size={18} />
+            <HTGlyph name="success" className="mt-0.5 flex-none text-[var(--color-success)]" size={18} />
             <p>{success}</p>
           </div>
         )}
@@ -592,7 +576,7 @@ export default function PropertyProfile() {
         {loading ? (
           <div className="flex min-h-80 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]">
             <div className="flex items-center gap-3 text-[var(--color-text-muted)]">
-              <Loader2 className="animate-spin" size={20} />
+              <HTGlyph name="loading" className="animate-spin" size={20} />
               <span>Loading property profile</span>
             </div>
           </div>
@@ -604,7 +588,7 @@ export default function PropertyProfile() {
             >
               <div className="mb-6 flex items-start gap-3">
                 <span className="flex h-10 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-accent)]">
-                  <Home size={20} aria-hidden="true" />
+                  <HTGlyph name="home" size={20} aria-hidden="true" />
                 </span>
                 <div>
                   <h2 className="text-xl font-normal text-[var(--color-text-default)]">
@@ -749,7 +733,7 @@ export default function PropertyProfile() {
                   disabled={saving}
                   className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-action-primary)] px-5 py-3 text-[var(--color-text-on-dark)] transition hover:bg-[var(--color-action-primary-hover)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {saving && <Loader2 className="animate-spin" size={18} />}
+                  {saving && <HTGlyph name="loading" className="animate-spin" size={18} />}
                   Set up property
                 </button>
               </div>
@@ -757,17 +741,17 @@ export default function PropertyProfile() {
 
             <aside className="grid gap-4">
               <StatusPanel
-                icon={ShieldCheck}
+                icon="consent"
                 title="Access is relationship-based"
                 body="This profile starts by recording who you are in relation to the home."
               />
               <StatusPanel
-                icon={FileText}
+                icon="document"
                 title="Documents attach here next"
                 body="Linked documents will appear against this property once the document flow is connected."
               />
               <StatusPanel
-                icon={ClipboardList}
+                icon="task"
                 title="Actions stay property-specific"
                 body="Future tasks and reminders will be tied to this home record."
               />
@@ -787,7 +771,7 @@ export default function PropertyProfile() {
                         `Property ${selectedRecord.property.id}`}
                     </h2>
                     <p className="mt-2 flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
-                      <MapPin size={16} aria-hidden="true" />
+                      <HTGlyph name="location" size={16} aria-hidden="true" />
                       {[
                         selectedRecord.currentAddress?.townCity,
                         selectedRecord.currentAddress?.postcode,
@@ -805,7 +789,7 @@ export default function PropertyProfile() {
                       onClick={handleAskAboutProperty}
                       className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-action-primary)] px-3 py-2 text-sm text-[var(--color-text-on-dark)] transition hover:bg-[var(--color-action-primary-hover)]"
                     >
-                      <MessageCircle size={16} aria-hidden="true" />
+                      <HTGlyph name="assistant" size={16} aria-hidden="true" />
                       Ask about this property
                     </button>
                   </div>
@@ -813,17 +797,17 @@ export default function PropertyProfile() {
 
                 <div className="mt-6 grid gap-4 md:grid-cols-3">
                   <SummaryMetric
-                    icon={FileText}
+                    icon="document"
                     label="Linked documents"
                     value={selectedRecord.linkedDocumentCount || 0}
                   />
                   <SummaryMetric
-                    icon={ShieldCheck}
+                    icon="consent"
                     label="Current facts"
                     value={selectedRecord.currentFacts?.length || 0}
                   />
                   <SummaryMetric
-                    icon={ClipboardList}
+                    icon="task"
                     label="Open actions"
                     value={openTasks.length}
                   />
@@ -846,7 +830,7 @@ export default function PropertyProfile() {
 
               <div className="grid gap-4 lg:grid-cols-3">
                 <StatusPanel
-                  icon={FileText}
+                  icon="document"
                   title="Documents"
                   body={
                     selectedRecord.linkedDocumentCount
@@ -855,7 +839,7 @@ export default function PropertyProfile() {
                   }
                 />
                 <StatusPanel
-                  icon={ShieldCheck}
+                  icon="consent"
                   title="Property facts"
                   body={
                     selectedRecord.currentFacts?.length
@@ -864,7 +848,7 @@ export default function PropertyProfile() {
                   }
                 />
                 <StatusPanel
-                  icon={ClipboardList}
+                  icon="task"
                   title="Next actions"
                   body={
                     openTasks.length

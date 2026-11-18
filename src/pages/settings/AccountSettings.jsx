@@ -1,3 +1,4 @@
+import HTGlyph from "../../components/HTGlyph";
 import { useState } from "react";
 import PageTitle from "../../components/PageTitle";
 import { changePassword } from "../../api/api";
@@ -198,7 +199,7 @@ export default function AccountSettings() {
           {success && (
             <div className="mt-3 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
               <div className="flex items-center">
-                <span className="material-symbols-outlined text-green-500 mr-2">check_circle</span>
+                <HTGlyph name="success" size={24} className="text-green-500 mr-2" />
                 {success}
               </div>
             </div>
@@ -208,7 +209,7 @@ export default function AccountSettings() {
           {error && (
             <div className="mt-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
               <div className="flex items-center">
-                <span className="material-symbols-outlined text-red-500 mr-2">error</span>
+                <HTGlyph name="error" size={24} className="text-red-500 mr-2" />
                 {error}
               </div>
             </div>

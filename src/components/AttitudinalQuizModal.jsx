@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 import { useEffect, useState } from "react";
 import { getQuizQuestions, submitQuizAnswer } from "../api/api";
 
@@ -194,15 +195,7 @@ export default function AttitudinalQuizModal({ onClose }) {
     />
 
     {/* Centered checkmark */}
-    <svg
-      className="absolute top-0 left-0 w-5 h-5 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-200 flex items-center justify-center"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
+    <HTGlyph name="check" size={20} className="absolute top-0 left-0 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
   </div>
   <span className="ml-2 text-sm leading-5">{opt.option}</span>
 </label>
@@ -279,7 +272,7 @@ export default function AttitudinalQuizModal({ onClose }) {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-xl w-80 max-w-md p-8 text-center border border-gray-100">
           <div className="flex items-center justify-center gap-2 mb-4 text-3xl">
-            <span className="material-symbols-outlined text-3xl text-green-600">check_circle</span>
+            <HTGlyph name="success" size={32} className="text-green-600" />
           </div>
           <h2 className="text-xl font-bold mb-2">Thanks for sharing!</h2>
           <p className="text-sm text-gray-600 mb-6">

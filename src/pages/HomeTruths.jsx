@@ -1,9 +1,9 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getPublicArticles } from "../api/api";
-import { Calendar, User, ChevronLeft, ChevronRight, Search } from "lucide-react";
 
 const CATEGORIES = [
   { value: "", label: "All" },
@@ -107,7 +107,7 @@ export default function HomeTruths() {
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-20">
-            <Search size={48} className="mx-auto text-gray-300 mb-4" />
+            <HTGlyph name="search" size={48} className="mx-auto text-gray-300 mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No articles yet</h3>
             <p className="text-gray-500">
               Check back soon — we're working on fresh content for you.
@@ -156,11 +156,11 @@ export default function HomeTruths() {
                   {/* Meta */}
                   <div className="flex items-center gap-4 text-xs text-gray-400">
                     <div className="flex items-center gap-1">
-                      <User size={12} />
+                      <HTGlyph name="user" size={12} />
                       <span>{article.author}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Calendar size={12} />
+                      <HTGlyph name="calendar" size={12} />
                       <span>{formatDate(article.published_at)}</span>
                     </div>
                   </div>
@@ -178,7 +178,7 @@ export default function HomeTruths() {
               disabled={page === 1}
               className="flex items-center gap-1 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              <ChevronLeft size={16} />
+              <HTGlyph name="chevron-left" size={16} />
               Previous
             </button>
             <span className="text-sm text-gray-500">
@@ -190,7 +190,7 @@ export default function HomeTruths() {
               className="flex items-center gap-1 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Next
-              <ChevronRight size={16} />
+              <HTGlyph name="chevron-right" size={16} />
             </button>
           </div>
         )}

@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 const formatAddress = (address) => {
   if (!address || typeof address !== "object") return "";
   return [
@@ -84,11 +85,6 @@ export default function PropertyCard({ property, onClick }) {
         <div className="flex items-center gap-1 text-md">
           {/* Phone */}
           <span
-            className={`material-symbols-outlined text-lg ${phone ? "" : ""}`}
-          >
-            call
-          </span>
-          <span
             className={`text-sm ${
               phone ? "underline text-black" : "underline"
             }`}
@@ -97,11 +93,7 @@ export default function PropertyCard({ property, onClick }) {
           </span>
 
           {/* Email */}
-          <span
-            className={`material-symbols-outlined text-lg ${email ? "" : ""}`}
-          >
-            mail
-          </span>
+          <HTGlyph name="mail" size={20} />
           <span
             className={`text-sm ${
               email ? "underline text-black" : "underline"

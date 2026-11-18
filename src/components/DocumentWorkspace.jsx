@@ -1,6 +1,6 @@
+import HTGlyph from "./HTGlyph";
 import "./workspace.css";
 import { useEffect, useRef, useState } from "react";
-import { FileText, Loader2, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -172,7 +172,7 @@ export default function DocumentWorkspace({
         <header className="flex items-start justify-between gap-4 border-b border-[var(--color-border-default)] p-4 sm:p-6">
           <div className="min-w-0">
             <p className="flex items-center gap-2 text-sm text-[var(--color-secondary)]">
-              <FileText size={16} aria-hidden="true" />
+              <HTGlyph name="document" size={16} aria-hidden="true" />
               Document workspace
             </p>
             <h2
@@ -191,7 +191,7 @@ export default function DocumentWorkspace({
             aria-label="Close document"
             className={button}
           >
-            <X size={20} />
+            <HTGlyph name="close" size={20} />
           </button>
         </header>
         <div
@@ -249,7 +249,7 @@ export default function DocumentWorkspace({
                 </p>
               ) : !preview ? (
                 <p role="status" className="flex items-center gap-2 p-5">
-                  <Loader2 className="animate-spin" size={18} />
+                  <HTGlyph name="loading" className="animate-spin" size={18} />
                   Loading document preview…
                 </p>
               ) : (
@@ -337,7 +337,7 @@ export default function DocumentWorkspace({
                   role="status"
                   className="mt-4 flex items-center gap-2 text-sm"
                 >
-                  <Loader2 className="animate-spin" size={16} />
+                  <HTGlyph name="loading" className="animate-spin" size={16} />
                   Checking this document…
                 </p>
               )}

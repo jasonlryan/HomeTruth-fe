@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import "../components/workspace.css";
 import { getNoteExcerpt } from '../utils/noteExcerpt';
 import { useEffect, useState } from "react";
@@ -231,7 +232,7 @@ export default function SavedNotes() {
           disabled={notes.length >= 5}
           className="ht-workspace-primary"
         >
-          <span className="material-symbols-outlined text-sm">stars_2</span>
+          <HTGlyph name="suggestion" size={16} />
           Ask HomeTruth to save notes
         </button>
       </div>
@@ -271,7 +272,7 @@ export default function SavedNotes() {
                 className="absolute top-3 right-3 text-[var(--color-secondary)]"
                 title={isBudgetItem(note) ? "Edit in budget chat" : "Edit title"}
               >
-                <span className="material-symbols-outlined text-xl">edit</span>
+                <HTGlyph name="edit" size={20} />
               </button>
 
               <p className="mb-3 text-xs text-[var(--color-secondary)]">{isBudgetItem(note) ? "Budget calculation" : "Saved answer"}</p>
@@ -295,11 +296,11 @@ export default function SavedNotes() {
       {showModal && selectedNote && (
         <div className="fixed inset-0 bg-[var(--color-surface-dark)]/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-6 w-full max-w-xl max-h-[80vh] relative flex flex-col">
-            <button
+            <button aria-label="Close note"
               className="absolute top-3 right-3 text-gray-500 hover:text-black"
               onClick={() => setShowModal(false)}
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <HTGlyph name="close" size={20} />
             </button>
 
             <button
@@ -313,7 +314,7 @@ export default function SavedNotes() {
               className="absolute top-3 right-10 text-[var(--color-secondary)]"
               title="Edit"
             >
-              <span className="material-symbols-outlined text-lg">edit</span>
+              <HTGlyph name="edit" size={20} />
             </button>
 
             <h2 className="text-lg font-semibold mb-4 pr-16 flex-shrink-0">{getItemTitle(selectedNote)}</h2>
@@ -379,11 +380,11 @@ export default function SavedNotes() {
       {showEditModal && (
         <div className="fixed inset-0 bg-[var(--color-surface-dark)]/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[var(--color-surface-default)] rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-6 w-full max-w-md relative">
-            <button
+            <button aria-label="Close edit note"
               className="absolute top-3 right-3 text-gray-500 hover:text-black"
               onClick={() => setShowEditModal(false)}
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <HTGlyph name="close" size={20} />
             </button>
 
             <h2 className="text-lg font-semibold mb-2 pr-8">Edit Your Saved Notes Title</h2>

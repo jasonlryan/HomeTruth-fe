@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { uploadDocument, addKnowledgeBaseEntry, getKnowledgeBaseDocuments, getKnowledgeBaseStats, deleteKnowledgeBaseDocument, getKnowledgeBaseDocumentPreview, downloadKnowledgeBaseDocument } from "../api/api";
@@ -949,7 +950,7 @@ export default function KnowledgeBaseAdmin() {
       id: 1,
       title: "Bulk Upload",
       description: "Queue multiple documents for ingestion (coming soon).",
-      icon: "menu_book",
+      icon: "knowledge",
       onClick: () => console.log("Bulk Upload clicked"),
       comingSoon: true,
     },
@@ -988,7 +989,7 @@ export default function KnowledgeBaseAdmin() {
       id: 5,
       title: "Reporting Dashboard",
       description: "View product metrics, usage charts, and recent activity.",
-      icon: "bar_chart",
+      icon: "analytics",
       onClick: () => navigate("/admin/dashboard"),
       comingSoon: false,
     },
@@ -996,7 +997,7 @@ export default function KnowledgeBaseAdmin() {
       id: 6,
       title: "User Data Access",
       description: "Search, inspect, and export user records and onboarding data.",
-      icon: "group",
+      icon: "household",
       onClick: () => navigate("/admin/data-access"),
       comingSoon: false,
     },
@@ -1004,7 +1005,7 @@ export default function KnowledgeBaseAdmin() {
       id: 7,
       title: "Article Management",
       description: "Create, edit, and publish content for the Home Truths section.",
-      icon: "article",
+      icon: "content",
       onClick: () => navigate("/admin/articles"),
       comingSoon: false,
     },
@@ -1012,7 +1013,7 @@ export default function KnowledgeBaseAdmin() {
       id: 8,
       title: "Partner Programmes",
       description: "Configure shared B2B programmes, campaigns, cohorts, and lifecycle states.",
-      icon: "corporate_fare",
+      icon: "building",
       onClick: () => navigate("/admin/partner-programmes"),
       comingSoon: false,
     },
@@ -1024,7 +1025,7 @@ export default function KnowledgeBaseAdmin() {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-lg bg-ht-purple flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-xl">database</span>
+            <HTGlyph name="database" size={20} className="text-white " />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Knowledge Base Admin - STAGING</h1>
@@ -1039,7 +1040,7 @@ export default function KnowledgeBaseAdmin() {
             onClick={handleAddKnowledge}
             className="bg-ht-purple hover:bg-ht-purple-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-base">add</span>
+            <HTGlyph name="add" size={16} />
             Add Knowledge
           </button>
           <button
@@ -1049,7 +1050,7 @@ export default function KnowledgeBaseAdmin() {
             }}
             className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-base">logout</span>
+            <HTGlyph name="logout" size={16} />
             Logout
           </button>
         </div>
@@ -1061,7 +1062,7 @@ export default function KnowledgeBaseAdmin() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           {/* Form Header */}
           <div className="flex items-center gap-3 mb-6">
-            <span className="material-symbols-outlined text-ht-purple text-2xl">upload</span>
+            <HTGlyph name="upload" size={24} className="text-ht-purple " />
             <h2 className="text-xl font-semibold text-gray-900">Add New Knowledge</h2>
           </div>
 
@@ -1077,7 +1078,7 @@ export default function KnowledgeBaseAdmin() {
                   onClick={handleAddUrlField}
                   className="text-xs text-ht-purple hover:text-ht-purple-light bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded transition-colors flex items-center gap-1"
                 >
-                  <span className="material-symbols-outlined text-sm">add</span>
+                  <HTGlyph name="add" size={16} />
                   Add URL
                 </button>
               </div>
@@ -1098,7 +1099,7 @@ export default function KnowledgeBaseAdmin() {
                         className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                         title="Remove URL"
                       >
-                        <span className="material-symbols-outlined text-base">delete</span>
+                        <HTGlyph name="delete" size={16} />
                       </button>
                     )}
                   </div>
@@ -1251,7 +1252,7 @@ export default function KnowledgeBaseAdmin() {
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-sm">add</span>
+                    <HTGlyph name="add" size={16} />
                     {tag}
                   </button>
                 ))}
@@ -1285,11 +1286,11 @@ export default function KnowledgeBaseAdmin() {
                       className="inline-flex items-center gap-1 px-3 py-1 bg-purple-50 text-ht-purple rounded-full text-xs font-medium"
                     >
                       {tag}
-                      <button
+                      <button aria-label="Remove tag"
                         onClick={() => handleRemoveTag(tag)}
                         className="hover:text-purple-900"
                       >
-                        <span className="material-symbols-outlined text-sm">close</span>
+                        <HTGlyph name="close" size={16} />
                       </button>
                     </span>
                   ))}
@@ -1359,7 +1360,7 @@ export default function KnowledgeBaseAdmin() {
                   <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mb-3">
                     {action.iconAsset
                       ? <img src={action.iconAsset} alt="" width="20" height="20" />
-                      : <span className="material-symbols-outlined text-gray-600 text-xl">{action.icon}</span>}
+                      : <HTGlyph name={action.icon} size={20} className="text-gray-600" />}
                   </div>
                   <h3 className="text-base font-semibold text-gray-900 mb-1.5">
                     {action.title}
@@ -1377,7 +1378,7 @@ export default function KnowledgeBaseAdmin() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-ht-purple text-2xl">folder</span>
+                  <HTGlyph name="folder" size={24} className="text-ht-purple " />
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">Document Library</h2>
                     <p className="text-sm text-gray-600 mt-1">
@@ -1391,14 +1392,14 @@ export default function KnowledgeBaseAdmin() {
                     disabled={documentsLoading}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
-                    <span className="material-symbols-outlined text-base">refresh</span>
+                    <HTGlyph name="refresh" size={16} />
                     Refresh
                   </button>
                   <button
                     onClick={() => setShowDocumentLibrary(false)}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-base">close</span>
+                    <HTGlyph name="close" size={16} />
                     Hide
                   </button>
                 </div>
@@ -1407,7 +1408,7 @@ export default function KnowledgeBaseAdmin() {
               {/* Search Knowledge Base Section */}
               <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 mb-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="material-symbols-outlined text-gray-500 text-lg">search</span>
+                  <HTGlyph name="search" size={20} className="text-gray-500 " />
                   <h3 className="text-base font-semibold text-gray-900">Search Documents</h3>
                 </div>
                 
@@ -1445,7 +1446,7 @@ export default function KnowledgeBaseAdmin() {
                       }}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                     >
-                      <span className="material-symbols-outlined text-base">close</span>
+                      <HTGlyph name="close" size={16} />
                       Clear
                     </button>
                   )}
@@ -1483,7 +1484,7 @@ export default function KnowledgeBaseAdmin() {
                 </div>
               ) : (isSearching && filteredDocuments.length === 0) ? (
                 <div className="text-center py-12">
-                  <span className="material-symbols-outlined text-6xl text-gray-300 mb-4 block">search_off</span>
+                  <HTGlyph name="search-empty" size={48} className="text-gray-300 mb-4 block" />
                   <p className="text-gray-500 text-lg mb-2">No documents found</p>
                   <p className="text-gray-400 text-sm">No documents match your search query "{searchQuery}".</p>
                   <button
@@ -1499,7 +1500,7 @@ export default function KnowledgeBaseAdmin() {
                 </div>
               ) : documents.length === 0 ? (
                 <div className="text-center py-12">
-                  <span className="material-symbols-outlined text-6xl text-gray-300 mb-4 block">folder_off</span>
+                  <HTGlyph name="folder-empty" size={48} className="text-gray-300 mb-4 block" />
                   <p className="text-gray-500 text-lg mb-2">No documents found</p>
                   <p className="text-gray-400 text-sm">Documents uploaded to the knowledge base will appear here.</p>
                 </div>
@@ -1534,7 +1535,7 @@ export default function KnowledgeBaseAdmin() {
                           <div className="flex-1 min-w-0">
                             {/* Document Title and ID */}
                             <div className="flex items-start gap-2 mb-3">
-                              <span className="material-symbols-outlined text-gray-600 text-xl mt-0.5">description</span>
+                              <HTGlyph name="document" size={20} className="text-gray-600  mt-0.5" />
                               <div className="flex-1 min-w-0">
                                 <h3 className="text-sm font-semibold text-gray-900 mb-1">
                                   {doc.title || "Untitled"}
@@ -1549,14 +1550,14 @@ export default function KnowledgeBaseAdmin() {
                             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600">
                               {/* Chunks */}
                               <div className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">link</span>
+                                <HTGlyph name="link" size={16} />
                                 <span>{doc.chunks_count || 0} chunks</span>
                               </div>
 
                               {/* Namespace/Tags */}
                               {doc.entry_method === "url_scrape" || doc.source_url ? (
                                 <div className="flex items-center gap-1 flex-wrap">
-                                  <span className="material-symbols-outlined text-sm">link</span>
+                                  <HTGlyph name="link" size={16} />
                                   {doc.entry_method === "url_scrape" ? (
                                     <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">urls</span>
                                   ) : doc.tags && doc.tags.length > 0 ? (
@@ -1581,20 +1582,20 @@ export default function KnowledgeBaseAdmin() {
 
                               {/* Processed Date */}
                               <div className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">calendar_today</span>
+                                <HTGlyph name="calendar" size={16} />
                                 <span>{formatDate(doc.processed_at_raw || doc.created_at)}</span>
                               </div>
 
                               {/* File Type */}
                               <div className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">description</span>
+                                <HTGlyph name="document" size={16} />
                                 <span>{doc.file_type || doc.file_extension || "—"}</span>
                               </div>
 
                               {/* Source URL */}
                               {doc.source_url && (
                                 <div className="flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-sm">public</span>
+                                  <HTGlyph name="globe" size={16} />
                                   <a
                                     href={doc.source_url.startsWith("http") ? doc.source_url : `https://${doc.source_url}`}
                                     target="_blank"
@@ -1620,7 +1621,7 @@ export default function KnowledgeBaseAdmin() {
                               onClick={() => handleDownloadDocument(doc)}
                               className="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded text-xs font-medium transition-colors flex items-center gap-1.5"
                             >
-                              <span className="material-symbols-outlined text-sm">download</span>
+                              <HTGlyph name="download" size={16} />
                               Download
                             </button>
                             <button
@@ -1635,7 +1636,7 @@ export default function KnowledgeBaseAdmin() {
                                 </>
                               ) : (
                                 <>
-                                  <span className="material-symbols-outlined text-sm">delete</span>
+                                  <HTGlyph name="delete" size={16} />
                                   Delete
                                 </>
                               )}
@@ -1690,7 +1691,7 @@ export default function KnowledgeBaseAdmin() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-ht-purple text-2xl">database</span>
+                  <HTGlyph name="database" size={24} className="text-ht-purple " />
                   <h2 className="text-xl font-semibold text-gray-900">Knowledge Base Stats</h2>
                 </div>
                 <div className="flex items-center gap-3">
@@ -1704,14 +1705,14 @@ export default function KnowledgeBaseAdmin() {
                     disabled={statsLoading}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
-                    <span className="material-symbols-outlined text-base">refresh</span>
+                    <HTGlyph name="refresh" size={16} />
                     Refresh
                   </button>
                   <button
                     onClick={() => setShowStats(false)}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-base">close</span>
+                    <HTGlyph name="close" size={16} />
                     Hide
                   </button>
                 </div>
@@ -1821,7 +1822,7 @@ export default function KnowledgeBaseAdmin() {
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-red-600 text-2xl">warning</span>
+                      <HTGlyph name="warning" size={24} className="text-red-600 " />
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold text-gray-900">Delete Document</h2>
@@ -1864,7 +1865,7 @@ export default function KnowledgeBaseAdmin() {
                         </>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-sm">delete</span>
+                          <HTGlyph name="delete" size={16} />
                           Delete
                         </>
                       )}

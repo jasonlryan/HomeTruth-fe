@@ -1,16 +1,8 @@
+import HTGlyph from "../components/HTGlyph";
 import PageTitle from "../components/PageTitle";
 import "../components/workspace.css";
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import {
-  Building2,
-  FileText,
-  Search,
-  ShieldCheck,
-  BookOpen,
-  Users,
-  ArrowRight,
-} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { isDemoWorkspaceUser } from "../utils/demoHomeHistory";
 
@@ -123,7 +115,7 @@ export default function OperationsDemo() {
         </div>
         <Link className={button} to="/property-profile">
           Open Maya’s home
-          <ArrowRight size={16} />
+          <HTGlyph name="arrow-right" size={16} />
         </Link>
       </header>
       <nav
@@ -211,7 +203,7 @@ export default function OperationsDemo() {
           </div>
           <section className={`${panel} mt-6`}>
             <h2 className="flex items-center gap-2 text-lg font-semibold">
-              <ShieldCheck size={20} />
+              <HTGlyph name="consent" size={20} />
               Two clear data boundaries
             </h2>
             <div className="mt-4 grid gap-5 md:grid-cols-2">
@@ -238,11 +230,11 @@ export default function OperationsDemo() {
         <section className={panel}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="flex items-center gap-2 text-lg font-semibold">
-              <Building2 size={20} />
+              <HTGlyph name="building" size={20} />
               Home records
             </h2>
             <label className="flex items-center gap-2">
-              <Search size={16} />
+              <HTGlyph name="search" size={16} />
               <input
                 aria-label="Search home records"
                 value={query}
@@ -321,7 +313,7 @@ export default function OperationsDemo() {
       {section === "Knowledge" && (
         <section className={panel}>
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <BookOpen size={20} />
+            <HTGlyph name="knowledge" size={20} />
             Knowledge library
           </h2>
           <p className="mt-3 text-sm ht-workspace-muted">
@@ -364,7 +356,7 @@ export default function OperationsDemo() {
         <div className="grid gap-5 lg:grid-cols-2">
           <section className={panel}>
             <h2 className="flex items-center gap-2 text-lg font-semibold">
-              <Users size={20} />
+              <HTGlyph name="household" size={20} />
               Partner programmes
             </h2>
             <p className="mt-3 text-sm leading-6 ht-workspace-muted">
@@ -433,7 +425,7 @@ export default function OperationsDemo() {
         <div className="grid gap-5 lg:grid-cols-2">
           <section className={panel}>
             <h2 className="flex items-center gap-2 text-lg font-semibold">
-              <ShieldCheck size={20} />
+              <HTGlyph name="consent" size={20} />
               Owner-controlled sharing
             </h2>
             <p className="mt-3 text-sm leading-6 ht-workspace-muted">
@@ -512,7 +504,7 @@ export default function OperationsDemo() {
       {section === "Content" && (
         <section className={panel}>
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <FileText size={20} />
+            <HTGlyph name="document" size={20} />
             Homeowner content
           </h2>
           <p className="mt-3 text-sm ht-workspace-muted">

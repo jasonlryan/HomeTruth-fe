@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 import { useNavigate } from "react-router-dom";
 
 export default function CallToAction({ variant = "cyan" }) {
@@ -15,19 +16,7 @@ export default function CallToAction({ variant = "cyan" }) {
         onClick={() => navigate("/register")}
       >
         {isWhite ? "Start Free Today" : "Start Free"}
-        <svg
-          className="w-[18px] h-[18px] stroke-[2.5]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
+        <HTGlyph name="arrow-right" size={18} />
       </button>
 
       <button

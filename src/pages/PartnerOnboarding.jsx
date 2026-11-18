@@ -1,20 +1,6 @@
+import HTGlyph from "../components/HTGlyph";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  AlertCircle,
-  ArrowRight,
-  Check,
-  CheckCircle2,
-  ChevronRight,
-  ExternalLink,
-  FileText,
-  Home,
-  LifeBuoy,
-  Loader2,
-  LockKeyhole,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
 import {
   attachPartnerOnboardingProperty,
   claimPartnerInvite,
@@ -55,7 +41,7 @@ function PrivacyBoundary({ summary }) {
     <section className={`${surface} p-5 sm:p-6`} aria-labelledby="privacy-boundary-title">
       <div className="flex items-start gap-4">
         <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-success)_12%,var(--color-surface-default))] text-[var(--color-success)]">
-          <LockKeyhole size={21} aria-hidden="true" />
+          <HTGlyph name="lock" size={21} aria-hidden="true" />
         </span>
         <div>
           <p className="text-sm font-bold text-[var(--color-success)]">Your record stays yours</p>
@@ -104,7 +90,7 @@ function ConsentChoice({ definition, checked, error, onChange }) {
           </span>
           {error && (
             <span id={errorId} className="mt-2 flex items-center gap-2 text-sm text-[var(--color-action-primary)]">
-              <AlertCircle size={15} aria-hidden="true" /> {error}
+              <HTGlyph name="warning" size={15} aria-hidden="true" /> {error}
             </span>
           )}
         </span>
@@ -258,7 +244,7 @@ export default function PartnerOnboarding() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[color-mix(in_srgb,var(--color-accent)_4%,var(--color-surface-default))] px-4 text-[var(--color-text-default)]">
         <div className="flex items-center gap-3 text-[var(--color-text-muted)]" role="status">
-          <Loader2 className="animate-spin" size={20} aria-hidden="true" />
+          <HTGlyph name="loading" className="animate-spin" size={20} aria-hidden="true" />
           <span>Checking your programme invitation</span>
         </div>
       </main>
@@ -287,10 +273,10 @@ export default function PartnerOnboarding() {
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <button type="button" onClick={() => navigate("/")} className={primaryButton}>
-                  Return to HomeTruth <ArrowRight size={17} aria-hidden="true" />
+                  Return to HomeTruth <HTGlyph name="arrow-right" size={17} aria-hidden="true" />
                 </button>
                 <a href={acquisition.support.url} className={secondaryButton}>
-                  <LifeBuoy size={17} aria-hidden="true" /> {acquisition.support.label}
+                  <HTGlyph name="help" size={17} aria-hidden="true" /> {acquisition.support.label}
                 </a>
               </div>
             </div>
@@ -361,7 +347,7 @@ export default function PartnerOnboarding() {
 
         {error && (
           <div role="alert" className="mt-5 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_9%,var(--color-surface-default))] p-4 text-sm">
-            <AlertCircle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} aria-hidden="true" />
+            <HTGlyph name="warning" className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} aria-hidden="true" />
             <p>{error}</p>
           </div>
         )}
@@ -374,7 +360,7 @@ export default function PartnerOnboarding() {
               <section className={`${surface} p-6 sm:p-8`} aria-labelledby="continue-title">
                 <div className="flex items-start gap-4">
                   <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-accent)]">
-                    <Sparkles size={21} aria-hidden="true" />
+                    <HTGlyph name="suggestion" size={21} aria-hidden="true" />
                   </span>
                   <div>
                     <p className="text-sm font-bold text-[var(--color-accent)]">Invitation confirmed</p>
@@ -388,7 +374,7 @@ export default function PartnerOnboarding() {
                 </div>
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <button type="button" onClick={() => navigate(`/register?${authQuery}`)} className={primaryButton}>
-                    Create an account <ArrowRight size={17} aria-hidden="true" />
+                    Create an account <HTGlyph name="arrow-right" size={17} aria-hidden="true" />
                   </button>
                   <button type="button" onClick={() => navigate(`/login?${authQuery}`)} className={secondaryButton}>
                     Sign in
@@ -420,7 +406,7 @@ export default function PartnerOnboarding() {
                     Consent contract: {inviteData?.consentContract?.version || "partner-acquisition-v1"}
                   </p>
                   <button type="submit" disabled={claiming} className={primaryButton}>
-                    {claiming ? <Loader2 className="animate-spin" size={17} aria-hidden="true" /> : <ShieldCheck size={17} aria-hidden="true" />}
+                    {claiming ? <HTGlyph name="loading" className="animate-spin" size={17} aria-hidden="true" /> : <HTGlyph name="consent" size={17} aria-hidden="true" />}
                     Save choices and continue
                   </button>
                 </div>
@@ -429,7 +415,7 @@ export default function PartnerOnboarding() {
               <section className={`${surface} p-6 sm:p-8`} aria-labelledby="property-title">
                 <div className="flex items-start gap-4">
                   <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-success)_12%,var(--color-surface-default))] text-[var(--color-success)]">
-                    <CheckCircle2 size={22} aria-hidden="true" />
+                    <HTGlyph name="success" size={22} aria-hidden="true" />
                   </span>
                   <div>
                     <p className="text-sm font-bold text-[var(--color-success)]">Choices recorded</p>
@@ -461,7 +447,7 @@ export default function PartnerOnboarding() {
                             {[record.currentAddress?.townCity, record.currentAddress?.postcode].filter(Boolean).join(", ") || "Existing HomeTruth record"}
                           </span>
                         </span>
-                        <ChevronRight className="flex-none text-[var(--color-accent)]" size={20} aria-hidden="true" />
+                        <HTGlyph name="chevron-right" className="flex-none text-[var(--color-accent)]" size={20} aria-hidden="true" />
                       </button>
                     ))}
                   </div>
@@ -469,7 +455,7 @@ export default function PartnerOnboarding() {
 
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <button type="button" onClick={startPropertySetup} disabled={claiming} className={primaryButton}>
-                    <Home size={17} aria-hidden="true" /> Set up a new property
+                    <HTGlyph name="home" size={17} aria-hidden="true" /> Set up a new property
                   </button>
                 </div>
               </section>
@@ -478,7 +464,7 @@ export default function PartnerOnboarding() {
 
           <aside className="grid content-start gap-4">
             <section className={`${surface} p-5`}>
-              <FileText className="text-[var(--color-secondary)]" size={21} aria-hidden="true" />
+              <HTGlyph name="document" className="text-[var(--color-secondary)]" size={21} aria-hidden="true" />
               <h2 className="mt-4 font-bold text-[var(--color-text-default)]">Programme context</h2>
               <dl className="mt-4 grid gap-3 text-sm">
                 {[
@@ -498,19 +484,19 @@ export default function PartnerOnboarding() {
             </section>
 
             <section className={`${surface} p-5`}>
-              <LifeBuoy className="text-[var(--color-accent)]" size={21} aria-hidden="true" />
+              <HTGlyph name="help" className="text-[var(--color-accent)]" size={21} aria-hidden="true" />
               <h2 className="mt-4 font-bold text-[var(--color-text-default)]">Need help?</h2>
               <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
                 Ask about the invitation, your choices or what happens to your HomeTruth record.
               </p>
               <a href={acquisition.support.url} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--color-accent)] hover:underline">
-                {acquisition.support.label} <ExternalLink size={15} aria-hidden="true" />
+                {acquisition.support.label} <HTGlyph name="external" size={15} aria-hidden="true" />
               </a>
             </section>
 
             <section className="rounded-[var(--radius-lg)] bg-[var(--color-surface-dark)] p-5 text-[var(--color-text-on-dark)]">
               <div className="flex items-center gap-2 text-[var(--ht-cyan-light)]">
-                <Check size={18} aria-hidden="true" />
+                <HTGlyph name="check" size={18} aria-hidden="true" />
                 <p className="text-sm font-bold">HomeTruth stays identifiable</p>
               </div>
               <p className="mt-3 text-sm leading-6">

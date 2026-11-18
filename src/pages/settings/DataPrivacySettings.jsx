@@ -1,3 +1,4 @@
+import HTGlyph from "../../components/HTGlyph";
 import { useState, useEffect } from "react";
 import PageTitle from "../../components/PageTitle";
 import api, { resetPrivacySettings } from "../../api/api";
@@ -224,12 +225,10 @@ function ToggleRow({ label, value, onChange, border }) {
     >
       <div className="mr-4 flex items-center gap-1">
         <span className="font-normal text-sm mt-4 text-ht-black">{label}</span>
-        <span
-          className="material-symbols-outlined text-[16px] mt-4 text-gray-400 cursor-pointer"
+        <HTGlyph name="info" size={24}
+          className="text-[16px] mt-4 text-gray-400 cursor-pointer"
           title="Info"
-        >
-          info
-        </span>
+         />
       </div>
       <label className="relative inline-flex items-center cursor-pointer">
         <input

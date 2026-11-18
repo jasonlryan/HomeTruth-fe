@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 // src/components/AdminProtectedRoute.jsx/////////////////////////////////////////////////////////
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -29,7 +30,7 @@ export default function AdminProtectedRoute({ children }) {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-red-600 text-3xl">block</span>
+            <HTGlyph name="blocked" size={32} className="text-red-600 " />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
           <p className="text-gray-600 mb-6">

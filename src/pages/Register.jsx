@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { registerUser } from "../api/api";
@@ -217,11 +218,10 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                 >
-                   <span className="material-symbols-outlined text-xl">
-                    {showPassword ? "visibility_off" : "visibility"}
-                  </span>
+                   <HTGlyph name={showPassword ? "hidden" : "visible"} size={20} />
                 </button>
               </div>
             </div>
@@ -241,11 +241,10 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide confirmed password" : "Show confirmed password"}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                 >
-                  <span className="material-symbols-outlined text-xl">
-                    {showConfirmPassword ? "visibility_off" : "visibility"}
-                  </span>
+                  <HTGlyph name={showConfirmPassword ? "hidden" : "visible"} size={20} />
                 </button>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -135,9 +136,7 @@ export default function Pricing() {
                                 <div className="flex-grow mb-8 border-t border-gray-100">
                                     {plan.features.map((feature, idx) => (
                                         <div key={idx} className="flex items-center gap-3 py-3 border-b border-gray-50">
-                                            <svg className="w-4 h-4 text-ht-green shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                            </svg>
+                                            <HTGlyph name="check" size={16} className="text-ht-green shrink-0" />
                                             <span className="text-gray-600 text-[13px]">{feature}</span>
                                         </div>
                                     ))}
@@ -183,14 +182,7 @@ export default function Pricing() {
                                     onClick={() => setOpenFaq(openFaq === index ? null : index)}
                                 >
                                     <span className="text-base">{faq.question}</span>
-                                    <svg
-                                        className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFaq === index ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
+                                    <HTGlyph name="chevron-down" size={20} className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFaq === index ? 'rotate-180' : ''}`} />
                                 </button>
                                 {openFaq === index && (
                                     <div className="pb-6 text-gray-500 text-sm leading-relaxed max-w-2xl">
@@ -217,9 +209,7 @@ export default function Pricing() {
                     onClick={() => window.location.href = '/register'}
                 >
                     Get Started
-                    <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
+                    <HTGlyph name="arrow-right" size={20} />
                 </button>
             </section>
 
