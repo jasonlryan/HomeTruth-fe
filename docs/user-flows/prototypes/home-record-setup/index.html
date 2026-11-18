@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/admin/design-system/styles/components.css">
   <link rel="stylesheet" href="/admin/design-system/styles/navigation.css">
   <link rel="stylesheet" href="prototype.css">
-  <script src="prototype.js" defer></script>
+  <script type="module" src="prototype.js"></script>
 </head>
 <body class="ht-ui">
   <a class="skip-link" href="#prototype-main">Skip to content</a>
@@ -22,6 +22,7 @@
         <option value="save-error">Save fails</option>
         <option value="answer-unavailable">First answer unavailable</option>
       </select>
+      <a href="journey.html">Run the full user flow</a>
       <a href="#specification">Read the specification</a>
     </div>
   </div>
@@ -129,7 +130,7 @@
         <div class="answer-thread">
           <p id="thread-question" class="guest-question">What should I ask after a survey flags a problem?</p>
           <div id="thread-reply" class="ht-panel original-reply">
-            <p>Ask the surveyor which finding needs a follow-up before you commit. Find out what they observed, what they couldn’t inspect, and whether they recommend a specialist assessment.</p>
+            <p id="thread-reply-copy">Ask the surveyor which finding needs a follow-up before you commit. Find out what they observed, what they couldn’t inspect, and whether they recommend a specialist assessment.</p>
           </div>
           <p id="empty-thread" hidden>Your previous conversation is unavailable. Ask HomeTruth is still available for new questions.</p>
           <a href="#property" class="question-link">

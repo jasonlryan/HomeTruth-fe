@@ -1,3 +1,5 @@
+import { getSample } from "./flow-samples.js";
+
 const byId = id => document.getElementById(id);
 const scenario = byId("scenario");
 const form = byId("setup-form");
@@ -5,6 +7,8 @@ const address = byId("address");
 const relationship = byId("relationship");
 const save = byId("save");
 const saveLabel = byId("save-label");
+const entry = new URLSearchParams(location.search);
+const sample = getSample(entry.get("journey"));
 let saved = false;
 let didFail = false;
 let saving = false;
@@ -66,7 +70,17 @@ address.addEventListener("input", () => setError(address, false));
 relationship.addEventListener("change", () => setError(relationship, false));
 scenario.addEventListener("change", showScenario);
 window.addEventListener("hashchange", () => renderRoute(true));
-renderRoute();
+document.querySelector(".question-copy").textContent = sample.question;
+byId("thread-question").textContent = sample.question;
+byId("thread-reply-copy").textContent = sample.answer;
+byId("relationship-hint").textContent = sample.relationshipHint;
+byId("relationship-hint").hidden = !sample.relationshipHint;
+if (Array.from(scenario.options).some(option => option.value === entry.get("scenario"))) {
+  scenario.value = entry.get("scenario");
+  showScenario();
+} else {
+  renderRoute();
+}
 
 form.addEventListener("submit", async event => {
   event.preventDefault();
