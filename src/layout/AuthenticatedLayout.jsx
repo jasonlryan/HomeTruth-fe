@@ -14,7 +14,7 @@ const pilotActivityStorageKey = (userId) =>
 export default function AuthenticatedLayout() {
   const location = useLocation();
   const { user } = useAuth();
-  const showProductNavigation = !comingSoon || !location.pathname.startsWith("/admin/");
+  const showProductNavigation = !comingSoon || !/^\/admin(?:\/|$)/.test(location.pathname);
   const [onboardingMode, setOnboardingMode] = useState(() => {
     const needsProfile = localStorage.getItem("require_profile") === "true";
     const isNewUser = localStorage.getItem("new_user") === "true";

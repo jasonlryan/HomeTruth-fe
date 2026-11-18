@@ -10,7 +10,7 @@ import "./account-entry.css";
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
 
 function comingSoonDestination(user) {
-  return user?.role === "admin" ? "/admin/knowledge-base" : "/";
+  return user?.role === "admin" ? "/admin" : "/";
 }
 
 export default function Login({ comingSoon = false }) {

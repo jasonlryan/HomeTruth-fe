@@ -65,7 +65,7 @@ export default function AdminUXSpecifications() {
   return (
     <div className="ht-ui ht-ux-specifications">
       <header>
-        <Link to="/admin/knowledge-base">Back to admin</Link>
+        <Link to="/admin">Back to admin</Link>
         <h1>UX specifications</h1>
         <p>Use the blueprint to specify the journey, the design system to choose its interface patterns, and the ontology to define the data and access each step needs.</p>
         <nav aria-label="UX specification resources">

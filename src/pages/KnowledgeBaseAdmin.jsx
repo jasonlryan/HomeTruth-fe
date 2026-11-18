@@ -947,94 +947,35 @@ export default function KnowledgeBaseAdmin() {
 
   const quickActions = [
     {
-      id: 1,
-      title: "Bulk Upload",
-      description: "Queue multiple documents for ingestion (coming soon).",
-      icon: "knowledge",
-      onClick: () => console.log("Bulk Upload clicked"),
-      comingSoon: true,
-    },
-    {
-      id: 2,
       title: "Document Library",
-      description: "Review uploaded files, chunk counts, and manage deletions.",
+      description: "Review uploaded sources and manage deletions.",
       icon: "folder",
       onClick: handleDocumentLibraryClick,
-      comingSoon: false,
     },
     {
-      id: 3,
-      title: "View Stats",
-      description: "Monitor Pinecone capacity and recent ingestion activity.",
+      title: "Index statistics",
+      description: "Check indexing capacity and recent ingestion activity.",
       icon: "database",
       onClick: handleViewStatsClick,
-      comingSoon: false,
-    },
-    {
-      id: 4,
-      title: "Export Data",
-      description: "Download knowledge records for offline review (coming soon).",
-      icon: "download",
-      comingSoon: true,
-    },
-    {
-      id: 9,
-      title: "UX specifications",
-      description: "User flow blueprints, design system and ontology.",
-      iconAsset: "/assets/homepage/icons/ht-list.svg",
-      onClick: () => navigate("/admin/user-flows"),
-      comingSoon: false,
-    },
-    {
-      id: 5,
-      title: "Reporting Dashboard",
-      description: "View product metrics, usage charts, and recent activity.",
-      icon: "analytics",
-      onClick: () => navigate("/admin/dashboard"),
-      comingSoon: false,
-    },
-    {
-      id: 6,
-      title: "User Data Access",
-      description: "Search, inspect, and export user records and onboarding data.",
-      icon: "household",
-      onClick: () => navigate("/admin/data-access"),
-      comingSoon: false,
-    },
-    {
-      id: 7,
-      title: "Article Management",
-      description: "Create, edit, and publish content for the Home Truths section.",
-      icon: "content",
-      onClick: () => navigate("/admin/articles"),
-      comingSoon: false,
-    },
-    {
-      id: 8,
-      title: "Partner Programmes",
-      description: "Configure shared B2B programmes, campaigns, cohorts, and lifecycle states.",
-      icon: "building",
-      onClick: () => navigate("/admin/partner-programmes"),
-      comingSoon: false,
     },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 px-8 py-8">
       {/* Header Section */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-lg bg-ht-purple flex items-center justify-center">
             <HTGlyph name="database" size={20} className="text-white " />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Knowledge Base Admin - STAGING</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Knowledge</h1>
             <p className="text-gray-500 text-sm mt-0.5">
               Manage the RAG knowledge base for HomeTruth assistant.
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Link to="/" className="text-sm text-[var(--color-accent)] underline">View public site</Link>
           <button
             onClick={handleAddKnowledge}
@@ -1345,22 +1286,19 @@ export default function KnowledgeBaseAdmin() {
             <div className="mb-5">
               <h2 className="text-lg font-semibold text-gray-900 mb-1">Quick Actions</h2>
               <p className="text-gray-500 text-sm">
-                Switch between workspace tools without leaving the page.
+                Manage sources, ingestion and indexing.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {quickActions.map((action) => (
                 <button
-                  key={action.id}
+                  key={action.title}
                   onClick={action.onClick}
-                  disabled={action.comingSoon}
                   className="bg-white border border-gray-200 rounded-lg p-5 text-left hover:shadow-md transition-shadow hover:border-purple-300 disabled:opacity-75 disabled:cursor-not-allowed"
                 >
                   <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mb-3">
-                    {action.iconAsset
-                      ? <img src={action.iconAsset} alt="" width="20" height="20" />
-                      : <HTGlyph name={action.icon} size={20} className="text-gray-600" />}
+                    <HTGlyph name={action.icon} size={20} className="text-gray-600" />
                   </div>
                   <h3 className="text-base font-semibold text-gray-900 mb-1.5">
                     {action.title}

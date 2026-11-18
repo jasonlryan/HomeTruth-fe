@@ -316,6 +316,7 @@ export default function AdminDataAccess() {
           <div className="flex items-center gap-2 ml-auto">
             <button
               onClick={() => handleExport("csv")}
+              aria-label="Export CSV"
               disabled={exporting}
               className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
@@ -324,6 +325,7 @@ export default function AdminDataAccess() {
             </button>
             <button
               onClick={() => handleExport("json")}
+              aria-label="Export JSON"
               disabled={exporting}
               className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
             >

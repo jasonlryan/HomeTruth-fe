@@ -1,0 +1,23 @@
+.ht-admin-nav {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0 var(--space-2);
+  padding-inline:var(--space-4);
+  background:var(--color-surface-default);
+  border-bottom:1px solid var(--color-border-default);
+}
+
+.ht-admin-nav .ht-content-tab[aria-current="page"] {
+  color:var(--nav-ink);
+  border-bottom-color:var(--color-accent);
+}
+
+.ht-admin-overview {width:min(1120px,92%);margin-inline:auto;padding-block:var(--space-8)}
+.ht-admin-overview header {display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6)}
+.ht-admin-overview h1 {font-size:32px;margin:0}
+.ht-admin-destinations {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:var(--space-4)}
+.ht-admin-destination {display:block;color:inherit;text-decoration:none}
+.ht-admin-destination:hover {background:var(--surface-subtle)}
+.ht-admin-destination h2 {display:flex;align-items:baseline;gap:var(--space-2);font-size:22px;margin-bottom:var(--space-2)}
+.ht-admin-destination svg {flex:none}
+.ht-admin-destination p {color:var(--reading-ink)}

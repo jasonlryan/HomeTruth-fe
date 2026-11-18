@@ -47,6 +47,7 @@ import WelcomePage from "./pages/WelcomePage";
 import KnowledgeBaseAdmin from "./pages/KnowledgeBaseAdmin";
 import AdminReportingDashboard from "./pages/AdminReportingDashboard";
 import AdminUXSpecifications from "./pages/AdminUXSpecifications";
+import AdminWorkspace, { AdminOverview } from "./pages/AdminWorkspace";
 import AdminDataAccess from "./pages/AdminDataAccess";
 import ComingSoon from "./pages/ComingSoon";
 import Pricing from "./pages/Pricing";
@@ -65,9 +66,17 @@ const Homepage = lazy(() => import("./pages/Homepage"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 
-const uxSpecificationsRoute = (
-  <Route path="/admin/user-flows" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
-    <Route index element={<AdminUXSpecifications />} />
+const adminRoutes = (
+  <Route path="/admin" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
+    <Route element={<AdminWorkspace />}>
+      <Route index element={<AdminOverview />} />
+      <Route path="knowledge-base" element={<KnowledgeBaseAdmin />} />
+      <Route path="dashboard" element={<AdminReportingDashboard />} />
+      <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />
+      <Route path="articles" element={<AdminArticleManager />} />
+      <Route path="user-flows" element={<AdminUXSpecifications />} />
+      <Route path="data-access" element={<AdminDataAccess />} />
+    </Route>
   </Route>
 );
 
@@ -79,65 +88,9 @@ function App() {
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            {uxSpecificationsRoute}
+            {adminRoutes}
             <Route path="/login" element={<Login comingSoon />} />
             <Route path="/admin/login" element={<Navigate to="/login" replace />} />
-
-            {/* Admin Protected Routes - accessible during Coming Soon mode */}
-            <Route
-              path="/admin/knowledge-base"
-              element={
-                <AdminProtectedRoute>
-                  <AuthenticatedLayout />
-                </AdminProtectedRoute>
-              }
-            >
-              <Route index element={<KnowledgeBaseAdmin />} />
-            </Route>
-
-            <Route
-              path="/admin/dashboard"
-              element={
-                <AdminProtectedRoute>
-                  <AuthenticatedLayout />
-                </AdminProtectedRoute>
-              }
-            >
-              <Route index element={<AdminReportingDashboard />} />
-            </Route>
-
-            <Route
-              path="/admin/data-access"
-              element={
-                <AdminProtectedRoute>
-                  <AuthenticatedLayout />
-                </AdminProtectedRoute>
-              }
-            >
-              <Route index element={<AdminDataAccess />} />
-            </Route>
-
-            <Route
-              path="/admin/partner-programmes"
-              element={
-                <AdminProtectedRoute>
-                  <AuthenticatedLayout />
-                </AdminProtectedRoute>
-              }
-            >
-              <Route index element={<PartnerProgrammeAdmin />} />
-            </Route>
-
-            <Route
-              path="/admin/articles"
-              element={
-                <AdminProtectedRoute>
-                  <AuthenticatedLayout />
-                </AdminProtectedRoute>
-              }
-            >
-              <Route index element={<AdminArticleManager />} />
-            </Route>
 
             <Route
               path="/partner-programmes"
@@ -169,7 +122,7 @@ function App() {
         <ScrollToTop /> {/* ✅ Always scroll to top on route change */}
 
         <Routes>
-          {uxSpecificationsRoute}
+          {adminRoutes}
           {/* Public Routes */}
           {hasHomepagePreview && (
             <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>}>
@@ -275,61 +228,6 @@ function App() {
             <Route path="/partner-programmes" element={<PartnerProgrammeWorkspace />} />
           </Route>
 
-          {/* Admin Protected Routes */}
-          <Route
-            path="/admin/knowledge-base"
-            element={
-              <AdminProtectedRoute>
-                <AuthenticatedLayout />
-              </AdminProtectedRoute>
-            }
-          >
-            <Route index element={<KnowledgeBaseAdmin />} />
-          </Route>
-
-          <Route
-            path="/admin/dashboard"
-            element={
-              <AdminProtectedRoute>
-                <AuthenticatedLayout />
-              </AdminProtectedRoute>
-            }
-          >
-            <Route index element={<AdminReportingDashboard />} />
-          </Route>
-
-          <Route
-            path="/admin/data-access"
-            element={
-              <AdminProtectedRoute>
-                <AuthenticatedLayout />
-              </AdminProtectedRoute>
-            }
-          >
-            <Route index element={<AdminDataAccess />} />
-          </Route>
-
-          <Route
-            path="/admin/partner-programmes"
-            element={
-              <AdminProtectedRoute>
-                <AuthenticatedLayout />
-              </AdminProtectedRoute>
-            }
-          >
-            <Route index element={<PartnerProgrammeAdmin />} />
-          </Route>
-
-          <Route
-            path="/admin/articles"
-            element={
-              <AdminProtectedRoute>
-                <AuthenticatedLayout />
-              </AdminProtectedRoute>
-            }
-          >
-            <Route index element={<AdminArticleManager />} />
-          </Route>
         </Routes>
       </BrowserRouter >
     </AuthProvider >

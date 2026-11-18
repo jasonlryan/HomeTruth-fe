@@ -458,8 +458,8 @@ export default function AdminArticleManager() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <button aria-label="Back to Knowledge Base"
-            onClick={() => navigate("/admin/knowledge-base")}
+          <button aria-label="Back to Admin"
+            onClick={() => navigate("/admin")}
             className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
           >
             <HTGlyph name="arrow-left" size={18} className="text-gray-600" />

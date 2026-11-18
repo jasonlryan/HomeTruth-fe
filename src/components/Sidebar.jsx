@@ -75,7 +75,7 @@ export default function Sidebar() {
         </div>}
         {user?.role === 'admin' && (
           <NavItem icon="lock" label="Admin tools"
-            collapsed={collapsed} active={location.pathname.startsWith('/admin/')} onClick={() => go('/admin/knowledge-base')} />
+            collapsed={collapsed} active={location.pathname === '/admin' || location.pathname.startsWith('/admin/')} onClick={() => go('/admin')} />
         )}
       </nav>
     </aside>

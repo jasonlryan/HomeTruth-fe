@@ -1,6 +1,5 @@
 import HTGlyph from "../components/HTGlyph";
 import { cloneElement, useCallback, useEffect, useId, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import PartnerAccessManager from "../components/PartnerAccessManager";
 import {
   createAdminPartnerProgramme,
@@ -484,14 +483,6 @@ export default function PartnerProgrammeAdmin() {
   return (
     <main className="min-h-screen bg-[color-mix(in_srgb,var(--color-accent)_4%,var(--color-surface-default))] px-4 py-6 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <nav aria-label="Admin" className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/knowledge-base">Knowledge base</Link>
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/dashboard">Dashboard</Link>
-          <span aria-current="page" className="font-bold text-[var(--color-text-default)]">Partner programmes</span>
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/data-access">Data access</Link>
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/articles">Articles</Link>
-        </nav>
-
         <header className={`${surface} relative overflow-hidden p-6 sm:p-8`}>
           <div className="absolute inset-y-0 left-0 w-1 bg-ht-gradient-warm" />
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
