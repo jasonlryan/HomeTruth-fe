@@ -46,6 +46,7 @@ import GuestChat from "./pages/GuestChat";
 import WelcomePage from "./pages/WelcomePage";
 import KnowledgeBaseAdmin from "./pages/KnowledgeBaseAdmin";
 import AdminReportingDashboard from "./pages/AdminReportingDashboard";
+import AdminUXSpecifications from "./pages/AdminUXSpecifications";
 import AdminDataAccess from "./pages/AdminDataAccess";
 import ComingSoon from "./pages/ComingSoon";
 import Pricing from "./pages/Pricing";
@@ -60,6 +61,12 @@ const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
 const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
 const Homepage = lazy(() => import("./pages/Homepage"));
 
+const uxSpecificationsRoute = (
+  <Route path="/admin/user-flows" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
+    <Route index element={<AdminUXSpecifications />} />
+  </Route>
+);
+
 function App() {
   // If Coming Soon mode is enabled, show only the Coming Soon page (except admin routes)
   if (isComingSoonMode) {
@@ -68,6 +75,7 @@ function App() {
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
+            {uxSpecificationsRoute}
             {/* Allow admin login even in Coming Soon mode */}
             <Route path="/admin/login" element={<AdminLogin />} />
 
@@ -157,6 +165,7 @@ function App() {
         <ScrollToTop /> {/* ✅ Always scroll to top on route change */}
 
         <Routes>
+          {uxSpecificationsRoute}
           {/* Public Routes */}
           {(process.env.NODE_ENV === "development" || isVisualReviewMode) && (
             <Route path="/homepage-preview" element={<Navigate to="/" replace />} />

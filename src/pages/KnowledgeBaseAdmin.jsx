@@ -977,6 +977,14 @@ export default function KnowledgeBaseAdmin() {
       comingSoon: true,
     },
     {
+      id: 9,
+      title: "UX specifications",
+      description: "User flow blueprints, design system and ontology.",
+      iconAsset: "/assets/homepage/icons/ht-list.svg",
+      onClick: () => navigate("/admin/user-flows"),
+      comingSoon: false,
+    },
+    {
       id: 5,
       title: "Reporting Dashboard",
       description: "View product metrics, usage charts, and recent activity.",
@@ -1348,9 +1356,9 @@ export default function KnowledgeBaseAdmin() {
                   className="bg-white border border-gray-200 rounded-lg p-5 text-left hover:shadow-md transition-shadow hover:border-purple-300 disabled:opacity-75 disabled:cursor-not-allowed"
                 >
                   <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mb-3">
-                    <span className="material-symbols-outlined text-gray-600 text-xl">
-                      {action.icon}
-                    </span>
+                    {action.iconAsset
+                      ? <img src={action.iconAsset} alt="" width="20" height="20" />
+                      : <span className="material-symbols-outlined text-gray-600 text-xl">{action.icon}</span>}
                   </div>
                   <h3 className="text-base font-semibold text-gray-900 mb-1.5">
                     {action.title}
