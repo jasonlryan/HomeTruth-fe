@@ -12,6 +12,10 @@ All codebase changes must start from a ticket and include an implementation log
 in that ticket. See `../HomeTruth-tickets/README.md` for the shared ways of
 working.
 
+## User flow blueprints
+
+- [HT-FLOW-001 · First answer to home record](docs/user-flows/HT-FLOW-001.md)
+
 ## Coming Soon Mode
 
 This app includes a "Coming Soon" mode that blocks access to all routes and displays only the Coming Soon page until you're ready to launch.

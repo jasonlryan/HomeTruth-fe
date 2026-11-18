@@ -38,7 +38,7 @@ const initialForm = {
   county: "",
   postcode: "",
   country: "GB",
-  relationshipType: "owner",
+  relationshipType: "",
   propertyType: "unknown",
   tenure: "unknown",
 };
@@ -431,6 +431,10 @@ export default function PropertyProfile() {
       setError("Address line 1 is required.");
       return;
     }
+    if (!relationshipOptions.some(option => option.value === form.relationshipType)) {
+      setError("Choose your relationship to this property.");
+      return;
+    }
 
     try {
       setSaving(true);
@@ -690,10 +694,12 @@ export default function PropertyProfile() {
                   </span>
                   <select
                     name="relationshipType"
+                    required
                     value={form.relationshipType}
                     onChange={handleChange}
                     className="mt-2 w-full rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] px-3 py-3 outline-none focus:border-[var(--color-accent)]"
                   >
+                    <option value="" disabled>Choose your relationship</option>
                     {relationshipOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
