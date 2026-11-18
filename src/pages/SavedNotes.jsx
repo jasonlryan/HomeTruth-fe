@@ -1,3 +1,4 @@
+import { getNoteExcerpt } from '../utils/noteExcerpt';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -257,7 +258,7 @@ export default function SavedNotes() {
           {notes.map((note) => (
             <div
               key={`${note.type || "note"}-${note.id}`}
-              className="relative bg-white shadow-md p-4 rounded-lg hover:shadow-lg transition flex flex-col"
+              className="relative min-h-56 rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5 transition flex flex-col"
             >
               <button
                 onClick={() => {
@@ -276,19 +277,9 @@ export default function SavedNotes() {
                 <span className="material-symbols-outlined text-xl">edit</span>
               </button>
 
-              <h3 className="text-md font-semibold mb-2">{getItemTitle(note)}</h3>
-              <div className="text-sm text-gray-700 line-clamp-3">
-                {isBudgetItem(note) ? (
-                  <p className="mb-0 text-left break-words">{getBudgetPreview(note)}</p>
-                ) : (
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={markdownComponents}
-                  >
-                    {getItemTextContent(note) || ""}
-                  </ReactMarkdown>
-                )}
-              </div>
+              <p className="mb-3 text-xs text-[var(--color-secondary)]">{isBudgetItem(note) ? "Budget calculation" : "Saved answer"}</p>
+              <h3 className="mb-3 pr-6 text-lg leading-6 line-clamp-2">{getItemTitle(note)}</h3>
+              <p className="mb-5 text-sm leading-6 text-[var(--color-text-muted)] line-clamp-3">{getNoteExcerpt(isBudgetItem(note) ? getBudgetPreview(note) : getItemTextContent(note))}</p>
 
               <div className="flex justify-between items-center mt-auto">
                 <p className="text-xs text-gray-400">{getItemDate(note)}</p>

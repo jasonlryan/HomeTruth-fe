@@ -1,3 +1,5 @@
+import { useAuth } from '../context/AuthContext';
+import { isDemoWorkspaceUser } from '../utils/demoHomeHistory';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -18,6 +20,7 @@ import { getPartnerProgrammeAccessStatus } from "../api/api";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const location = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(
     location.pathname.startsWith("/settings")
@@ -54,6 +57,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="space-y-2 text-sm text-gray-700">
+        {isDemoWorkspaceUser(user?.email) && <NavItem icon={<Building2 size={20} />} label="Operations" onClick={() => navigate('/operations')} active={location.pathname === '/operations'} />}
         <NavItem
           icon={<Home size={20} />}
           label="Dashboard"

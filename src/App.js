@@ -1,3 +1,4 @@
+import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -239,6 +240,7 @@ function App() {
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="documents" element={<Documents />} />
             <Route path="property-profile" element={<PropertyProfile />} />
+            <Route path="operations" element={<OperationsDemo />} />
             <Route path="home" element={<Home />} />
             <Route path="quiz" element={<QuizPage />} />
             {/* <Route path="budget" element={<BudgetRedirect />} /> */}
