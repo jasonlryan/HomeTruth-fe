@@ -167,7 +167,7 @@ function App() {
           {uxSpecificationsRoute}
           {/* Public Routes */}
           {(process.env.NODE_ENV === "development" || isVisualReviewMode) && (
-            <Route path="/homepage-preview" element={<Navigate to="/" replace />} />
+            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>} />
           )}
           <Route path="/demo" element={<DemoEntry />} />
           <Route

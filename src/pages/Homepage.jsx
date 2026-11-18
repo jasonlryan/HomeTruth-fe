@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { askAnonymousAI } from "../api/api";
 import Journey from "../components/homepage/Journey";
+import QuestionOptions from "../components/homepage/QuestionOptions";
 import { useAuth } from "../context/AuthContext";
 import { getHomeRecordGuestSession, HOME_RECORD_REDIRECT, setHomeRecordGuestSession } from "../utils/homeRecordEntry";
 
@@ -10,8 +11,9 @@ const accountLinks = {
   register: "/register" + HOME_RECORD_REDIRECT,
   login: "/login" + HOME_RECORD_REDIRECT,
 };
+const signedInRecordLinks = { login: accountLinks.login, loginLabel: "Continue to property profile" };
 
-export default function Homepage() {
+export default function Homepage({ showQuestionOptions = false }) {
   const { user } = useAuth();
   const sessionId = useRef(getHomeRecordGuestSession());
   const { hash } = useLocation();
@@ -31,7 +33,9 @@ export default function Homepage() {
   if (hash === "#how-it-works") return <Navigate to="/how-it-works" replace />;
 
   return (
-    <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks}
+    <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => user && showQuestionOptions ? signedInRecordLinks : accountLinks}
+      Composer={showQuestionOptions ? QuestionOptions : undefined} directRecordEntry={showQuestionOptions}
+      homeHref={showQuestionOptions ? "/homepage-preview" : "/"}
       loginHref={user ? "/dashboard" : "/login"} loginLabel={user ? "Go to dashboard" : undefined}
       onAccountHandoff={() => setHomeRecordGuestSession(sessionId.current)} />
   );
