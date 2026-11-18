@@ -1,13 +1,22 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import blueprintUrl from "../user-flows/HT-FLOW-001.md";
+import buyingUrl from "../user-flows/HT-FLOW-002.md";
+import improvingUrl from "../user-flows/HT-FLOW-003.md";
+import sellingUrl from "../user-flows/HT-FLOW-004.md";
 import "../components/homepage/HomeTruth";
 import "./admin-ux-specifications.css";
 
 const domainModel = "https://github.com/jasonlryan/hometruth/blob/744cba50804c9e2f249af2448636fd43ed78b314/docs/product/hometruth-domain-model.md";
 const designSystem = "/admin/design-system/index.html";
+const blueprints = [
+  { id: "HT-FLOW-001", label: "First answer to home record", url: blueprintUrl },
+  { id: "HT-FLOW-002", label: "Buying", url: buyingUrl },
+  { id: "HT-FLOW-003", label: "Improving", url: improvingUrl },
+  { id: "HT-FLOW-004", label: "Selling", url: sellingUrl },
+];
 
 const ontologyEntries = [
   ["Person / User", "Who signs in and acts on a record.", "person--user"],
@@ -16,6 +25,8 @@ const ontologyEntries = [
   ["Property Person", "Records the person’s relationship to the property and carries record-level permissions.", "property-person"],
   ["Evidence Source", "Where a claim comes from and how to locate it.", "evidence-source"],
   ["Property Fact", "A structured claim about the property, linked to evidence.", "property-fact"],
+  ["Property Document", "Links a source document to the property it describes.", "property-document"],
+  ["Reminder / Task", "An action to take, with a completion state and relevant property context.", "reminder--task"],
 ];
 
 const blueprintRenderers = {
@@ -32,22 +43,24 @@ const blueprintRenderers = {
 };
 
 export default function AdminUXSpecifications() {
-  const [blueprint, setBlueprint] = useState("");
-  const [failed, setFailed] = useState(false);
+  const [params] = useSearchParams();
+  const selected = blueprints.find(flow => flow.id === params.get("flow")) ?? blueprints[0];
+  const [result, setResult] = useState(null);
+  const current = result?.id === selected.id ? result : null;
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(blueprintUrl, { signal: controller.signal })
+    fetch(selected.url, { signal: controller.signal })
       .then(response => {
         if (!response.ok) throw new Error("Blueprint could not be loaded");
         return response.text();
       })
-      .then(setBlueprint)
+      .then(body => setResult({ id: selected.id, body }))
       .catch(error => {
-        if (error.name !== "AbortError") setFailed(true);
+        if (error.name !== "AbortError") setResult({ id: selected.id, failed: true });
       });
     return () => controller.abort();
-  }, []);
+  }, [selected]);
 
   return (
     <div className="ht-ui ht-ux-specifications">
@@ -64,17 +77,24 @@ export default function AdminUXSpecifications() {
 
       <section id="blueprints" aria-labelledby="blueprints-heading" className="ht-panel">
         <h2 id="blueprints-heading">User flow blueprints</h2>
-        <p><a href={blueprintUrl} download="HT-FLOW-001.md">Download the versioned Markdown</a></p>
-        {blueprint && <article className="ht-blueprint">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={blueprintRenderers}>{blueprint}</ReactMarkdown>
+        <nav aria-label="Choose a blueprint">
+          {blueprints.map(flow => (
+            <Link key={flow.id} to={`?flow=${flow.id}`} className="ht-nav-item" aria-current={selected.id === flow.id ? "page" : undefined}>
+              {flow.label}
+            </Link>
+          ))}
+        </nav>
+        <p><a href={selected.url} download={`${selected.id}.md`}>Download the versioned Markdown</a></p>
+        {current?.body && <article className="ht-blueprint">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={blueprintRenderers}>{current.body}</ReactMarkdown>
         </article>}
-        {failed && <p role="alert">The blueprint couldn’t be loaded. Reload the page to try again.</p>}
-        {!failed && !blueprint && <p role="status">Loading blueprint…</p>}
+        {current?.failed && <p role="alert">The blueprint couldn’t be loaded. Reload the page to try again.</p>}
+        {!current && <p role="status">Loading blueprint…</p>}
       </section>
 
       <section id="ontology" aria-labelledby="ontology-heading" className="ht-panel">
         <h2 id="ontology-heading">Ontology</h2>
-        <p>Entities referenced by HT-FLOW-001. Follow the source links for the full definitions and the blueprint links for the implemented chat and property contracts.</p>
+        <p>Follow the domain model links for entity definitions and each blueprint for its data and access requirements.</p>
         <dl className="ht-ontology-links">
           {ontologyEntries.map(([label, description, anchor]) => (
             <div key={anchor}>
