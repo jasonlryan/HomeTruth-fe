@@ -121,7 +121,7 @@ export function FirstAnswer({ text, phase, onDelivered, actions }) {
   );
 }
 
-export function HomeRecordHandoff({ headingRef, accountLinks, onClose, closeLabel = "Back to your answer", onAccountChoice, onAccountHandoff }) {
+export function HomeRecordHandoff({ headingRef, accountLinks, onClose, onAccountChoice, onAccountHandoff }) {
   const id = useId();
   const accountAction = event => {
     onAccountHandoff?.();
@@ -139,24 +139,23 @@ export function HomeRecordHandoff({ headingRef, accountLinks, onClose, closeLabe
       <div className="ht-journey-actions">
         {accountLinks.register && <a className="ht-button" data-variant="record" href={accountLinks.register} data-account="register" onClick={accountAction}>Create an account</a>}
         <a className="ht-button" data-variant="secondary" href={accountLinks.login} data-account="login" onClick={accountAction}>{accountLinks.loginLabel || "Log in"}</a>
-        <Button variant="text" onClick={onClose}>{closeLabel}</Button>
+        <Button variant="text" onClick={onClose}>Back to your answer</Button>
       </div>
     </Panel>
   );
 }
 
-export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, loginLabel, homeHref = "/", Composer = QuestionComposer, directRecordEntry = false }) {
+export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, loginLabel, homeHref = "/", Composer = QuestionComposer, RecordLink }) {
   const [route, setRoute] = useState(routes[0]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [phase, setPhase] = useState("idle");
   const [limited, setLimited] = useState(false);
-  const [recordOrigin, setRecordOrigin] = useState(null);
+  const [recordOpen, setRecordOpen] = useState(false);
   const [requestId, setRequestId] = useState(0);
   const submitting = useRef(false);
   const heading = useRef(null);
   const recordButton = useRef(null);
-  const openingRecordButton = useRef(null);
   const answerFlow = useRef(null);
   const hero = useRef(null);
   const opening = useRef(null);
@@ -199,7 +198,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
     if (submitting.current || limited) return;
     submitting.current = true;
     setRequestId(id => id + 1);
-    setRecordOrigin(null);
+    setRecordOpen(false);
     setPhase("waiting");
 
     try {
@@ -223,15 +222,21 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
   }, [phase]);
 
   useEffect(() => {
-    if (recordOrigin) heading.current.focus();
-  }, [recordOrigin]);
+    if (recordOpen) heading.current.focus();
+  }, [recordOpen]);
 
   const showRecord = phase === "complete" || phase === "limited";
   const recordAction = showRecord && (
     <div className="ht-journey-actions">
-      <Button ref={recordButton} variant="secondary" onClick={() => setRecordOrigin("answer")} aria-expanded={recordOrigin === "answer"}>
-        <HTIcon name="home" assetBase={assetBase + "icons/"} /> Start a home record
-      </Button>
+      {RecordLink ? (
+        <RecordLink fromAnswer={phase === "complete"} onClick={onAccountHandoff}>
+          <HTIcon name="home" assetBase={assetBase + "icons/"} /> Start a home record
+        </RecordLink>
+      ) : (
+        <Button ref={recordButton} variant="secondary" onClick={() => setRecordOpen(true)} aria-expanded={recordOpen}>
+          <HTIcon name="home" assetBase={assetBase + "icons/"} /> Start a home record
+        </Button>
+      )}
     </div>
   );
 
@@ -247,28 +252,26 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
               <p className="ht-hero-lead">Understand the property you're buying, plan improvements <span>to make</span> it yours, and show buyers its value when you sell.</p>
               <Composer route={route} onRouteChange={setRoute} question={question} onQuestionChange={setQuestion}
                 onSubmit={submit} onAsk={submitQuestion} pending={pending} limited={limited} assetBase={assetBase} />
-              {directRecordEntry ? (
+              {RecordLink ? (
                 <div className="ht-homepage-entry-links">
-                  <Button ref={openingRecordButton} variant="secondary" onClick={() => setRecordOrigin("opening")} aria-expanded={recordOrigin === "opening"} disabled={pending}>
+                  <RecordLink onClick={onAccountHandoff}>
                     <HTIcon name="home" assetBase={assetBase + "icons/"} /> Set up a home record
-                  </Button>
+                  </RecordLink>
                   <a className="ht-hero-more" href="/how-it-works">Find out more <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>
                 </div>
               ) : <a className="ht-hero-more" href="/how-it-works">Find out more <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>}
             </div>
           </div>
-          {(phase !== "idle" || recordOrigin) && (
-            <div ref={answerFlow} className="ht-journey-flow">
+          {phase !== "idle" && (
+            <div id="homepage-answer" ref={answerFlow} className="ht-journey-flow">
               {phase === "error" && <Panel><p role="alert">We couldn’t get an answer. Try asking again.</p></Panel>}
               {phase === "limited" && <Panel><p role="status">You’ve reached the guest question limit.</p>{recordAction}</Panel>}
               {(pending || phase === "complete") && (
                 <FirstAnswer key={requestId} text={answer} phase={phase} onDelivered={markDelivered} actions={recordAction} />
               )}
-              {recordOrigin && <HomeRecordHandoff headingRef={heading} accountLinks={accountLinks} onAccountChoice={onAccountChoice} onAccountHandoff={onAccountHandoff}
-                closeLabel={recordOrigin === "opening" ? "Back to homepage options" : undefined} onClose={() => {
-                const trigger = recordOrigin === "opening" ? openingRecordButton : recordButton;
-                setRecordOrigin(null);
-                trigger.current?.focus();
+              {recordOpen && <HomeRecordHandoff headingRef={heading} accountLinks={accountLinks} onAccountChoice={onAccountChoice} onAccountHandoff={onAccountHandoff} onClose={() => {
+                setRecordOpen(false);
+                recordButton.current?.focus();
               }} />}
             </div>
           )}

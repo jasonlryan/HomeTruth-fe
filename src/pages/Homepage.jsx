@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useOutlet } from "react-router-dom";
 import { askAnonymousAI } from "../api/api";
 import Journey from "../components/homepage/Journey";
 import QuestionOptions from "../components/homepage/QuestionOptions";
@@ -11,12 +11,17 @@ const accountLinks = {
   register: "/register" + HOME_RECORD_REDIRECT,
   login: "/login" + HOME_RECORD_REDIRECT,
 };
-const signedInRecordLinks = { login: accountLinks.login, loginLabel: "Continue to property profile" };
+
+function RecordLink({ fromAnswer, onClick, children }) {
+  return <Link className="ht-button" data-variant="secondary" to="/homepage-preview/start-home-record"
+    state={{ fromAnswer }} onClick={onClick}>{children}</Link>;
+}
 
 export default function Homepage({ showQuestionOptions = false }) {
   const { user } = useAuth();
   const sessionId = useRef(getHomeRecordGuestSession());
   const { hash } = useLocation();
+  const setupPage = useOutlet();
 
   const ask = async question => {
     try {
@@ -33,10 +38,15 @@ export default function Homepage({ showQuestionOptions = false }) {
   if (hash === "#how-it-works") return <Navigate to="/how-it-works" replace />;
 
   return (
-    <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => user && showQuestionOptions ? signedInRecordLinks : accountLinks}
-      Composer={showQuestionOptions ? QuestionOptions : undefined} directRecordEntry={showQuestionOptions}
-      homeHref={showQuestionOptions ? "/homepage-preview" : "/"}
-      loginHref={user ? "/dashboard" : "/login"} loginLabel={user ? "Go to dashboard" : undefined}
-      onAccountHandoff={() => setHomeRecordGuestSession(sessionId.current)} />
+    <>
+      <div hidden={Boolean(setupPage)}>
+        <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks}
+          Composer={showQuestionOptions ? QuestionOptions : undefined} RecordLink={showQuestionOptions ? RecordLink : undefined}
+          homeHref={showQuestionOptions ? "/homepage-preview" : "/"}
+          loginHref={user ? "/dashboard" : "/login"} loginLabel={user ? "Go to dashboard" : undefined}
+          onAccountHandoff={() => setHomeRecordGuestSession(sessionId.current)} />
+      </div>
+      {setupPage}
+    </>
   );
 }

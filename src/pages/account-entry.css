@@ -4,6 +4,9 @@
 .ht-account-main > p {margin-top:var(--space-3);color:var(--reading-ink)}
 .ht-account-main form {display:grid;gap:var(--space-4);margin-top:var(--space-6)}
 .ht-account-main a {color:var(--route-ink);text-decoration:underline;text-underline-offset:2px}
+.ht-record-entry .ht-button {text-decoration:none}
+.ht-record-entry .ht-button[data-variant=record] {color:var(--color-text-on-dark)}
+.ht-record-entry .ht-button[data-variant=secondary] {color:var(--color-text-default)}
 .ht-account-main form > a {justify-self:start}
 .ht-account-password {position:relative}
 .ht-account-password input {padding-inline-end:52px}

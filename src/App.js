@@ -59,6 +59,7 @@ import VisualReviewHarness from "./dev/VisualReviewHarness";
 const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
 const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
 const Homepage = lazy(() => import("./pages/Homepage"));
+const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 
 const uxSpecificationsRoute = (
   <Route path="/admin/user-flows" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
@@ -167,7 +168,9 @@ function App() {
           {uxSpecificationsRoute}
           {/* Public Routes */}
           {(process.env.NODE_ENV === "development" || isVisualReviewMode) && (
-            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>} />
+            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>}>
+              <Route path="start-home-record" element={<StartHomeRecord />} />
+            </Route>
           )}
           <Route path="/demo" element={<DemoEntry />} />
           <Route
