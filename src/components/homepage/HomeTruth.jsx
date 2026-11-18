@@ -2,8 +2,8 @@ import React from "react";
 import "./styles/tokens.css";
 import "./styles/components.css";
 
-export function HTIcon({ name, label = "", assetBase = "/admin/design-system/assets/icons/" }) {
-  return <img src={assetBase + "ht-" + name + ".svg"} alt={label} width={16} height={16} />;
+export function HTIcon({ name, label = "", size = 16, assetBase = "/admin/design-system/assets/icons/" }) {
+  return <img src={assetBase + "ht-" + name + ".svg"} alt={label} width={size} height={size} />;
 }
 
 export function Button({ variant = "primary", pending = false, disabled, type = "button", children, ...props }) {

@@ -35,6 +35,7 @@ import PreferenceSettings from "./pages/settings/PreferenceSettings";
 import NotificationSettings from "./pages/settings/NotificationSettings";
 import DataPrivacySettings from "./pages/settings/DataPrivacySettings";
 import SavedNotes from "./pages/SavedNotes";
+import Tools from "./pages/Tools";
 import Extension from "./pages/Extension";
 import BudgetChat from "./pages/budget/BudgetChat";
 import BudgetChatViewer from "./pages/budget/BudgetChatViewer";
@@ -254,6 +255,7 @@ function App() {
             {/* <Route path="budget-history/:id" element={<BudgetDetail />} /> */}
             <Route path="complete-profile" element={<CompleteProfile />} />
             <Route path="saved-notes" element={<SavedNotes />} />
+            <Route path="tools" element={<Tools />} />
             <Route path="extension" element={<Extension />} />
             <Route path="/settings/account" element={<AccountSettings />} />
             <Route path="/settings/preferences" element={<PreferenceSettings />} />

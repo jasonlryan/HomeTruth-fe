@@ -257,9 +257,9 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
                   <RecordLink onClick={onAccountHandoff}>
                     <HTIcon name="home" assetBase={assetBase + "icons/"} /> Set up a home record
                   </RecordLink>
-                  <a className="ht-hero-more" href="/how-it-works">Find out more <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>
+                  <a className="ht-hero-more" href="/how-it-works">About HomeTruth <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>
                 </div>
-              ) : <a className="ht-hero-more" href="/how-it-works">Find out more <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>}
+              ) : <a className="ht-hero-more" href="/how-it-works">About HomeTruth <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>}
             </div>
           </div>
           {phase !== "idle" && (

@@ -2,13 +2,11 @@ import { useAuth } from '../context/AuthContext';
 import { isDemoWorkspaceUser } from '../utils/demoHomeHistory';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard, House, MessageCircle, NotebookPen, Files, Calculator,
-  Settings, UserRound, SlidersHorizontal, Bell, LockKeyhole, KeyRound,
-  PanelsTopLeft, PanelLeftClose, PanelLeftOpen,
-} from 'lucide-react';
+import { HTIcon } from "./homepage/HomeTruth";
 import { getPartnerProgrammeAccessStatus } from '../api/api';
 import './sidebar.css';
+
+const iconBase = process.env.PUBLIC_URL + '/assets/brand/';
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -31,8 +29,8 @@ export default function Sidebar() {
     return () => { cancelled = true; };
   }, []);
   const go = path => { navigate(path); if (narrow) setCollapsed(true); };
-  const item = (Icon, label, path, active = location.pathname === path) => (
-    <NavItem key={path} icon={<Icon size={24} strokeWidth={1.75} />} label={label}
+  const item = (icon, label, path, active = location.pathname === path) => (
+    <NavItem key={path} icon={icon} label={label}
       collapsed={collapsed} active={active} onClick={() => go(path)} />
   );
   const handleKeys = event => {
@@ -47,7 +45,7 @@ export default function Sidebar() {
   };
   return <div className="ht-sidebar-shell" data-collapsed={collapsed}>
     {narrow && !collapsed && <button type="button" className="ht-sidebar-backdrop" tabIndex={-1} aria-label="Close navigation" onClick={event => { const toggle = event.currentTarget.parentElement.querySelector('[data-nav-toggle]'); setCollapsed(true); toggle.focus(); }} />}
-    <aside className="ht-sidebar" onKeyDown={handleKeys} role={narrow && !collapsed ? 'dialog' : undefined}
+    <aside className="ht-sidebar ht-ui" onKeyDown={handleKeys} role={narrow && !collapsed ? 'dialog' : undefined}
       aria-modal={narrow && !collapsed ? 'true' : undefined} aria-label="HomeTruth navigation">
       <a href="/dashboard" className="ht-sidebar-brand" aria-label="HomeTruth dashboard" title="HomeTruth dashboard">
         <img src={collapsed ? "/assets/brand/hometruth-icon.svg" : "/assets/brand/hometruth-logo.svg"} alt="" width={collapsed ? 32 : 220} height={collapsed ? 32 : 42} />
@@ -55,29 +53,28 @@ export default function Sidebar() {
       <button type="button" data-nav-toggle className="ht-nav-item ht-nav-toggle" aria-expanded={!collapsed}
         aria-controls="home-navigation" aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
         title={collapsed ? 'Expand navigation' : 'Collapse navigation'} onClick={() => setCollapsed(value => !value)}>
-        {collapsed ? <PanelLeftOpen size={24} strokeWidth={1.75} /> : <PanelLeftClose size={24} strokeWidth={1.75} />}
+        <HTIcon name={collapsed ? "expand" : "collapse"} size={24} assetBase={iconBase} />
         {!collapsed && <span>Collapse navigation</span>}
       </button>
       <nav id="home-navigation" aria-label="Main navigation" className="ht-sidebar-items">
-        {isDemoWorkspaceUser(user?.email) && item(PanelsTopLeft, 'Operations', '/operations')}
-        {item(LayoutDashboard, 'Dashboard', '/dashboard')}
-        {hasPartnerAccess && item(KeyRound, 'Partner programmes', '/partner-programmes')}
-        {item(House, 'Property profile', '/property-profile')}
-        {item(MessageCircle, 'Ask HomeTruth', '/ask-ai')}
-        {item(NotebookPen, 'Notes', '/saved-notes')}
-        {item(Calculator, 'Budget Calculator', '/budget-chat', location.pathname.startsWith('/budget'))}
-        {item(Files, 'Documents', '/documents')}
-        <NavItem icon={<Settings size={24} strokeWidth={1.75} />} label="Settings" collapsed={collapsed}
+        {isDemoWorkspaceUser(user?.email) && item('activity', 'Operations', '/operations')}
+        {item('dashboard', 'Dashboard', '/dashboard')}
+        {hasPartnerAccess && item('key', 'Partner programmes', '/partner-programmes')}
+        {item('home', 'Property profile', '/property-profile')}
+        {item('documents', 'Vault', '/documents')}
+        {item('note', 'Notebooks', '/saved-notes')}
+        {item('grid', 'Tools', '/tools', location.pathname === '/tools' || location.pathname.startsWith('/budget'))}
+        <NavItem icon="settings" label="Settings" collapsed={collapsed}
           active={location.pathname.startsWith('/settings')} expanded={settingsOpen} controls="settings-navigation"
           onClick={() => setSettingsOpen(value => !value)} />
         {settingsOpen && <div id="settings-navigation" className="ht-sidebar-settings">
-          {item(UserRound, 'Account', '/settings/account')}
-          {item(SlidersHorizontal, 'Preferences', '/settings/preferences')}
-          {item(Bell, 'Notifications', '/settings/notifications')}
-          {item(LockKeyhole, 'Data Privacy', '/settings/data-privacy')}
+          {item('user', 'Account', '/settings/account')}
+          {item('preferences', 'Preferences', '/settings/preferences')}
+          {item('notification', 'Notifications', '/settings/notifications')}
+          {item('lock', 'Data Privacy', '/settings/data-privacy')}
         </div>}
         {user?.role === 'admin' && (
-          <NavItem icon={<img src="/assets/brand/ht-lock.svg" alt="" width={24} height={24} />} label="Admin tools"
+          <NavItem icon="lock" label="Admin tools"
             collapsed={collapsed} active={location.pathname.startsWith('/admin/')} onClick={() => go('/admin/knowledge-base')} />
         )}
       </nav>
@@ -90,7 +87,7 @@ function NavItem({ icon, label, active, onClick, collapsed, expanded, controls }
     aria-current={active && expanded === undefined ? 'page' : undefined}
     aria-expanded={expanded} aria-controls={controls} onClick={onClick}
     className={`ht-nav-item ${active ? 'ht-nav-active' : ''}`}>
-    <span className="shrink-0" aria-hidden="true">{icon}</span>
+    <span className="shrink-0" aria-hidden="true"><HTIcon name={icon} size={24} assetBase={iconBase} /></span>
     <span className={collapsed ? 'ht-nav-tooltip' : ''} aria-hidden={collapsed ? 'true' : undefined}>{label}</span>
   </button>;
 }

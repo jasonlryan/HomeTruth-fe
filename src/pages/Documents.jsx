@@ -268,7 +268,7 @@ export default function Documents() {
       <div className="w-full max-w-[1440px] mx-auto px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <PageTitle>Documents</PageTitle>
+          <PageTitle>Vault</PageTitle>
           {/* <button
             onClick={handleAskAIClick}
             className="flex items-center gap-2 px-4 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light whitespace-nowrap"
