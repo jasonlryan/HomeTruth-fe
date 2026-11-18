@@ -46,9 +46,9 @@ export default function Topbar() {
 
 
   return (
-    <div className="flex items-center justify-between px-5 py-2 bg-white border-b relative">
+    <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 bg-white border-b relative">
       <div className="text-ht-dark text-base font-medium">Hi, {userName}!</div>
-      <div className="flex items-center gap-4 min-h-[2.25rem]">
+      <div className="flex flex-wrap items-center gap-2 min-h-[2.25rem]">
         <div className="relative flex items-center justify-center h-9" ref={dropdownRef}>
           <span
             className="material-symbols-outlined text-ht-mid-grey cursor-pointer hover:text-ht-cyan transition !text-[20px] inline-flex items-center justify-center"
