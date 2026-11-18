@@ -39,8 +39,8 @@
 .ht-journey-flow h2 {font-size:24px;margin-bottom:var(--space-2)}
 .ht-journey-flow .ht-panel p + p {margin-top:var(--space-2)}
 .ht-journey-flow a:not(.ht-button) {color:var(--route-ink);text-decoration:underline}
-.ht-answer-reveal {white-space:pre-wrap;overflow-wrap:anywhere}
 .ht-answer-content {overflow-wrap:anywhere}
+.ht-answer-content[data-revealing] [data-answer-step]:not([data-answer-visible]) {display:none!important}
 .ht-answer-content :is(ol,ul) {margin-block:var(--space-2);padding-inline-start:var(--space-6)}
 .ht-answer-content ul {list-style:disc}
 .ht-answer-content ol {list-style:decimal}

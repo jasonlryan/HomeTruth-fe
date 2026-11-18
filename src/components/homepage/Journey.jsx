@@ -2,6 +2,7 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button, HTIcon, Panel, RouteChoice, routes } from "./HomeTruth";
+import { rehypeAnswerReveal } from "./answerReveal";
 import "./styles/journey.css";
 
 const footerGroups = [
@@ -55,34 +56,53 @@ export function QuestionComposer({ route, onRouteChange, question, onQuestionCha
   );
 }
 
+const AnswerMarkup = React.memo(function AnswerMarkup({ text }) {
+  return (
+    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeAnswerReveal]} skipHtml>
+      {text}
+    </ReactMarkdown>
+  );
+});
+
 export function FirstAnswer({ text, phase, onDelivered, actions }) {
-  const [visible, setVisible] = useState("");
+  const content = useRef(null);
+  const delivering = phase === "delivering";
 
   useEffect(() => {
-    if (phase !== "delivering") return;
+    if (!delivering) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      onDelivered();
+      return;
+    }
+
+    const parts = Array.from(content.current.querySelectorAll("[data-answer-step]"));
+    const finalStep = Number(parts.at(-1)?.dataset.answerStep || 0);
+    if (!finalStep) {
       onDelivered();
       return;
     }
 
     let start;
     let frame;
+    let next = 0;
     const duration = Math.min(2500, Math.max(450, text.length * 6));
     const advance = timestamp => {
       start ??= timestamp;
       const progress = Math.min(1, (timestamp - start) / duration);
-      if (progress === 1) {
-        onDelivered();
-        return;
+      const step = Math.max(1, Math.ceil(progress * finalStep));
+
+      while (next < parts.length && Number(parts[next].dataset.answerStep) <= step) {
+        parts[next].setAttribute("data-answer-visible", "");
+        next += 1;
       }
-      const end = Math.ceil(progress * text.length);
-      const wordEnd = text.indexOf(" ", end);
-      setVisible(text.slice(0, wordEnd === -1 ? end : wordEnd));
-      frame = requestAnimationFrame(advance);
+
+      if (progress === 1) onDelivered();
+      else frame = requestAnimationFrame(advance);
     };
+
     frame = requestAnimationFrame(advance);
     return () => cancelAnimationFrame(frame);
-  }, [text, phase, onDelivered]);
+  }, [text, delivering, onDelivered]);
 
   return (
     <Panel className="ht-panel ht-first-answer" aria-label="HomeTruth answer">
@@ -90,13 +110,13 @@ export function FirstAnswer({ text, phase, onDelivered, actions }) {
         {phase === "complete" ? "Answer ready." : "Preparing your answer."}
       </p>
       {phase === "waiting" && <p aria-hidden="true">Finding an answer…</p>}
-      {phase === "delivering" && <p aria-hidden="true" className="ht-answer-reveal">{visible}</p>}
-      {phase === "complete" && (
-        <>
-          <div className="ht-answer-content"><ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown></div>
-          {actions}
-        </>
+      {phase !== "waiting" && (
+        <div ref={content} className="ht-answer-content"
+          data-revealing={delivering || undefined} inert={delivering}>
+          <AnswerMarkup text={text} />
+        </div>
       )}
+      {phase === "complete" && actions}
     </Panel>
   );
 }
