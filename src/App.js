@@ -174,16 +174,16 @@ function App() {
           <Route
             path="/"
             element={
-              <PublicRoute>
+              <PublicRoute allowAdmin>
                 <Suspense fallback={null}><Homepage /></Suspense>
               </PublicRoute>
             }
           />
-          <Route path="/how-it-works" element={<PublicRoute><HowHomeTruthWorks /></PublicRoute>} />
+          <Route path="/how-it-works" element={<PublicRoute allowAdmin><HowHomeTruthWorks /></PublicRoute>} />
           <Route
             path="/pro-features"
             element={
-              <PublicRoute>
+              <PublicRoute allowAdmin>
                 <ProFeature />
               </PublicRoute>
             }
@@ -191,7 +191,7 @@ function App() {
           <Route
             path="/about"
             element={
-              <PublicRoute>
+              <PublicRoute allowAdmin>
                 <AboutUs />
               </PublicRoute>
             }
@@ -199,7 +199,7 @@ function App() {
           <Route
             path="/terms-of-service"
             element={
-              <PublicRoute>
+              <PublicRoute allowAdmin>
                 <TermsOfService />
               </PublicRoute>
             }
@@ -225,11 +225,11 @@ function App() {
               </PublicRoute>
             }
           />
-          <Route path="/privacy-policy" element={<PublicRoute><PrivacyPolicyPage /></PublicRoute>} />
+          <Route path="/privacy-policy" element={<PublicRoute allowAdmin><PrivacyPolicyPage /></PublicRoute>} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/chat" element={<PublicRoute><GuestChat /></PublicRoute>} />
           <Route path="/coming-soon" element={<PublicRoute><ComingSoon /></PublicRoute>} />
-          <Route path="/pricing" element={<PublicRoute><Pricing /></PublicRoute>} />
+          <Route path="/pricing" element={<PublicRoute allowAdmin><Pricing /></PublicRoute>} />
           <Route path="/home-truths" element={<HomeTruths />} />
           <Route path="/home-truths/:slug" element={<ArticleDetail />} />
           <Route path="/partner/:inviteCode" element={<PartnerOnboarding />} />

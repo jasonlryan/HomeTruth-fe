@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { uploadDocument, addKnowledgeBaseEntry, getKnowledgeBaseDocuments, getKnowledgeBaseStats, deleteKnowledgeBaseDocument, getKnowledgeBaseDocumentPreview, downloadKnowledgeBaseDocument } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import jsPDF from "jspdf";
@@ -1034,6 +1034,7 @@ export default function KnowledgeBaseAdmin() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <Link to="/" className="text-sm text-[var(--color-accent)] underline">View public site</Link>
           <button
             onClick={handleAddKnowledge}
             className="bg-ht-purple hover:bg-ht-purple-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"

@@ -11,12 +11,12 @@ const footerGroups = [
   ["Legal", [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"]]],
 ];
 
-export function PublicHeader({ assetBase, loginHref, homeHref }) {
+export function PublicHeader({ assetBase, loginHref, loginLabel = "Log in", homeHref }) {
   return (
     <header className="ht-public-header">
       <div className="ht-public-width">
         <a href={homeHref}><img src={assetBase + "brand/hometruth-logo.svg"} alt="HomeTruth" /></a>
-        {loginHref && <a className="ht-button" data-variant="secondary" href={loginHref}>Log in</a>}
+        {loginHref && <a className="ht-button" data-variant="secondary" href={loginHref}>{loginLabel}</a>}
       </div>
     </header>
   );
@@ -145,7 +145,7 @@ export function HomeRecordHandoff({ headingRef, accountLinks, onClose, onAccount
   );
 }
 
-export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, homeHref = "/" }) {
+export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, loginLabel, homeHref = "/" }) {
   const [route, setRoute] = useState(routes[0]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -232,7 +232,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
 
   return (
     <div className="ht-ui ht-journey">
-      <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={loginHref ?? accountLinks.login} />
+      <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={loginHref ?? accountLinks.login} loginLabel={loginLabel} />
       <main ref={hero} className="ht-journey-hero">
         <img className="ht-hero-photo" src={assetBase + "brand/hometruth-house-to-tower.jpg"} alt="" />
         <div className="ht-public-width">

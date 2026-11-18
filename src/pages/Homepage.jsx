@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { askAnonymousAI } from "../api/api";
 import Journey from "../components/homepage/Journey";
+import { useAuth } from "../context/AuthContext";
 import { getHomeRecordGuestSession, HOME_RECORD_REDIRECT, setHomeRecordGuestSession } from "../utils/homeRecordEntry";
 
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
@@ -11,6 +12,8 @@ const accountLinks = {
 };
 
 export default function Homepage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const sessionId = useRef(getHomeRecordGuestSession());
   const { hash } = useLocation();
 
@@ -29,7 +32,8 @@ export default function Homepage() {
   if (hash === "#how-it-works") return <Navigate to="/how-it-works" replace />;
 
   return (
-    <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks} loginHref="/login"
+    <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks}
+      loginHref={isAdmin ? "/admin/knowledge-base" : "/login"} loginLabel={isAdmin ? "Back to admin" : undefined}
       onAccountHandoff={() => setHomeRecordGuestSession(sessionId.current)} />
   );
 }
