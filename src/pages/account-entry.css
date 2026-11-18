@@ -1,0 +1,10 @@
+.ht-account {min-height:100vh;display:flex;flex-direction:column}
+.ht-account-main {width:min(400px,90%);margin:0 auto;padding:var(--space-12) 0 var(--space-16);flex:1}
+.ht-account-main h1 {font-size:32px;line-height:1.15}
+.ht-account-main > p {margin-top:var(--space-3);color:var(--reading-ink)}
+.ht-account-main form {display:grid;gap:var(--space-4);margin-top:var(--space-6)}
+.ht-account-main a {color:var(--route-ink);text-decoration:underline;text-underline-offset:2px}
+.ht-account-main form > a {justify-self:start}
+.ht-account-password {position:relative}
+.ht-account-password input {padding-inline-end:52px}
+.ht-account-visibility {position:absolute;top:25px;inset-inline-end:2px;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:var(--radius-sm);background:transparent}

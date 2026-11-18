@@ -5,7 +5,7 @@ import { Button, HTIcon, Panel, RouteChoice, routes } from "./HomeTruth";
 import "./styles/journey.css";
 
 const footerGroups = [
-  ["Product", [["How it works", "/#how-it-works"], ["Pricing", "/pricing"], ["Pro Features", "/pro-features"]]],
+  ["Product", [["How it works", "/how-it-works"], ["Pricing", "/pricing"], ["Pro Features", "/pro-features"]]],
   ["Company", [["About", "/about"], ["FAQ", "/faq"], ["Contact", "mailto:admin@hometruth.io"]]],
   ["Legal", [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"]]],
 ];
@@ -15,7 +15,7 @@ export function PublicHeader({ assetBase, loginHref, homeHref }) {
     <header className="ht-public-header">
       <div className="ht-public-width">
         <a href={homeHref}><img src={assetBase + "brand/hometruth-logo.svg"} alt="HomeTruth" /></a>
-        <a className="ht-button" data-variant="secondary" href={loginHref}>Log in</a>
+        {loginHref && <a className="ht-button" data-variant="secondary" href={loginHref}>Log in</a>}
       </div>
     </header>
   );
@@ -101,9 +101,10 @@ export function FirstAnswer({ text, phase, onDelivered, actions }) {
   );
 }
 
-export function HomeRecordHandoff({ headingRef, accountLinks, onClose, onAccountChoice }) {
+export function HomeRecordHandoff({ headingRef, accountLinks, onClose, onAccountChoice, onAccountHandoff }) {
   const id = useId();
   const accountAction = event => {
+    onAccountHandoff?.();
     if (onAccountChoice) {
       event.preventDefault();
       onAccountChoice(event.currentTarget.dataset.account);
@@ -124,7 +125,7 @@ export function HomeRecordHandoff({ headingRef, accountLinks, onClose, onAccount
   );
 }
 
-export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, homeHref = "/" }) {
+export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, homeHref = "/" }) {
   const [route, setRoute] = useState(routes[0]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -211,7 +212,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
 
   return (
     <div className="ht-ui ht-journey">
-      <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={accountLinks.login} />
+      <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={loginHref ?? accountLinks.login} />
       <main ref={hero} className="ht-journey-hero">
         <img className="ht-hero-photo" src={assetBase + "brand/hometruth-house-to-tower.jpg"} alt="" />
         <div className="ht-public-width">
@@ -221,7 +222,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
               <p className="ht-hero-lead">Understand the property you're buying, plan improvements <span>to make</span> it yours, and show buyers its value when you sell.</p>
               <QuestionComposer route={route} onRouteChange={setRoute} question={question} onQuestionChange={setQuestion}
                 onSubmit={submit} pending={pending} limited={limited} assetBase={assetBase} />
-              <a className="ht-hero-more" href="/#how-it-works">Find out more <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>
+              <a className="ht-hero-more" href="/how-it-works">Find out more <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>
             </div>
           </div>
           {phase !== "idle" && (
@@ -231,7 +232,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
               {(pending || phase === "complete") && (
                 <FirstAnswer key={requestId} text={answer} phase={phase} onDelivered={markDelivered} actions={recordAction} />
               )}
-              {recordOpen && <HomeRecordHandoff headingRef={heading} accountLinks={accountLinks} onAccountChoice={onAccountChoice} onClose={() => {
+              {recordOpen && <HomeRecordHandoff headingRef={heading} accountLinks={accountLinks} onAccountChoice={onAccountChoice} onAccountHandoff={onAccountHandoff} onClose={() => {
                 setRecordOpen(false);
                 recordButton.current?.focus();
               }} />}

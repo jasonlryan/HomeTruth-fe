@@ -1,15 +1,18 @@
 import { useRef } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { askAnonymousAI } from "../api/api";
 import Journey from "../components/homepage/Journey";
+import { getHomeRecordGuestSession, HOME_RECORD_REDIRECT, setHomeRecordGuestSession } from "../utils/homeRecordEntry";
 
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
 const accountLinks = {
-  register: "/register?redirect=%2Fproperty-profile",
-  login: "/login?redirect=%2Fproperty-profile",
+  register: "/register" + HOME_RECORD_REDIRECT,
+  login: "/login" + HOME_RECORD_REDIRECT,
 };
 
-export default function HomepagePreview() {
-  const sessionId = useRef(null);
+export default function Homepage() {
+  const sessionId = useRef(getHomeRecordGuestSession());
+  const { hash } = useLocation();
 
   const ask = async question => {
     try {
@@ -23,5 +26,10 @@ export default function HomepagePreview() {
     }
   };
 
-  return <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks} homeHref="/homepage-preview" />;
+  if (hash === "#how-it-works") return <Navigate to="/how-it-works" replace />;
+
+  return (
+    <Journey assetBase={assetBase} ask={ask} getAccountLinks={() => accountLinks} loginHref="/login"
+      onAccountHandoff={() => setHomeRecordGuestSession(sessionId.current)} />
+  );
 }

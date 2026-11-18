@@ -18,7 +18,7 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "How it works", path: "/#how-it-works" },
+    { label: "How it works", path: "/how-it-works" },
     { label: "Home Truths", path: "/home-truths" },
     { label: "Privacy", path: "/privacy-policy" },
   ];

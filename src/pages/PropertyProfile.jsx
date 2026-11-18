@@ -1,7 +1,7 @@
 import PageTitle from "../components/PageTitle";
 import HomeHistory from '../components/HomeHistory';
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   AlertCircle,
   CalendarClock,
@@ -22,11 +22,13 @@ import {
 import {
   attachPartnerOnboardingProperty,
   createPropertyRecord,
+  claimGuestSession,
   generatePropertyTasks,
   getPropertyRecords,
   getPropertyTasks,
   updatePropertyTaskStatus,
 } from "../api/api";
+import { getHomeRecordGuestSession, setHomeRecordGuestSession } from "../utils/homeRecordEntry";
 import { storedInviteContext } from "../utils/partnerAcquisition";
 
 const initialForm = {
@@ -300,6 +302,21 @@ function PreventionTasksPanel({
 export default function PropertyProfile() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [homepageAnswer, setHomepageAnswer] = useState(null);
+  const claimHomepageAnswer = location.state?.claimHomepageAnswer === true;
+  useEffect(() => {
+    if (!claimHomepageAnswer) return;
+    const sessionId = getHomeRecordGuestSession();
+    if (!sessionId) return;
+    let active = true;
+    claimGuestSession(sessionId).then(result => {
+      setHomeRecordGuestSession(null);
+      if (active) setHomepageAnswer(result?.conversation_id || null);
+    }).catch(() => {
+      if (active) setHomepageAnswer(false);
+    });
+    return () => { active = false; };
+  }, [claimHomepageAnswer]);
   const [records, setRecords] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [form, setForm] = useState(initialForm);
@@ -548,6 +565,12 @@ export default function PropertyProfile() {
           </div>
         </header>
 
+        {homepageAnswer && (
+          <p><Link className="ht-workspace-link" to="/ask-ai" state={{ conversationId: homepageAnswer }}>Continue your homepage question</Link></p>
+        )}
+        {homepageAnswer === false && (
+          <p role="status">We couldn’t bring your homepage answer into this account. You can still set up your home record.</p>
+        )}
         {error && (
           <div className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_10%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
             <AlertCircle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} />

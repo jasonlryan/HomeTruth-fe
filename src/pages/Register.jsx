@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { registerUser } from "../api/api";
 import Footer from "../components/Footer";
+import { HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export default function Register() {
 
       await registerUser(registrationData);
 
-      setSuccess("Registration successful! Redirecting to quiz...");
+      setSuccess("Account created. Taking you to log in…");
 
       // Set new user flag to trigger quiz after login
       localStorage.setItem("new_user", "true");
@@ -272,7 +273,7 @@ export default function Register() {
                   navigate(
                     partnerInvite
                       ? `/login?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
-                      : "/login"
+                      : redirectTo === HOME_RECORD_PATH ? "/login" + HOME_RECORD_REDIRECT : "/login"
                   )
                 }
                 className="font-bold text-black hover:text-ht-cyan transition-colors"

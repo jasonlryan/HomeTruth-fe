@@ -2,7 +2,7 @@ import DemoEntry from './pages/DemoEntry';
 import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
@@ -14,7 +14,7 @@ import ScrollToTop from "./components/ScrollToTop"; // ✅ Import scroll helper
 import Login from "./pages/Login";
 import AdminLogin from "./pages/AdminLogin";
 import Register from "./pages/Register";
-import Landing from "./pages/LandingPage";
+import HowHomeTruthWorks from "./pages/LandingPage";
 import ProFeature from "./pages/ProFeatures";
 import AboutUs from "./pages/AboutUs";
 import TermsOfService from "./pages/TermsOfService";
@@ -58,9 +58,7 @@ import VisualReviewHarness from "./dev/VisualReviewHarness";
 // Check if we're in "Coming Soon" mode
 const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
 const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
-const HomepagePreview = process.env.NODE_ENV === "development" || isVisualReviewMode
-  ? lazy(() => import("./pages/HomepagePreview"))
-  : null;
+const Homepage = lazy(() => import("./pages/Homepage"));
 
 function App() {
   // If Coming Soon mode is enabled, show only the Coming Soon page (except admin routes)
@@ -160,22 +158,19 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
-          {HomepagePreview && (
-            <Route path="/homepage-preview" element={
-              <PublicRoute>
-                <Suspense fallback={null}><HomepagePreview /></Suspense>
-              </PublicRoute>
-            } />
+          {(process.env.NODE_ENV === "development" || isVisualReviewMode) && (
+            <Route path="/homepage-preview" element={<Navigate to="/" replace />} />
           )}
           <Route path="/demo" element={<DemoEntry />} />
           <Route
             path="/"
             element={
               <PublicRoute>
-                <Landing />
+                <Suspense fallback={null}><Homepage /></Suspense>
               </PublicRoute>
             }
           />
+          <Route path="/how-it-works" element={<PublicRoute><HowHomeTruthWorks /></PublicRoute>} />
           <Route
             path="/pro-features"
             element={
@@ -212,14 +207,7 @@ function App() {
               </PublicRoute>
             }
           />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/admin/login"
             element={

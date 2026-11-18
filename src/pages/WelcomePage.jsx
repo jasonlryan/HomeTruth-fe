@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { HOME_RECORD_PATH } from "../utils/homeRecordEntry";
 import Footer from "../components/Footer";
 import AttitudinalQuizModal from "../components/AttitudinalQuizModal";
 
 export default function WelcomePage() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const finish = () => state?.startHomeRecord
+    ? navigate(HOME_RECORD_PATH, { replace: true, state: { claimHomepageAnswer: true } })
+    : navigate("/dashboard");
   const [userName, setUserName] = useState("");
   const [showQuiz, setShowQuiz] = useState(false);
 
@@ -33,7 +38,7 @@ export default function WelcomePage() {
     localStorage.setItem("quiz_completed", "true");
     // Clear new_user flag and navigate to dashboard
     localStorage.removeItem("new_user");
-    navigate("/dashboard");
+    finish();
   };
 
   const handleQuizClose = () => {
@@ -47,7 +52,7 @@ export default function WelcomePage() {
     // Clear new_user flag and navigate to dashboard
     localStorage.removeItem("new_user");
     setShowQuiz(false);
-    navigate("/dashboard");
+    finish();
   };
 
   // Show quiz modal if quiz is active
