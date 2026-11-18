@@ -1,3 +1,5 @@
+import { demoEntryEnabled } from '../utils/demoEntry';
+import '../components/workspace.css';
 import Navbar from "../components/Navbar";
 import AiAssistant from "../components/Aiassistant";
 import HowItWorks from "../components/HowItWorks";
@@ -12,6 +14,7 @@ export default function Landing() {
     <>
       {/* Navbar at the top */}
       <Navbar />
+{demoEntryEnabled() && <div className="flex flex-wrap justify-center gap-3 p-4"><a className="ht-workspace-primary" href="/demo">Open Maya’s home</a><a className="ht-workspace-control" href="/demo?to=operations">Open Operations</a></div>}
 
       {/* Hero Section (keep your edit) */}
       <section className="flex items-center justify-center mt-5  bg-white">
