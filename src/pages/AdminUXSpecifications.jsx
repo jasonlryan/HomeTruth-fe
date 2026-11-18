@@ -85,6 +85,9 @@ export default function AdminUXSpecifications() {
           ))}
         </nav>
         <p><a href={selected.url} download={`${selected.id}.md`}>Download the versioned Markdown</a></p>
+        {selected.id === "HT-FLOW-002" && (process.env.NODE_ENV === "development" || process.env.REACT_APP_VISUAL_REVIEW === "true") && (
+          <p><Link to="/workspace-preview">Open the Buying Control centre preview</Link></p>
+        )}
         {current?.body && <article className="ht-blueprint">
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={blueprintRenderers}>{current.body}</ReactMarkdown>
         </article>}

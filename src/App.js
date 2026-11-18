@@ -63,6 +63,7 @@ const hasHomepagePreview = process.env.NODE_ENV === "development" || isVisualRev
 const openHomepagePreviewByDefault = hasHomepagePreview && process.env.REACT_APP_HOMEPAGE_PREVIEW_DEFAULT === "true";
 const Homepage = lazy(() => import("./pages/Homepage"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
+const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 
 const uxSpecificationsRoute = (
   <Route path="/admin/user-flows" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
@@ -174,6 +175,9 @@ function App() {
             <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>}>
               <Route path="start-home-record" element={<StartHomeRecord />} />
             </Route>
+          )}
+          {hasHomepagePreview && (
+            <Route path="/workspace-preview" element={<Suspense fallback={null}><ControlCentrePreview /></Suspense>} />
           )}
           <Route path="/demo" element={<DemoEntry />} />
           <Route
