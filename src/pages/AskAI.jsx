@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import PageTitle from "../components/PageTitle";
+import { HTIcon } from "../components/homepage/HomeTruth";
 import {
   askAIChat,
   getAIChatConversations,
@@ -57,6 +58,28 @@ function PropertyContextNotice({ context, onClear }) {
       </button>
     </div>
   );
+}
+
+function moveConversation(pane, top, frameRef) {
+  cancelAnimationFrame(frameRef.current);
+  const target = Math.min(top, pane.scrollHeight - pane.clientHeight);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    pane.scrollTop = target;
+    return;
+  }
+
+  const initial = pane.scrollTop;
+  let lastPosition = initial;
+  let startedAt;
+  const advance = time => {
+    if (Math.abs(pane.scrollTop - lastPosition) > 1) return;
+    startedAt ??= time;
+    const progress = Math.min(1, (time - startedAt) / 220);
+    pane.scrollTop = initial + (target - initial) * (1 - (1 - progress) ** 3);
+    lastPosition = pane.scrollTop;
+    if (progress < 1) frameRef.current = requestAnimationFrame(advance);
+  };
+  frameRef.current = requestAnimationFrame(advance);
 }
 
 // Reusable assistant bubble that renders Markdown safely.
@@ -118,7 +141,7 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
       )}
 
       {/* Save button at bottom right */}
-      <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-300">
+      {!isStreaming && <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-300">
         <button
           onClick={() => onSave(messageId)}
           title={isSaved ? "Saved response" : "Save response"}
@@ -134,7 +157,7 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
             className="w-[10px] h-[14px]"
           />
         </button>
-      </div>
+      </div>}
     </div>
   );
 }
@@ -441,10 +464,17 @@ export default function AskAI() {
     return pairs;
   }, [messages]);
 
-  const scrollRef = useRef(null);
+  const conversationRef = useRef(null);
+  const conversationContentRef = useRef(null);
+  const latestAnswerRef = useRef(null);
+  const placeAnswerRef = useRef(null);
+  const scrollFrameRef = useRef(0);
   const inputRef = useRef(null);
-  const prevMsgCountRef = useRef(0);
   const streamingIntervalRef = useRef(null);
+  const activeAnswerRef = useRef(null);
+  const [canJumpToLatest, setCanJumpToLatest] = useState(false);
+  const [jumpHasFocus, setJumpHasFocus] = useState(false);
+  const hasMessages = messages.length > 0;
   const restoredSessionRef = useRef(null);
 
   // const questionLimit = 5; // Commented out - removed 5 question limit per session
@@ -546,7 +576,6 @@ export default function AskAI() {
           const sessionId = claimId || "guest-restored";
           const questions = restoredMessages.filter((m) => m.role === "user").map((m) => m.content);
           setMessages(restoredMessages);
-          prevMsgCountRef.current = restoredMessages.length;
           const newSession = {
             id: sessionId,
             title: questions[0]
@@ -573,7 +602,6 @@ export default function AskAI() {
           if (apiMsgs.length === 0 && restoredMessages.length > 0) {
             const questions = restoredMessages.filter((m) => m.role === "user").map((m) => m.content);
             setMessages(restoredMessages);
-            prevMsgCountRef.current = restoredMessages.length;
             setSessions((prev) => {
               const existing = prev.find((s) => s.id === claimId);
               if (existing) {
@@ -613,26 +641,59 @@ export default function AskAI() {
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const updateJumpToLatest = useCallback(() => {
+    const pane = conversationRef.current;
+    setCanJumpToLatest(Boolean(pane && pane.scrollHeight - pane.scrollTop - pane.clientHeight > 4));
+  }, []);
+
   useEffect(() => {
-    const isNewMsg = messages.length > prevMsgCountRef.current;
-    if (isNewMsg) {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-      prevMsgCountRef.current = messages.length;
+    updateJumpToLatest();
+    const pane = conversationRef.current;
+    const content = conversationContentRef.current;
+    if (!pane || !content) return;
+
+    const observer = new ResizeObserver(updateJumpToLatest);
+    observer.observe(pane);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [hasMessages, isLoadingHistory, updateJumpToLatest]);
+
+  useLayoutEffect(() => {
+    const placement = placeAnswerRef.current;
+    const pane = conversationRef.current;
+    const answer = latestAnswerRef.current;
+    if (!placement || !pane || !answer) return;
+    placeAnswerRef.current = null;
+
+    if (placement.restoreInputFocus) inputRef.current?.focus({ preventScroll: true });
+    const visibleBottom = pane.getBoundingClientRect().top + pane.clientTop + pane.clientHeight;
+    const openingHeight = Math.min(84, pane.clientHeight / 2);
+    const adjustment = answer.getBoundingClientRect().top + openingHeight - visibleBottom;
+    if (adjustment > 1) {
+      moveConversation(pane, pane.scrollTop + adjustment, scrollFrameRef);
     }
-    if (!questionLimitReached) inputRef.current?.focus();
-  }, [messages, questionLimitReached]);
+  }, [messages]);
+
+  const stopConversationMotion = useCallback(() => cancelAnimationFrame(scrollFrameRef.current), []);
+
+  const jumpToLatest = () => {
+    const pane = conversationRef.current;
+    if (!pane) return;
+    inputRef.current?.focus({ preventScroll: true });
+    moveConversation(pane, pane.scrollHeight, scrollFrameRef);
+  };
 
   // Cleanup streaming interval on unmount
   useEffect(() => {
     return () => {
+      activeAnswerRef.current = null;
+      stopConversationMotion();
       if (streamingIntervalRef.current) {
         clearInterval(streamingIntervalRef.current);
         streamingIntervalRef.current = null;
       }
-      setStreamingMessageId(null);
-      setStreamingText("");
     };
-  }, []);
+  }, [stopConversationMotion]);
 
   const loadConversationHistory = async (sessionId, options = {}) => {
     const { silent = false } = options;
@@ -663,7 +724,6 @@ export default function AskAI() {
         ];
       });
       setMessages(msgs);
-      prevMsgCountRef.current = msgs.length;
       return msgs;
     } catch (err) {
       console.error(err);
@@ -675,7 +735,7 @@ export default function AskAI() {
   };
 
   // Function to simulate typing effect
-  const streamText = (fullText, messageId) => {
+  const streamText = (fullText, messageId, onComplete) => {
     // Clear any existing interval
     if (streamingIntervalRef.current) {
       clearInterval(streamingIntervalRef.current);
@@ -691,24 +751,23 @@ export default function AskAI() {
       if (currentIndex < words.length) {
         const currentText = words.slice(0, currentIndex + 1).join(" ");
         setStreamingText(currentText);
-        // Auto-scroll as text streams
-        setTimeout(() => {
-          scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        }, 0);
         currentIndex++;
       } else {
         clearInterval(streamInterval);
         streamingIntervalRef.current = null;
+        onComplete();
       }
     }, 30); // Adjust speed: lower = faster, higher = slower (30ms per word)
 
     streamingIntervalRef.current = streamInterval;
-    return streamInterval;
   };
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
-    if (!input.trim() || questionLimitReached || isAnswering) return;
+    if (!input.trim() || questionLimitReached || activeAnswerRef.current !== null) return;
+    stopConversationMotion();
+    const questionId = Date.now();
+    activeAnswerRef.current = questionId;
     setIsAnswering(true);
 
     const time = new Date().toLocaleTimeString([], {
@@ -717,19 +776,23 @@ export default function AskAI() {
     });
 
     const tempUserMsg = {
-      id: Date.now(),
+      id: questionId,
+      uiId: questionId,
       role: "user",
       content: input,
       time,
     };
 
     const loadingMsg = {
-      id: Date.now() + 1,
+      id: questionId + 1,
       role: "assistant",
       content: "__typing__",
       time,
     };
 
+    placeAnswerRef.current = {
+      restoreInputFocus: !messages.length && inputRef.current?.parentElement?.contains(document.activeElement),
+    };
     setMessages((prev) => [...prev, tempUserMsg, loadingMsg]);
     setInput("");
 
@@ -741,6 +804,7 @@ export default function AskAI() {
         false,
         propertyContext?.id || null
       );
+      if (activeAnswerRef.current !== questionId) return;
 
       const latestHistory = result.chatHistory?.[result.chatHistory.length - 1];
       // Use the chat_history_id from backend - this is the ID we need for saving
@@ -751,6 +815,7 @@ export default function AskAI() {
 
       const userMsg = {
         id: userMessageId,
+        uiId: tempUserMsg.id,
         role: "user",
         content: latestHistory?.userMessage || input,
         time,
@@ -804,17 +869,16 @@ export default function AskAI() {
         content: "", // Start with empty content, will be filled by streaming
       };
 
-      setMessages((prev) => prev.slice(0, -1).concat([userMsg, streamingAssistantMsg]));
+      setMessages((prev) => prev.map(message => {
+        if (message === tempUserMsg) return userMsg;
+        if (message === loadingMsg) return streamingAssistantMsg;
+        return message;
+      }));
 
-      // Start streaming the response
-      const streamInterval = streamText(fullResponse, assistantMessageId);
-
-      // Clean up interval and finalize message when streaming completes
-      const estimatedTime = fullResponse.split(" ").length * 30 + 100;
-      setTimeout(() => {
+      const finishAnswer = () => {
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantMessageId && m.role === "assistant"
+            m === streamingAssistantMsg
               ? { ...m, content: fullResponse }
               : m
           )
@@ -822,16 +886,16 @@ export default function AskAI() {
         setStreamingMessageId(null);
         setStreamingText("");
         setIsAnswering(false);
-        if (streamInterval) {
-          clearInterval(streamInterval);
-          streamingIntervalRef.current = null;
-        }
-      }, estimatedTime);
+        activeAnswerRef.current = null;
+      };
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) finishAnswer();
+      else streamText(fullResponse, assistantMessageId, finishAnswer);
 
       if (!currentSessionId && result.conversation_id) {
         setCurrentSessionId(result.conversation_id.toString());
       }
     } catch (err) {
+      if (activeAnswerRef.current !== questionId) return;
       console.error("Chat error", err);
       setMessages((prev) =>
         prev.map((m) =>
@@ -841,6 +905,7 @@ export default function AskAI() {
         )
       );
       setIsAnswering(false);
+      activeAnswerRef.current = null;
     }
   };
 
@@ -968,11 +1033,11 @@ export default function AskAI() {
 
       // If the deleted session was the current one, clear it
       if (sessionToDelete === currentSessionId) {
+        resetAnswerDelivery();
         setMessages([]);
         setInput("");
         setCurrentSessionId(null);
         clearPropertyContext();
-        prevMsgCountRef.current = 0;
       }
 
       // Close confirmation modal
@@ -994,13 +1059,10 @@ export default function AskAI() {
     setSessionToDelete(null);
   };
 
-  const handleNewSession = () => {
-    setMessages([]);
-    setInput("");
-    setSaveError(null);
-    setSaveSuccess(null);
-    setCurrentSessionId(null);
-    clearPropertyContext();
+  const resetAnswerDelivery = () => {
+    stopConversationMotion();
+    activeAnswerRef.current = null;
+    placeAnswerRef.current = null;
     setIsAnswering(false);
     setStreamingText("");
     setStreamingMessageId(null);
@@ -1009,9 +1071,17 @@ export default function AskAI() {
       clearInterval(streamingIntervalRef.current);
       streamingIntervalRef.current = null;
     }
+  };
+
+  const handleNewSession = () => {
+    resetAnswerDelivery();
+    setMessages([]);
+    setInput("");
+    setSaveError(null);
+    setSaveSuccess(null);
+    setCurrentSessionId(null);
+    clearPropertyContext();
     // Preserve persisted saved note state across sessions
-    // Reset message count ref for scrolling
-    prevMsgCountRef.current = 0;
     // Focus input field for new session
     setTimeout(() => {
       inputRef.current?.focus();
@@ -1019,6 +1089,8 @@ export default function AskAI() {
   };
 
   const handleSessionSelect = (sessionId) => {
+    if (sessionId === currentSessionId) return;
+    resetAnswerDelivery();
     setCurrentSessionId(sessionId);
     clearPropertyContext();
     loadConversationHistory(sessionId);
@@ -1442,48 +1514,63 @@ export default function AskAI() {
                   )}
               </div>
 
-              <div className="bg-white rounded-3xl p-4 mb-4 overflow-y-auto max-h-[580px]">
-                {qaPairs.map((pair) => (
-                  <div key={pair.id} className="mb-6 relative">
-                    <div className="flex justify-end">
-                      <div className="bg-ht-cyan p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
-                        {pair.question.content}
+              <div ref={conversationRef} aria-label="Conversation" role="region" tabIndex={0}
+                className="bg-white rounded-3xl p-4 mb-4 overflow-y-auto max-h-[580px] [overflow-anchor:none]"
+                onScroll={updateJumpToLatest} onWheelCapture={stopConversationMotion}
+                onTouchStartCapture={stopConversationMotion} onPointerDownCapture={stopConversationMotion}
+                onKeyDownCapture={event => {
+                  if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) stopConversationMotion();
+                }}>
+                <div ref={conversationContentRef}>
+                  {qaPairs.map((pair, index) => (
+                    <div key={pair.question.uiId ?? pair.id} className="mb-6 relative">
+                      <div className="flex justify-end">
+                        <div className="bg-ht-cyan p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
+                          {pair.question.content}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex justify-end">
-                      <div className="text-xs text-gray-400 mt-1">
+                      <div className="flex justify-end">
+                        <div className="text-xs text-gray-400 mt-1">
+                          {pair.question.time}
+                        </div>
+                      </div>
+
+                      <div ref={index === qaPairs.length - 1 ? latestAnswerRef : undefined}
+                        className={`flex justify-start mt-2 items-start space-x-2 ${pair.question.uiId || pair.answer.content === "__typing__" ? "min-h-[84px]" : ""}`}>
+                        {pair.answer.content === "__typing__" || (streamingMessageId === pair.answer.id && !streamingText) ? (
+                          <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] whitespace-pre-wrap">
+                            <span role="status" className="text-gray-600">Answering…</span>
+                          </div>
+                        ) : (
+                          <AssistantBubble
+                            text={pair.answer.content}
+                            messageId={pair.answer.id}
+                            onSave={() => toggleSaveQAPair(pair.id)}
+                            isSaved={isQAPairSaved(pair)}
+                            isStreaming={streamingMessageId === pair.answer.id}
+                            streamingText={streamingMessageId === pair.answer.id ? streamingText : ""}
+                          />
+                        )}
+
+                      </div>
+
+                      <div className="text-xs text-gray-400 mt-1 ml-1">
                         {pair.question.time}
                       </div>
                     </div>
-
-                    <div className="flex justify-start mt-2 items-start space-x-2">
-                      {pair.answer.content === "__typing__" ? (
-                        <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] whitespace-pre-wrap">
-                          <span className="text-gray-600 italic">Thinking...</span>
-                        </div>
-                      ) : (
-                        <AssistantBubble
-                          text={pair.answer.content}
-                          messageId={pair.answer.id}
-                          onSave={() => toggleSaveQAPair(pair.id)}
-                          isSaved={isQAPairSaved(pair)}
-                          isStreaming={streamingMessageId === pair.answer.id}
-                          streamingText={streamingMessageId === pair.answer.id ? streamingText : ""}
-                        />
-                      )}
-
-                    </div>
-
-                    <div className="text-xs text-gray-400 mt-1 ml-1">
-                      {pair.question.time}
-                    </div>
-                  </div>
-                ))}
-
-                <div ref={scrollRef} />
+                  ))}
+                </div>
               </div>
 
-              <div className="shrink-0">
+              <div className="shrink-0 relative">
+                {(canJumpToLatest || jumpHasFocus) && (
+                  <div className="ht-ui absolute right-2 bottom-full z-10 mb-1">
+                    <button type="button" className="ht-button" data-variant="secondary"
+                      onFocus={() => setJumpHasFocus(true)} onBlur={() => setJumpHasFocus(false)} onClick={jumpToLatest}>
+                      <HTIcon name="arrow-down" assetBase={process.env.PUBLIC_URL + "/assets/brand/"} /> Jump to latest
+                    </button>
+                  </div>
+                )}
                 <div className="rounded-3xl border border-gray-200 bg-white p-3 flex flex-col gap-3 shadow-sm">
                   <PropertyContextNotice
                     context={propertyContext}
@@ -1499,7 +1586,8 @@ export default function AskAI() {
                         if (e.key === "Enter") handleSubmit();
                       }}
                       placeholder="Ask a property question..."
-                      disabled={questionLimitReached || isAnswering}
+                      disabled={questionLimitReached}
+                      readOnly={isAnswering}
                       className="w-full text-base bg-white h-14 pl-4 pr-12 focus:outline-none disabled:cursor-not-allowed rounded-full border border-gray-300"
                     />
 
@@ -1510,7 +1598,9 @@ export default function AskAI() {
                         e.stopPropagation();
                         handleSubmit();
                       }}
-                      disabled={questionLimitReached || isAnswering}
+                      aria-label="Send question"
+                      disabled={questionLimitReached}
+                      aria-disabled={isAnswering}
                       className={`absolute top-1/2 right-4 -translate-y-1/2 h-8 w-8 rounded-full text-white flex items-center justify-center transition
                         ${questionLimitReached || isAnswering
                           ? "bg-gray-400 cursor-not-allowed"
