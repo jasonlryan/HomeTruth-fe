@@ -892,3 +892,14 @@ export const saveItemAnswer = async (homeId,itemId,token) => (await api.post(`${
 export const deleteItemAnswer = async (homeId,itemId,answerId) => (await api.delete(`${itemPath(homeId)}/${itemId}/answers/${answerId}`)).data.data;
 
 export const getItemEvidenceFile = async (homeId,itemId,evidenceId) => (await api.get(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}/file`,{responseType:'blob'})).data;
+
+
+export const getSurveyPdfPage = async (documentId, page, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(documentId)}/pdf-page`, { params: { page }, signal });
+  return res.data?.data;
+};
+
+export const getFollowUpPassage = async (propertyId, taskId, signal) => {
+  const res = await api.get(`/api/property-records/${encodeURIComponent(propertyId)}/tasks/${encodeURIComponent(taskId)}/passage`, { signal });
+  return res.data?.data;
+};

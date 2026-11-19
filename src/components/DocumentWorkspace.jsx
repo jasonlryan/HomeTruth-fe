@@ -1,3 +1,4 @@
+import SurveyPassages from "./SurveyPassages";
 import HTGlyph from "./HTGlyph";
 import "./workspace.css";
 import { useEffect, useRef, useState } from "react";
@@ -13,8 +14,12 @@ export default function DocumentWorkspace({
   document: doc,
   initialTab = "preview",
   onClose,
+  propertyId,
+  savedPassage,
 }) {
-  const [tab, setTab] = useState(initialTab);
+  const [tab, setTab] = useState(savedPassage ? "passages" : initialTab);
+  const [pdfPage, setPdfPage] = useState(1);
+  const [passagesOpened, setPassagesOpened] = useState(Boolean(savedPassage));
   const [preview, setPreview] = useState(null);
   const [previewError, setPreviewError] = useState("");
   const [history, setHistory] = useState([]);
@@ -33,6 +38,13 @@ export default function DocumentWorkspace({
   const request = useRef(null);
   const previewTab = useRef(null);
   const chatTab = useRef(null);
+  const passagesTab = useRef(null);
+  const canReadPassages = Boolean(savedPassage || doc.file_type === ".pdf" || /\.pdf$/i.test(doc.name || ""));
+  const tabs = [
+    ["preview", "Preview", previewTab],
+    ...(canReadPassages ? [["passages", "Passages", passagesTab]] : []),
+    ["chat", "Chat with Document", chatTab],
+  ];
 
   useEffect(() => {
     alive.current = true;
@@ -141,7 +153,7 @@ export default function DocumentWorkspace({
     if (event.key !== "Tab") return;
     const targets = [
       ...dialog.current.querySelectorAll(
-        "button:not([disabled]),input:not([disabled]),a[href],iframe",
+        "button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),a[href],iframe",
       ),
     ].filter(
       (el) =>
@@ -161,7 +173,8 @@ export default function DocumentWorkspace({
   }
   function switchTab(next, focus = false) {
     setTab(next);
-    if (focus) (next === "preview" ? previewTab : chatTab).current?.focus();
+    if (next === "passages") setPassagesOpened(true);
+    if (focus) tabs.find(([key]) => key === next)?.[2].current?.focus();
   }
   async function submit(event) {
     const generation = documentGeneration.current;
@@ -241,29 +254,22 @@ export default function DocumentWorkspace({
         <div
           role="tablist"
           aria-label="Document views"
-          className="flex gap-2 border-b border-[var(--color-border-default)] px-4 py-3 sm:px-6"
+          className="flex flex-wrap gap-2 border-b border-[var(--color-border-default)] px-4 py-3 sm:px-6"
           onKeyDown={(event) => {
             if (
               ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
             ) {
               event.preventDefault();
-              switchTab(
-                event.key === "Home"
-                  ? "preview"
-                  : event.key === "End"
-                    ? "chat"
-                    : tab === "preview"
-                      ? "chat"
-                      : "preview",
-                true,
-              );
+              const current = tabs.findIndex(([key]) => key === tab);
+              const step = event.key === "ArrowRight" ? 1 : -1;
+              const next = event.key === "Home" ? 0
+                : event.key === "End" ? tabs.length - 1
+                  : (current + step + tabs.length) % tabs.length;
+              switchTab(tabs[next][0], true);
             }
           }}
         >
-          {[
-            ["preview", "Preview", previewTab],
-            ["chat", "Chat with Document", chatTab],
-          ].map(([value, label, ref]) => (
+          {tabs.map(([value, label, ref]) => (
             <button
               key={value}
               ref={ref}
@@ -312,7 +318,7 @@ export default function DocumentWorkspace({
                     </div>
                   ) : preview.type.includes("pdf") ? (
                     <iframe
-                      src={preview.url}
+                      src={pdfPage === 1 ? preview.url : `${preview.url}#page=${pdfPage}`}
                       title={`Preview of ${doc.name}`}
                       className="h-[58vh] w-full rounded-[var(--radius-md)] border border-[var(--color-border-default)]"
                     />
@@ -339,6 +345,14 @@ export default function DocumentWorkspace({
                 </>
               )}
             </div>
+            {canReadPassages && (
+              <div id="document-panel-passages" role="tabpanel" aria-labelledby="document-tab-passages" hidden={tab !== "passages"}>
+                {passagesOpened && (
+                  <SurveyPassages documentId={doc.id} propertyId={propertyId} savedPassage={savedPassage}
+                    onShowPdf={page => { setPdfPage(page); switchTab("preview", true); }} />
+                )}
+              </div>
+            )}
             <div
               id="document-panel-chat"
               role="tabpanel"

@@ -5,13 +5,17 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
 import { Status } from "../components/homepage/HomeTruth";
 import "../components/workspace.css";
-import { getUserDocuments, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
+import { getUserDocuments, getFollowUpPassage, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
 
 export default function Documents() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { state } = useLocation();
-  const sourcePropertyId = Number(state?.sourcePropertyId);
+  const followUpId = searchParams.get("followUp");
+  const sourcePropertyId = Number(followUpId ? searchParams.get("propertyId") : state?.sourcePropertyId);
+  const fromControlCentre = Boolean(followUpId || state?.fromControlCentre);
+  const [passageResult, setPassageResult] = useState(null);
   const hasSourceProperty = Number.isSafeInteger(sourcePropertyId) && sourcePropertyId > 0;
+  const returnState = followUpId && hasSourceProperty ? { sourcePropertyId, fromControlCentre: true } : state;
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("earliest"); // "earliest" | "latest" | "name"
   const [showSortDropdown, setShowSortDropdown] = useState(false);
@@ -86,7 +90,7 @@ export default function Documents() {
   // Resolve deep links independently of the current list page/filter.
   useEffect(() => {
     const id = searchParams.get('preview');
-    if (!id) { setSelectedDocument(null); return; }
+    if (!id || searchParams.has('followUp')) { setSelectedDocument(null); return; }
     const controller = new AbortController();
     let active = true;
     setSelectedDocument(current => String(current?.id) === id ? current : null);
@@ -102,6 +106,37 @@ export default function Documents() {
     });
     return () => { active = false; controller.abort(); };
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!followUpId || !hasSourceProperty) return;
+    const controller = new AbortController();
+    const resultKey = `${sourcePropertyId}:${followUpId}`;
+    async function openPassage() {
+      try {
+        const passage = await getFollowUpPassage(sourcePropertyId, followUpId, controller.signal);
+        const response = await getUserDocumentRecord(passage.documentId, controller.signal);
+        if (!response?.success || !response.data?.id) throw new Error("Document unavailable");
+        if (!controller.signal.aborted) setPassageResult({ resultKey, passage, document: response.data });
+      } catch {
+        if (!controller.signal.aborted) setPassageResult({ resultKey, error: true });
+      }
+    }
+    openPassage();
+    return () => controller.abort();
+  }, [followUpId, hasSourceProperty, sourcePropertyId]);
+
+  const activePassage = passageResult?.resultKey === `${sourcePropertyId}:${followUpId}` ? passageResult : null;
+  const openDocument = followUpId ? activePassage?.document : selectedDocument;
+
+  function closeWorkspace() {
+    setSelectedDocument(null);
+    setPassageResult(null);
+    const next = new URLSearchParams(searchParams);
+    next.delete("preview");
+    next.delete("followUp");
+    next.delete("propertyId");
+    setSearchParams(next, { replace: true, state: returnState });
+  }
 
   // Close context menu when clicking outside
   useEffect(() => {
@@ -204,10 +239,12 @@ export default function Documents() {
 
   const handleDocumentClick = (doc) => {
     setSelectedDocument(doc);
-    if (searchParams.get('preview') !== String(doc.id)) {
+    if (followUpId || searchParams.get('preview') !== String(doc.id)) {
       const next = new URLSearchParams(searchParams);
+      next.delete('followUp');
+      next.delete('propertyId');
       next.set('preview', String(doc.id));
-      setSearchParams(next, { replace: true, state });
+      setSearchParams(next, { replace: true, state: returnState });
     }
     setShowContextMenu(null);
   };
@@ -280,11 +317,18 @@ export default function Documents() {
         <header className="ht-workspace-title-row">
           <PageTitle>Vault</PageTitle>
           {hasSourceProperty && (
-            <Link className="ht-workspace-control" to={state?.fromControlCentre ? `/control-centre?propertyId=${sourcePropertyId}` : `/property-profile?propertyId=${sourcePropertyId}#property-next-actions`}>
-              <HTGlyph name="arrow-left" size={16} /> {state?.fromControlCentre ? "Back to Control centre" : "Back to home record"}
+            <Link className="ht-workspace-control" to={fromControlCentre ? `/control-centre?propertyId=${sourcePropertyId}` : `/property-profile?propertyId=${sourcePropertyId}#property-next-actions`}>
+              <HTGlyph name="arrow-left" size={16} /> {fromControlCentre ? "Back to Control centre" : "Back to home record"}
             </Link>
           )}
         </header>
+
+        {followUpId && (!hasSourceProperty || activePassage?.error) && (
+          <p role="alert" className="ht-workspace-state mb-4">The saved passage couldn’t be opened. The document may have been removed or may no longer be available to you.</p>
+        )}
+        {followUpId && hasSourceProperty && !activePassage && (
+          <p role="status" className="ht-workspace-state mb-4">Opening the saved passage…</p>
+        )}
 
         {/* Search + Filter + Sort */}
         <div className="mb-8">
@@ -597,7 +641,10 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
         </div>
       </div>
 
-      {selectedDocument && <DocumentWorkspace key={selectedDocument.id} document={selectedDocument} onClose={() => { setSelectedDocument(null); const next = new URLSearchParams(searchParams); next.delete("preview"); setSearchParams(next, { replace: true, state }); }} />}
+      {openDocument && (
+        <DocumentWorkspace key={followUpId ? `follow-up-${followUpId}` : openDocument.id} document={openDocument}
+          propertyId={hasSourceProperty ? sourcePropertyId : undefined} savedPassage={activePassage?.passage} onClose={closeWorkspace} />
+      )}
     </div>
   );
 }
