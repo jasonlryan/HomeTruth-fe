@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const allTags = customTags.length > 0 ? customTags : ['Green Area', 'Balcony', 'Quiet Zone'];
 
-            fetch("https://hometruth.ohtplayground.com:8005/api/properties/bookmark", {
+            fetch("http://localhost:8005/api/properties/bookmark", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loginBtn.addEventListener("click", () => {
     const redirectUri = `chrome-extension://${chrome.runtime.id}/auth.html`;
-    const loginUrl = `https://hometruth.ohtplayground.com/login?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    const loginUrl = `http://localhost:3000/login?redirect_uri=${encodeURIComponent(redirectUri)}`;
 
     chrome.identity.launchWebAuthFlow(
       {

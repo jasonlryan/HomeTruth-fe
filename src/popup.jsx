@@ -18,7 +18,7 @@ const Popup = () => {
 
   const handleLoginClick = () => {
     // DEV ONLY: Open login page in new tab since launchWebAuthFlow won't work with HTTP
-    const devLoginUrl = "https://5405077bb50b.ngrok-free.app/login";
+    const devLoginUrl = "http://localhost:3000/login";
 
     chrome.tabs.create({ url: devLoginUrl });
   };
