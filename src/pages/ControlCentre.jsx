@@ -23,6 +23,7 @@ function TaskList({ tasks, empty, profilePath, propertyId, canContribute, userId
     <ul className="ht-centre-list">
       {tasks.map(({ task, date, overdue }) => {
         const documentId = task.sourceType === "property_document" && task.metadata?.documentId;
+        const canOpenPassage = task.hasSurveyPassage && userId != null && String(task.assignedUserId) === String(userId);
         const canComplete = task.sourceType === "manual" && (canContribute || (userId != null && String(task.assignedUserId) === String(userId)));
         return (
           <li key={task.id}>
@@ -36,7 +37,11 @@ function TaskList({ tasks, empty, profilePath, propertyId, canContribute, userId
             )}
             {task.description && <p className="ht-workspace-muted">{task.description}</p>}
             <div className="ht-centre-row-actions">
-              {documentId ? (
+              {canOpenPassage ? (
+                <Link className="ht-workspace-link" to={`/documents?propertyId=${encodeURIComponent(propertyId)}&followUp=${encodeURIComponent(task.id)}`}>
+                  <HTGlyph name="document" size={16} className="mr-2 inline-block align-baseline" /> Open survey passage
+                </Link>
+              ) : documentId ? (
                 <Link className="ht-workspace-link" to={`/documents?preview=${encodeURIComponent(documentId)}`} state={{ sourcePropertyId: propertyId, fromControlCentre: true }}>
                   Open document in Vault
                 </Link>
