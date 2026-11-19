@@ -1,6 +1,6 @@
 # HT-FLOW-005 · Connect and use a personal agent
 
-**Version 0.1 · 19 November 2026 · Roadmap for review**
+**Version 0.2 · 19 November 2026 · Roadmap for review**
 
 A homeowner wants their existing personal agent to answer “What needs attention in this home in the next three months?” Success is an answer with known dates, sources and explicit gaps. Ask HomeTruth remains available throughout the journey.
 
@@ -19,6 +19,20 @@ A homeowner wants their existing personal agent to answer “What needs attentio
 ## Internal agent boundary
 
 Ask HomeTruth provides conversational help. The external client reads permitted property information. Inside HomeTruth, the first registered specialist operation proposed is `appliance-information@1.findManual`. The appliance service starts the lookup, the homeowner reviews a candidate, and the service verifies and imports the manual as item evidence. The first external grant carries read access only. See the [HomeTruth agent SDK integration specification](./agent-sdk-integration.md).
+
+## Database requirements
+
+These planning requirements use the local MySQL inventory reviewed on 19 November 2026. Deployment coverage needs separate verification. Decisions below precede schema design or migration.
+
+| Area | Reuse | Missing or required | Decision needed |
+| --- | --- | --- | --- |
+| Homeowner delegation (HT-337) | Use `users`, `properties` and the active `property_people` relationship to identify who can access the home. | A revocable grant must link the granting person, external client, home, purpose, permitted reads and evidence, expiry and revocation. Check the grant and current property and document permissions on every read. Record the grant, operation, time and outcome for access review. | Which roles may delegate, which sources may leave HomeTruth, how long can a grant last, and how long should access records be kept? |
+| Answers and citations (HT-338) | Read dated tasks and facts from `property_tasks` and `property_facts`. Resolve citations through `property_documents` and `evidence_sources`. | The local schema has no dedicated maintenance-event or compliance record. Report missing dates as unknown. Each fact currently references one evidence source. A claim reconciled across several documents needs a way to retain all supporting sources. | Which dated records support the first pilot answer? Do we need multi-source claims or a dedicated event model for that pilot? |
+| Provider availability (HT-339) | Use the HT-337 grant and HT-338 evidence-backed response to exercise a named provider on its actual surface. | Record the tested operation, provider surface, cohort or region, validation evidence and release decision. A successful private test establishes eligibility for that cohort only. | Who owns provider eligibility, approval and withdrawal, and where should those decisions be maintained? |
+| Internal specialist definitions (HT-350) | Keep specialist definitions, revisions, allowed operations and tools in the version-controlled SDK registry. Use the existing appliance service and `appliance_agent_runs` for manual lookup. | Each invocation must be attributable to its operation and pinned revision. HT-351 owns durable run metadata. | Which revision is approved for the appliance pilot, and who may enable or roll it back? |
+| Run identity and retries (HT-351) | Extend the existing `appliance_agent_runs` record and its request-key handling for the initial specialist. | Bind a run to its initiating user, selected resource, operation, revision and input fingerprint. Retain state and usage so repeat clicks reuse the same result and changed inputs under the same key are rejected. | Which concurrency and cost limits apply to the pilot? |
+| Review and confirmed evidence (HT-352) | Use the run for reviewable candidates, `home_items` for the appliance and `home_item_evidence` for the confirmed document association. | Separate temporary review expiry from the confirmed manual’s document lifecycle. Recheck access before reading or importing a candidate. Expiring a review must preserve an already confirmed manual. | Approve or revise the proposed 30-day review window and the treatment of legacy runs. External grant expiry is a separate HT-337 decision. |
+| Parent and child runs (HT-353) | The manual lookup uses one specialist and its existing run. | For a future delegated task, correlate root, parent and child runs and logical steps. Carry forward the authorised resource scope, deadline and remaining budget. | Which homeowner task warrants two specialists? Defer production delegation until it is selected. |
 
 ## Decisions still open
 
