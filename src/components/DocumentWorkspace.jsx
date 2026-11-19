@@ -29,12 +29,26 @@ export default function DocumentWorkspace({
   const dialog = useRef(null);
   const closeButton = useRef(null);
   const alive = useRef(true);
+  const documentGeneration = useRef(0);
   const request = useRef(null);
   const previewTab = useRef(null);
   const chatTab = useRef(null);
 
   useEffect(() => {
     alive.current = true;
+    const generation = ++documentGeneration.current;
+    const isCurrent = () => alive.current && documentGeneration.current === generation;
+    setHistory([]);
+    setHistoryLoading(true);
+    setHistoryError("");
+    setHistoryPage(1);
+    setHasOlderHistory(false);
+    setLoadingOlder(false);
+    setPreview(null);
+    setPreviewError("");
+    setQuestion("");
+    setError("");
+    setAsking(false);
     const controller = new AbortController();
     let objectUrl;
     const previousFocus = window.document.activeElement;
@@ -43,12 +57,12 @@ export default function DocumentWorkspace({
     closeButton.current?.focus();
     getDocumentPreviewFile(doc.id, controller.signal)
       .then(async (blob) => {
-        if (!alive.current) return;
+        if (!isCurrent()) return;
         if (blob.type.includes("json")) {
           const payload = JSON.parse(await blob.text());
           if (!payload.success || !payload.data)
             throw new Error("Preview unavailable");
-          if (!alive.current) return;
+          if (!isCurrent()) return;
           const data = payload.data;
           setPreview(
             data.preview_image
@@ -66,27 +80,27 @@ export default function DocumentWorkspace({
         }
       })
       .catch((err) => {
-        if (alive.current && err.code !== "ERR_CANCELED")
+        if (isCurrent() && err.code !== "ERR_CANCELED")
           setPreviewError(
             "The file preview could not be loaded. You can still ask about this document.",
           );
       });
     getDocumentChats(doc.id, { page: 1, limit: 100 })
       .then((response) => {
-        if (alive.current) {
+        if (isCurrent()) {
           setHistory(response?.data?.chats || []);
           setHistoryPage(1);
           setHasOlderHistory(Boolean(response?.data?.pagination?.has_next_page));
         }
       })
       .catch(() => {
-        if (alive.current)
+        if (isCurrent())
           setHistoryError(
             "Previous questions could not be loaded. Close and reopen this document to retry.",
           );
       })
       .finally(() => {
-        if (alive.current) setHistoryLoading(false);
+        if (isCurrent()) setHistoryLoading(false);
       });
     return () => {
       alive.current = false;
@@ -99,21 +113,23 @@ export default function DocumentWorkspace({
   }, [doc.id]);
 
   async function loadOlderHistory() {
+    const generation = documentGeneration.current;
+    const isCurrent = () => alive.current && documentGeneration.current === generation;
     if (loadingOlder) return;
     setLoadingOlder(true);
     setHistoryError("");
     try {
       const response = await getDocumentChats(doc.id, { page: historyPage + 1, limit: 100 });
-      if (!alive.current) return;
+      if (!isCurrent()) return;
       setHistory(previous => Array.from(new Map([
         ...previous, ...(response?.data?.chats || []),
       ].map(chat => [chat.id, chat])).values()));
       setHistoryPage(previous => previous + 1);
       setHasOlderHistory(Boolean(response?.data?.pagination?.has_next_page));
     } catch {
-      if (alive.current) setHistoryError("Older questions could not be loaded. Try again.");
+      if (isCurrent()) setHistoryError("Older questions could not be loaded. Try again.");
     } finally {
-      if (alive.current) setLoadingOlder(false);
+      if (isCurrent()) setLoadingOlder(false);
     }
   }
 
@@ -148,6 +164,8 @@ export default function DocumentWorkspace({
     if (focus) (next === "preview" ? previewTab : chatTab).current?.focus();
   }
   async function submit(event) {
+    const generation = documentGeneration.current;
+    const isCurrent = () => alive.current && documentGeneration.current === generation;
     event.preventDefault();
     if (!question.trim() || asking || historyLoading) return;
     const sent = question.trim();
@@ -157,7 +175,7 @@ export default function DocumentWorkspace({
     request.current = controller;
     try {
       const response = await askDocumentAI(doc.id, sent, controller.signal);
-      if (!alive.current) return;
+      if (!isCurrent()) return;
       const data = response?.data;
       if (!response?.success || !data?.current_answer)
         throw new Error("No answer");
@@ -171,12 +189,12 @@ export default function DocumentWorkspace({
       ]);
       setQuestion("");
     } catch (err) {
-      if (alive.current && err.code !== "ERR_CANCELED")
+      if (isCurrent() && err.code !== "ERR_CANCELED")
         setError(
           "The answer could not be loaded. Your question is still here; try again.",
         );
     } finally {
-      if (alive.current) setAsking(false);
+      if (isCurrent()) setAsking(false);
     }
   }
   const button = "ht-workspace-control";
