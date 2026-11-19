@@ -5,5 +5,5 @@ module.exports = app => {
   if (process.env.HOMETRUTH_PREVIEW_API_PROXY !== "true") return;
   const requireFromCRA = createRequire(require.resolve("react-scripts/package.json"));
   const { createProxyMiddleware } = requireFromCRA("http-proxy-middleware");
-  app.use(createProxyMiddleware("/api", { target: "http://localhost:8005", changeOrigin: true }));
+  app.use(createProxyMiddleware("/api", { target: process.env.HOMETRUTH_PREVIEW_API_TARGET || "http://localhost:8005", changeOrigin: true }));
 };

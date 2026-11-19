@@ -472,6 +472,11 @@ export const getPropertyTasks = async (propertyId, params = {}) => {
   return res.data?.data || [];
 };
 
+export const createPropertyFollowUp = async (propertyId, payload) => {
+  const res = await api.post(`/api/property-records/${propertyId}/tasks`, payload);
+  return res.data?.data;
+};
+
 export const generatePropertyTasks = async (propertyId) => {
   const res = await api.post(`/api/property-records/${propertyId}/tasks/generate`);
   return res.data?.data;

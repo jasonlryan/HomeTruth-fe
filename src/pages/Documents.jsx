@@ -280,8 +280,8 @@ export default function Documents() {
         <header className="ht-workspace-title-row">
           <PageTitle>Vault</PageTitle>
           {hasSourceProperty && (
-            <Link className="ht-workspace-control" to={`/property-profile?propertyId=${sourcePropertyId}#property-next-actions`}>
-              <HTGlyph name="arrow-left" size={16} /> Back to home record
+            <Link className="ht-workspace-control" to={state?.fromControlCentre ? `/control-centre?propertyId=${sourcePropertyId}` : `/property-profile?propertyId=${sourcePropertyId}#property-next-actions`}>
+              <HTGlyph name="arrow-left" size={16} /> {state?.fromControlCentre ? "Back to Control centre" : "Back to home record"}
             </Link>
           )}
         </header>
