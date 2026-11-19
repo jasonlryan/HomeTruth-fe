@@ -5,6 +5,8 @@ import remarkGfm from "remark-gfm";
 import blueprintUrl from "../user-flows/HT-FLOW-001.md";
 import buyingUrl from "../user-flows/HT-FLOW-002.md";
 import improvingUrl from "../user-flows/HT-FLOW-003.md";
+import agentUrl from "../user-flows/HT-FLOW-005.md";
+import agentSdkUrl from "../user-flows/agent-sdk-integration.md";
 import sellingUrl from "../user-flows/HT-FLOW-004.md";
 import "../components/homepage/HomeTruth";
 import "./admin-ux-specifications.css";
@@ -16,6 +18,7 @@ const blueprints = [
   { id: "HT-FLOW-002", label: "Buying", url: buyingUrl },
   { id: "HT-FLOW-003", label: "Improving", url: improvingUrl },
   { id: "HT-FLOW-004", label: "Selling", url: sellingUrl },
+  { id: "HT-FLOW-005", label: "Personal agent (roadmap)", url: agentUrl },
 ];
 
 const ontologyEntries = [
@@ -29,6 +32,15 @@ const ontologyEntries = [
   ["Reminder / Task", "An action to take, with a completion state and relevant property context.", "reminder--task"],
 ];
 
+const agentOntologyEntries = [
+  ["External agent client", "The named provider and software client receiving homeowner-authorised access.", agentUrl],
+  ["Delegated grant", "Links a person, client, selected home, purpose and reading scopes with expiry and revocation.", agentUrl],
+  ["Provider capability and availability", "A tested operation on a specific surface for eligible accounts and regions, with evidence and a release decision.", agentUrl],
+  ["Agent definition and operation", "A registered specialist revision declares typed operations, permitted tools and execution limits.", agentSdkUrl],
+  ["Agent run and review result", "A request pins a specialist revision and resource. Validated candidates remain available for authorised review until expiry.", agentSdkUrl],
+  ["Physical item and item evidence", "A home contains a physical appliance. Confirming and verifying a manual links durable evidence to that item.", agentSdkUrl],
+];
+
 const blueprintRenderers = {
   h1: ({ children }) => <h2>{children}</h2>,
   h2: ({ children }) => <h3>{children}</h3>,
@@ -39,7 +51,7 @@ const blueprintRenderers = {
   ),
   a: ({ href, children }) => href?.startsWith("../../src/")
     ? <>{children}</>
-    : <a href={href}>{children}</a>,
+    : <a href={href === "./agent-sdk-integration.md" ? agentSdkUrl : href}>{children}</a>,
 };
 
 export default function AdminUXSpecifications() {
@@ -102,6 +114,12 @@ export default function AdminUXSpecifications() {
           {ontologyEntries.map(([label, description, anchor]) => (
             <div key={anchor}>
               <dt><a href={domainModel + "#" + anchor}>{label}</a></dt>
+              <dd>{description}</dd>
+            </div>
+          ))}
+          {agentOntologyEntries.map(([label, description, source]) => (
+            <div key={label}>
+              <dt><a href={source}>{label}</a></dt>
               <dd>{description}</dd>
             </div>
           ))}
