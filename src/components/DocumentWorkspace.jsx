@@ -20,6 +20,9 @@ export default function DocumentWorkspace({
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState("");
+  const [historyPage, setHistoryPage] = useState(1);
+  const [hasOlderHistory, setHasOlderHistory] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
   const [question, setQuestion] = useState("");
   const [asking, setAsking] = useState(false);
   const [error, setError] = useState("");
@@ -70,7 +73,11 @@ export default function DocumentWorkspace({
       });
     getDocumentChats(doc.id, { page: 1, limit: 100 })
       .then((response) => {
-        if (alive.current) setHistory(response?.data?.chats || []);
+        if (alive.current) {
+          setHistory(response?.data?.chats || []);
+          setHistoryPage(1);
+          setHasOlderHistory(Boolean(response?.data?.pagination?.has_next_page));
+        }
       })
       .catch(() => {
         if (alive.current)
@@ -90,6 +97,25 @@ export default function DocumentWorkspace({
       if (previousFocus?.isConnected) previousFocus.focus();
     };
   }, [doc.id]);
+
+  async function loadOlderHistory() {
+    if (loadingOlder) return;
+    setLoadingOlder(true);
+    setHistoryError("");
+    try {
+      const response = await getDocumentChats(doc.id, { page: historyPage + 1, limit: 100 });
+      if (!alive.current) return;
+      setHistory(previous => Array.from(new Map([
+        ...previous, ...(response?.data?.chats || []),
+      ].map(chat => [chat.id, chat])).values()));
+      setHistoryPage(previous => previous + 1);
+      setHasOlderHistory(Boolean(response?.data?.pagination?.has_next_page));
+    } catch {
+      if (alive.current) setHistoryError("Older questions could not be loaded. Try again.");
+    } finally {
+      if (alive.current) setLoadingOlder(false);
+    }
+  }
 
   function handleKey(event) {
     if (event.key === "Escape") {
@@ -356,6 +382,11 @@ export default function DocumentWorkspace({
                   No questions yet. Ask about the findings, amounts or limits in
                   this document.
                 </p>
+              )}
+              {hasOlderHistory && (
+                <button type="button" className="mt-4 underline" disabled={loadingOlder} onClick={loadOlderHistory}>
+                  {loadingOlder ? "Loading older questions…" : "Load older questions"}
+                </button>
               )}
               <div className="mt-6 space-y-6">
                 {history.map((chat, index) => (

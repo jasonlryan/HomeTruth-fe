@@ -258,17 +258,35 @@ export const askAIChat = async (
 };
 
 export const getAIChatConversations = async () => {
-  const res = await api.get("/api/ai_chat/conversations");
-  return res.data?.data ?? res.data;
+  const conversations = new Map();
+  let page = 1;
+  let data;
+  do {
+    const res = await api.get("/api/ai_chat/conversations", { params: { page, limit: 100 } });
+    data = res.data?.data ?? res.data;
+    for (const conversation of data.conversations || []) {
+      conversations.set(conversation.conversation_id, conversation);
+    }
+    page += 1;
+  } while (data.hasMore);
+  return { ...data, conversations: Array.from(conversations.values()) };
 };
 
-
 export const getAIChatHistory = async (conversationId) => {
-  const res = await api.get("/api/ai_chat/history", {
-    params: { conversation_id: conversationId },
-  });
-  const conversations = res.data?.data?.conversations || {};
-  const raw = conversations[conversationId]?.messages || [];
+  const messages = new Map();
+  let page = 1;
+  let data;
+  do {
+    const res = await api.get("/api/ai_chat/history", {
+      params: { conversation_id: conversationId, page, limit: 100 },
+    });
+    data = res.data?.data || {};
+    for (const message of data.conversations?.[conversationId]?.messages || []) {
+      messages.set(message.id, message);
+    }
+    page += 1;
+  } while (data.hasMore);
+  const raw = Array.from(messages.values());
 
   raw.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 

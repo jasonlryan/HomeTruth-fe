@@ -160,3 +160,17 @@ test("focus wraps only through active-tab controls, never the inactive tab or ba
   expect(close).toHaveFocus();
   geometry.mockRestore();
 });
+
+test("loads older questions without hiding current history or duplicating rows", async () => {
+  getDocumentChats
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Recent question" }], pagination: { has_next_page: true } } })
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Recent question" }, { id: 1, user_message: "Older question" }], pagination: { has_next_page: false } } });
+  render(<DocumentWorkspace document={{ id: 21, name: "survey.pdf" }} initialTab="chat" onClose={() => {}} />);
+  fireEvent.click(screen.getByRole("tab", { name: "Chat with Document" }));
+  const more = await screen.findByRole("button", { name: "Load older questions" });
+  fireEvent.click(more);
+  expect(await screen.findByText("Older question")).toBeVisible();
+  expect(screen.getAllByText("Recent question")).toHaveLength(1);
+  expect(getDocumentChats).toHaveBeenLastCalledWith(21, { page: 2, limit: 100 });
+  expect(screen.queryByRole("button", { name: "Load older questions" })).not.toBeInTheDocument();
+});
