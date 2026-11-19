@@ -4,7 +4,7 @@
 
 A homeowner taps **Find my manual** on a confirmed appliance. HomeTruth gives a specialist the exact make and model, searches approved manufacturer sources, and returns candidates for review. The homeowner chooses a candidate. HomeTruth verifies the PDF and attaches it to the appliance. This is the first workflow to put behind a shared agent interface.
 
-HT-341 implements that journey on its feature branch. The shared registry, invocation interface, memory policy and messaging contracts below are proposed. The first release runs on demand inside the backend request. External personal-agent connections have their own [owner-grant and MCP plan](personal-agent-opda-delivery-plan.md).
+HT-341 implements that journey on its feature branch. The shared registry, invocation interface, memory policy and messaging contracts below are proposed. The first release runs on demand inside the backend request. HT-337, HT-338 and HT-339 cover the separate owner-grant and MCP work for external personal-agent connections.
 
 ## SDK boundary and agent management
 
@@ -73,4 +73,4 @@ Start with synchronous request/reply, one delegation level and sequential childr
 4. Verify delegation with a fixture parent and child. A valid request returns a schema-checked reply carrying the root correlation ID. Reject an unauthorised recipient, a cross-home evidence reference, a duplicate with changed input and an expired reply. A child cannot exceed the root deadline or token allowance.
 5. Enable the appliance operation after owner review of the experience and retention default. Track latency, tokens per completed lookup, no-match rate, import failures and duplicate suppression. Roll back routing to the existing HT-341 path while retaining compatible readers for pending reviews. A durable queue, scheduled runs and external-agent messaging require a separate delivery decision.
 
-Implementation reference: [HT-341 appliance information agent](appliance-information-agent.md).
+Implementation reference: HT-341, Appliance information agent.
