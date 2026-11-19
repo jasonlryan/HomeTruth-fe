@@ -145,7 +145,7 @@ export function HomeRecordHandoff({ headingRef, accountLinks, onClose, onAccount
   );
 }
 
-export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, loginLabel, homeHref = "/", Composer = QuestionComposer, RecordLink }) {
+export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoice, onAccountHandoff, loginHref, loginHrefWithAnswer, loginLabel, manualPreviewHref, homeHref = "/", Composer = QuestionComposer, RecordLink }) {
   const [route, setRoute] = useState(routes[0]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -229,7 +229,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
   const recordAction = showRecord && (
     <div className="ht-journey-actions">
       {RecordLink ? (
-        <RecordLink fromAnswer={phase === "complete"} onClick={onAccountHandoff}>
+        <RecordLink homeHref={homeHref} fromAnswer={phase === "complete"} onClick={onAccountHandoff}>
           <HTIcon name="home" assetBase={assetBase + "icons/"} /> Start a home record
         </RecordLink>
       ) : (
@@ -242,7 +242,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
 
   return (
     <div className="ht-ui ht-journey">
-      <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={loginHref ?? accountLinks.login} loginLabel={loginLabel} />
+      <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={(showRecord && answer && loginHrefWithAnswer) || loginHref || accountLinks.login} loginLabel={loginLabel} />
       <main ref={hero} className="ht-journey-hero">
         <img className="ht-hero-photo" src={assetBase + "brand/hometruth-house-to-tower.jpg"} alt="" />
         <div className="ht-public-width">
@@ -251,11 +251,11 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
               <h1>Your home, <span>made simple.</span></h1>
               <p className="ht-hero-lead">Understand the property you're buying, plan improvements <span>to make</span> it yours, and show buyers its value when you sell.</p>
               <Composer route={route} onRouteChange={setRoute} question={question} onQuestionChange={setQuestion}
-                onSubmit={submit} onAsk={submitQuestion} pending={pending} limited={limited} assetBase={assetBase} />
+                onSubmit={submit} onAsk={submitQuestion} manualPreviewHref={manualPreviewHref} pending={pending} limited={limited} assetBase={assetBase} />
               {RecordLink ? (
                 <div className="ht-homepage-entry-links">
-                  <RecordLink onClick={onAccountHandoff}>
-                    <HTIcon name="home" assetBase={assetBase + "icons/"} /> Set up a home record
+                  <RecordLink homeHref={homeHref} onClick={onAccountHandoff}>
+                    <HTIcon name="home" assetBase={assetBase + "icons/"} /> Start a home record
                   </RecordLink>
                   <a className="ht-hero-more" href="/how-it-works">About HomeTruth <HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></a>
                 </div>

@@ -6,9 +6,8 @@ import { HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry
 import "./account-entry.css";
 
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
-const previewPath = "/homepage-preview";
 
-export default function StartHomeRecord() {
+export default function StartHomeRecord({ homeHref = "/" }) {
   const { user } = useAuth();
   const { state } = useLocation();
   const heading = useRef(null);
@@ -18,7 +17,7 @@ export default function StartHomeRecord() {
 
   return (
     <div className="ht-ui ht-journey ht-account">
-      <PublicHeader assetBase={assetBase} homeHref={previewPath} />
+      <PublicHeader assetBase={assetBase} homeHref={homeHref} />
       <main className="ht-account-main ht-record-entry">
         <h1 ref={heading} tabIndex={-1}>Start a home record</h1>
         <p>Add your property to keep its surveys, quotes and records of work together.</p>
@@ -35,11 +34,11 @@ export default function StartHomeRecord() {
           )}
         </div>
         <p><Link to="/privacy-policy">How HomeTruth uses your information</Link></p>
-        <p><Link to={fromAnswer ? previewPath + "#homepage-answer" : previewPath} replace>
+        <p><Link to={fromAnswer ? homeHref + "#homepage-answer" : homeHref} replace>
           {fromAnswer ? "Back to your answer" : "Back to homepage options"}
         </Link></p>
       </main>
-      <PublicFooter assetBase={assetBase} homeHref={previewPath} />
+      <PublicFooter assetBase={assetBase} homeHref={homeHref} />
     </div>
   );
 }

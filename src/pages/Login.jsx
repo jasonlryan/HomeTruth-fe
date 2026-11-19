@@ -1,13 +1,10 @@
 import { useRef, useState } from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { loginUser, claimGuestSession } from "../api/api";
 import { useAuth } from "../context/AuthContext";
-import { Button, Field, HTIcon } from "../components/homepage/HomeTruth";
-import { PublicFooter, PublicHeader } from "../components/homepage/Journey";
+import { Button, Field } from "../components/homepage/HomeTruth";
+import AccountPage, { AccountPasswordField } from "../components/homepage/AccountPage";
 import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
-import "./account-entry.css";
-
-const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
 
 function comingSoonDestination(user) {
   return user?.role === "admin" ? "/admin" : "/";
@@ -15,6 +12,7 @@ function comingSoonDestination(user) {
 
 export default function Login({ comingSoon = false }) {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [searchParams] = useSearchParams();
   const { login, user: signedInUser, loading: checkingSession } = useAuth();
   const loginSucceeded = useRef(false);
@@ -29,7 +27,6 @@ export default function Login({ comingSoon = false }) {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [pending, setPending] = useState(false);
 
   const handleLogin = async (e) => {
@@ -169,31 +166,18 @@ export default function Login({ comingSoon = false }) {
     : startingRecord ? "/register" + HOME_RECORD_REDIRECT : "/register";
 
   return (
-    <div className="ht-ui ht-journey ht-account">
-      <PublicHeader assetBase={assetBase} homeHref="/" />
-      <main className="ht-account-main">
-        <h1>Log in to HomeTruth</h1>
-        {startingRecord && <p>Log in to set up or return to your home record.</p>}
-        <form onSubmit={handleLogin}>
-          <Field id="login-email" label="Email" type="email" autoComplete="username"
-            required value={email} error={emailError} onChange={event => setEmail(event.target.value)} />
-          <div className="ht-account-password">
-            <Field id="login-password" label="Password" type={showPassword ? "text" : "password"}
-              autoComplete="current-password" required value={password} error={passwordError}
-              onChange={event => setPassword(event.target.value)} />
-            <button className="ht-account-visibility" type="button" aria-pressed={showPassword}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword(value => !value)}>
-              <HTIcon name="visible" assetBase={assetBase + "icons/"} />
-            </button>
-          </div>
-          <a href="/forgot-password">Forgot your password?</a>
-          {error && <p className="ht-error" role="alert">{error}</p>}
-          <Button variant="cyan" type="submit" pending={pending}>{pending ? "Logging in…" : "Log in"}</Button>
-        </form>
-        {!comingSoon && <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>}
-      </main>
-      <PublicFooter assetBase={assetBase} homeHref="/" />
-    </div>
+    <AccountPage title="Log in to HomeTruth" description={startingRecord ? "Log in to set up or return to your home record." : undefined}>
+      {state?.accountCreated && <p role="status">Account created. Log in to continue.</p>}
+      <form onSubmit={handleLogin}>
+        <Field id="login-email" label="Email" type="email" autoComplete="username"
+          required value={email} error={emailError} onChange={event => setEmail(event.target.value)} />
+        <AccountPasswordField id="login-password" autoComplete="current-password"
+          required value={password} error={passwordError} onChange={event => setPassword(event.target.value)} />
+        <a href="/forgot-password">Forgot your password?</a>
+        {error && <p className="ht-error" role="alert">{error}</p>}
+        <Button variant="cyan" type="submit" pending={pending}>{pending ? "Logging in…" : "Log in"}</Button>
+      </form>
+      {!comingSoon && <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>}
+    </AccountPage>
   );
 }

@@ -12,7 +12,7 @@ import {
   getPropertyTasks,
   updatePropertyTaskStatus,
 } from "../api/api";
-import { claimHomeRecordAnswer, getEntryPartnerInvite, getHomeRecordAnswer, getHomeRecordGuestSession } from "../utils/homeRecordEntry";
+import { claimHomeRecordAnswer, getEntryPartnerInvite, getHomeRecordAnswer, getHomeRecordGuestSession, hasHomeRecordTask } from "../utils/homeRecordEntry";
 import { useAuth } from "../context/AuthContext";
 import { storedInviteContext } from "../utils/partnerAcquisition";
 
@@ -564,6 +564,9 @@ export default function PropertyProfile() {
           </div>
         </header>
 
+        {process.env.REACT_APP_HOMEPAGE_QUESTIONS === "true" && hasHomeRecordTask() && (
+          <p><Link className="ht-workspace-link" to="/find-my-manual">Continue Find my manual preview</Link></p>
+        )}
         {homepageAnswer && (
           <p><Link className="ht-workspace-link" to="/ask-ai" state={{ conversationId: homepageAnswer }}>Continue your homepage question</Link></p>
         )}
