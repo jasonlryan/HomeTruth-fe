@@ -1,5 +1,5 @@
+import HTGlyph from "../../components/HTGlyph";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { startAIBudgetChat } from "../../api/api"; // adjust path if needed
 import { useState } from "react";
 
@@ -38,7 +38,7 @@ export default function MortgageIntro() {
         onClick={() => navigate(-1)}
         className="flex items-center text-sm text-gray-700 hover:underline mb-6"
       >
-        <ArrowLeft className="h-4 w-4 mr-1" />
+        <HTGlyph name="arrow-left" className="h-4 w-4 mr-1" />
         Back
       </button>
 

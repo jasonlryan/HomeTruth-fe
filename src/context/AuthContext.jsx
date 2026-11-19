@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { clearHomeRecordHandoff } from "../utils/homeRecordEntry";
 
 const AuthContext = createContext();
 const TOKEN_KEY = "token";
@@ -43,9 +44,13 @@ export function AuthProvider({ children }) {
     if (userData?.role) {
       localStorage.setItem("user_role", userData.role);
     }
+    if (userData?.id != null) {
+      localStorage.setItem("userId", userData.id);
+    }
   };
 
   const logout = () => {
+    clearHomeRecordHandoff();
     // Clear all authentication related data
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem("user_name");

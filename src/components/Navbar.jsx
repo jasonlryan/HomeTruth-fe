@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -18,7 +19,7 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "How it works", path: "/#how-it-works" },
+    { label: "How it works", path: "/how-it-works" },
     { label: "Home Truths", path: "/home-truths" },
     { label: "Privacy", path: "/privacy-policy" },
   ];
@@ -68,9 +69,7 @@ export default function Navbar() {
           className="hamburger-btn lg:hidden text-gray-600 hover:text-ht-cyan transition-colors focus:outline-none p-2 rounded-md hover:bg-gray-50"
           aria-label="Toggle menu"
         >
-          <span className="material-symbols-outlined text-3xl">
-            {isMenuOpen ? "close" : "menu"}
-          </span>
+          <HTGlyph name={isMenuOpen ? "close" : "menu"} size={24} />
         </button>
       </div>
 
@@ -89,9 +88,7 @@ export default function Navbar() {
                 className="w-full text-left px-4 py-4 text-lg font-semibold text-gray-700 hover:bg-blue-50 hover:text-ht-cyan rounded-xl transition-all flex items-center justify-between group"
               >
                 {link.label}
-                <span className="material-symbols-outlined text-gray-300 group-hover:text-ht-cyan transition-transform group-hover:translate-x-1">
-                  chevron_right
-                </span>
+                <HTGlyph name="chevron-right" size={24} className="text-gray-300 group-hover:text-ht-cyan transition-transform group-hover:translate-x-1" />
               </Link>
             ))}
             <div className="pt-4 px-4 pb-2 space-y-3">

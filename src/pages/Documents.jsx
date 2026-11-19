@@ -1,12 +1,17 @@
+import HTGlyph from "../components/HTGlyph";
 import DocumentWorkspace from '../components/DocumentWorkspace';
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, FileText, MoreVertical } from "lucide-react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
+import { Status } from "../components/homepage/HomeTruth";
+import "../components/workspace.css";
 import { getUserDocuments, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
 
 export default function Documents() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { state } = useLocation();
+  const sourcePropertyId = Number(state?.sourcePropertyId);
+  const hasSourceProperty = Number.isSafeInteger(sourcePropertyId) && sourcePropertyId > 0;
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("earliest"); // "earliest" | "latest" | "name"
   const [showSortDropdown, setShowSortDropdown] = useState(false);
@@ -32,9 +37,11 @@ export default function Documents() {
   const filterRef = useRef(null);
   const sortRef = useRef(null);
   const contextMenuRef = useRef(null);
+  const requestVersion = useRef(0);
 
   // Fetch documents
   const fetchDocuments = useCallback(async () => {
+    const version = ++requestVersion.current;
     setLoading(true);
     setError(null);
     try {
@@ -50,6 +57,7 @@ export default function Documents() {
       if (filters.type.length > 0) params.type = filters.type[0];
 
       const response = await getUserDocuments(params);
+      if (version !== requestVersion.current) return;
 
       let documentsData = [];
       if (response?.data?.documents) documentsData = Array.isArray(response.data.documents) ? response.data.documents : [];
@@ -62,15 +70,17 @@ export default function Documents() {
         total: (response && (response.total || response.count)) || 0,
       }));
     } catch (e) {
+      if (version !== requestVersion.current) return;
       setError("Failed to fetch documents");
       setDocuments([]);
     } finally {
-      setLoading(false);
+      if (version === requestVersion.current) setLoading(false);
     }
   }, [searchQuery, sortBy, filters, pagination.page, pagination.limit]);
 
   useEffect(() => {
     fetchDocuments();
+    return () => { requestVersion.current += 1; };
   }, [fetchDocuments]);
 
   // Resolve deep links independently of the current list page/filter.
@@ -197,7 +207,7 @@ export default function Documents() {
     if (searchParams.get('preview') !== String(doc.id)) {
       const next = new URLSearchParams(searchParams);
       next.set('preview', String(doc.id));
-      setSearchParams(next, { replace: true });
+      setSearchParams(next, { replace: true, state });
     }
     setShowContextMenu(null);
   };
@@ -247,63 +257,68 @@ export default function Documents() {
     // fetchDocuments(); // if needed
   };
 
-  const getStatusColor = (status) => {
+  const getStatusTone = (status) => {
     switch ((status || "").toLowerCase()) {
       case "ready":
-        return "bg-green-100 text-green-800";
+        return "success";
       case "processing":
-        return "bg-purple-100 text-purple-800";
+        return "progress";
       case "expiring":
-        return "bg-yellow-100 text-yellow-800";
+        return "review";
       case "urgent":
       case "error":
-        return "bg-red-100 text-red-800";
+        return "error";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "neutral";
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="w-full max-w-[1440px] mx-auto px-8 py-8">
+      <div className="ht-workspace-page">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <PageTitle>Documents</PageTitle>
-          {/* <button
-            onClick={handleAskAIClick}
-            className="flex items-center gap-2 px-4 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light whitespace-nowrap"
-          >
-            <Sparkles className="w-4 h-4" />
-            Ask HomeTruth
-          </button> */}
-        </div>
+        <header className="ht-workspace-title-row">
+          <PageTitle>Vault</PageTitle>
+          {hasSourceProperty && (
+            <Link className="ht-workspace-control" to={`/property-profile?propertyId=${sourcePropertyId}#property-next-actions`}>
+              <HTGlyph name="arrow-left" size={16} /> Back to home record
+            </Link>
+          )}
+        </header>
 
         {/* Search + Filter + Sort */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-4">
             <div className="relative w-full sm:flex-1 sm:min-w-[18rem] sm:max-w-3xl">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <HTGlyph name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder="Search document..."
+                aria-label="Search documents"
+                placeholder="Search documents"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-ht-cyan"
+                className="ht-workspace-input w-full pl-10"
               />
             </div>
 
             {/* Filter */}
-            <div className="relative" ref={filterRef}>
+            <div className="relative" ref={filterRef} onKeyDown={event => {
+              if (event.key !== "Escape" || !showFilters) return;
+              setShowFilters(false);
+              filterRef.current.querySelector("button").focus();
+            }}>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 whitespace-nowrap"
+                aria-expanded={showFilters}
+                aria-controls="vault-filters"
+                className="ht-workspace-control"
               >
-                <Filter className="w-4 h-4" />
+                <HTGlyph name="filter" className="w-4 h-4" />
                 Filter
               </button>
 
               {showFilters && (
-                <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+                <div id="vault-filters" className="ht-panel ht-vault-filters">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="text-xl font-bold text-gray-900">Filters</h2>
@@ -387,7 +402,7 @@ export default function Documents() {
                     </div>
 
                     <div className="flex justify-end mt-8">
-                      <button onClick={applyFilters} className="px-6 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light transition">
+                      <button onClick={applyFilters} className="ht-workspace-primary">
                         Apply
                       </button>
                     </div>
@@ -400,10 +415,11 @@ export default function Documents() {
             <div className="relative" ref={sortRef}>
               <button
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 whitespace-nowrap"
+                aria-expanded={showSortDropdown}
+                className="ht-workspace-control"
               >
                 Sort {sortBy === "earliest" ? "Earliest" : sortBy === "latest" ? "Latest" : "Name"}
-                <ChevronDown className="w-4 h-4" />
+                <HTGlyph name="chevron-down" className="w-4 h-4" />
               </button>
 
               {showSortDropdown && (
@@ -432,32 +448,20 @@ export default function Documents() {
           </div>
         </div>
 
-        {/* Upload area */}
-        <div
-          className={`border-2 border-dashed rounded-xl p-12 text-center bg-white mb-8 cursor-pointer transition-colors ${
-            isDragOver ? "border-blue-400 bg-blue-50" : "border-gray-300"
-          }`}
+        <section
+          aria-label="Upload to Vault"
+          className="ht-panel ht-vault-upload"
+          data-dragging={isDragOver}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
         >
-          <div className="flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-gray-400 text-7xl">upload</span>
-            </div>
-            <p className="text-gray-700 text-lg mb-2">Drag and drop your documents here</p>
-            <p className="text-gray-500 text-sm">Supports PDF, DOCX, JPG (max 10MB)</p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept=".pdf,.docx,.jpg,.jpeg"
-              onChange={handleFileInput}
-              className="hidden"
-            />
-          </div>
-        </div>
+          <HTGlyph name="upload" className="ht-workspace-muted" />
+          <p>Drag and drop documents here, or choose files.</p>
+          <p className="ht-workspace-muted">PDF, DOCX or JPG · up to 10 MB each</p>
+          <button type="button" className="ht-workspace-control" onClick={() => fileInputRef.current?.click()}>Choose files</button>
+          <input ref={fileInputRef} type="file" multiple accept=".pdf,.docx,.jpg,.jpeg" onChange={handleFileInput} hidden />
+        </section>
 
         {/* Uploaded (local) list */}
         {uploadedFiles.length > 0 && (
@@ -467,16 +471,12 @@ export default function Documents() {
               {uploadedFiles.map((file, index) => (
                 <div key={`uploaded-${file.name}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <HTGlyph name="document" size={20} className="text-gray-500" />
                     <span className="text-sm text-gray-700">{file.name}</span>
                     <span className="text-xs text-gray-500">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
                   </div>
-                  <button onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700 transition">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                  <button aria-label={`Remove ${file.name}`} onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700 transition">
+                    <HTGlyph name="close" size={16} />
                   </button>
                 </div>
               ))}
@@ -495,10 +495,10 @@ export default function Documents() {
         )}
 
         {/* Error / Success / Loading */}
-        {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"><p className="text-red-600">{error}</p></div>}
-        {successMessage && <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg"><p className="text-green-600">{successMessage}</p></div>}
+        {error && <p className="ht-workspace-state mb-4" role="alert">{error}</p>}
+        {successMessage && <p className="ht-workspace-state mb-4" role="status">{successMessage}</p>}
         {loading && (
-          <div className="flex flex-col justify-center items-center py-8">
+          <div className="ht-workspace-state" role="status">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mb-4"></div>
             <p className="text-gray-600">Loading documents...</p>
           </div>
@@ -508,20 +508,20 @@ export default function Documents() {
         {!loading && (
           <div className="space-y-4">
             {!Array.isArray(documents) || documents.length === 0 ? (
-              <div className="text-center py-8">
-                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <div className="ht-workspace-state text-center">
+                <HTGlyph name="document" className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500">No documents found</p>
               </div>
             ) : (
               documents.map((document) => (
                 <div
                   key={document.id}
-                  className={`flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:bg-sky-50 cursor-pointer ${
+                  className={`ht-panel flex flex-wrap items-center gap-2 ${
                     document.selected ? "bg-sky-50" : ""
                   }`}
                 >
-                  <button type="button" aria-label={`Open ${document.name}`} onClick={() => handleDocumentClick(document)} className="flex min-w-0 flex-1 items-center text-left">
-                  <FileText className="w-8 h-8 text-gray-400 mr-4" />
+                  <button type="button" aria-label={`Open ${document.name}`} onClick={() => handleDocumentClick(document)} className="flex min-w-[100px] flex-1 items-center text-left">
+                  <HTGlyph name="document" className="w-8 h-8 text-gray-400 mr-4" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 truncate">{document.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{document.doc_type || document.category || "Document"}</p>
@@ -529,22 +529,20 @@ export default function Documents() {
                   </button>
 
                   <div className="flex items-center gap-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(document.status)}`}>
-                      {document.status}
-                    </span>
+                    <Status tone={getStatusTone(document.status)} appearance="pill">{document.status || "Unknown"}</Status>
                     <span className="text-sm text-gray-500">
                       {document.created_at ? new Date(document.created_at).toLocaleDateString() : "No date"}
                     </span>
 
                     <div className="relative context-menu-container" ref={contextMenuRef}>
-                      <button
+                      <button aria-label="Document actions"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleContextMenu(e, document.id);
                         }}
                         className="p-1 hover:bg-gray-200 rounded"
                       >
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
+                        <HTGlyph name="more" className="w-4 h-4 text-gray-400" />
                       </button>
 
                       {showContextMenu === document.id && (
@@ -599,7 +597,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
         </div>
       </div>
 
-      {selectedDocument && <DocumentWorkspace key={selectedDocument.id} document={selectedDocument} onClose={() => { setSelectedDocument(null); const next = new URLSearchParams(searchParams); next.delete("preview"); setSearchParams(next, { replace: true }); }} />}
+      {selectedDocument && <DocumentWorkspace key={selectedDocument.id} document={selectedDocument} onClose={() => { setSelectedDocument(null); const next = new URLSearchParams(searchParams); next.delete("preview"); setSearchParams(next, { replace: true, state }); }} />}
     </div>
   );
 }

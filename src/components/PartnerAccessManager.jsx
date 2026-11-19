@@ -1,5 +1,5 @@
+import HTGlyph from "./HTGlyph";
 import { useEffect, useId, useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, KeyRound, RefreshCw, ShieldX, UserPlus } from "lucide-react";
 import {
   changeAdminPartnerAccessRole,
   getAdminPartnerAccessAssignments,
@@ -116,19 +116,19 @@ export default function PartnerAccessManager({ programme }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 id={`access-${programme.id}`} className="flex items-center gap-2 text-lg font-bold text-[var(--color-text-default)]">
-            <KeyRound size={19} className="text-[var(--color-secondary)]" /> Governed partner access
+            <HTGlyph name="key" size={19} className="text-[var(--color-secondary)]" /> Governed partner access
           </h3>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--color-text-muted)]">
             Assign a verified HomeTruth account to this programme only. This never grants homeowner, property, document or task access.
           </p>
         </div>
         <button type="button" className={secondaryButton} onClick={load} disabled={loading}>
-          <RefreshCw size={16} className={loading ? "animate-spin" : ""} /> Refresh
+          <HTGlyph name="refresh" size={16} className={loading ? "animate-spin" : ""} /> Refresh
         </button>
       </div>
 
-      {message && <div role="status" className="mt-4 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-success)] p-3 text-sm text-[var(--color-text-default)]"><CheckCircle2 size={17} className="text-[var(--color-success)]" />{message}</div>}
-      {error && <div role="alert" className="mt-4 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] p-3 text-sm text-[var(--color-text-default)]"><AlertTriangle size={17} className="text-[var(--color-action-primary)]" />{error}</div>}
+      {message && <div role="status" className="mt-4 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-success)] p-3 text-sm text-[var(--color-text-default)]"><HTGlyph name="success" size={17} className="text-[var(--color-success)]" />{message}</div>}
+      {error && <div role="alert" className="mt-4 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] p-3 text-sm text-[var(--color-text-default)]"><HTGlyph name="warning" size={17} className="text-[var(--color-action-primary)]" />{error}</div>}
 
       <form ref={formRef} onSubmit={submit} noValidate className="mt-5 grid gap-4 rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-4 lg:grid-cols-[minmax(0,1fr)_240px_auto] lg:items-end">
         <label htmlFor={emailId} className="text-sm font-bold text-[var(--color-text-default)]">
@@ -143,7 +143,7 @@ export default function PartnerAccessManager({ programme }) {
           </select>
         </label>
         <button type="submit" className={primaryButton} disabled={busyId === "grant"}>
-          {busyId === "grant" ? <RefreshCw size={16} className="animate-spin" /> : <UserPlus size={16} />} Grant access
+          {busyId === "grant" ? <HTGlyph name="refresh" size={16} className="animate-spin" /> : <HTGlyph name="invite" size={16} />} Grant access
         </button>
       </form>
 
@@ -163,7 +163,7 @@ export default function PartnerAccessManager({ programme }) {
               </select>
             </label>
             {assignment.status === "active" ? (
-              <button type="button" className={secondaryButton} disabled={busyId === assignment.id} onClick={() => revoke(assignment)}><ShieldX size={16} /> Revoke</button>
+              <button type="button" className={secondaryButton} disabled={busyId === assignment.id} onClick={() => revoke(assignment)}><HTGlyph name="revoked" size={16} /> Revoke</button>
             ) : <span className="text-sm font-bold text-[var(--color-text-muted)]">Revoked</span>}
           </article>
         )) : (

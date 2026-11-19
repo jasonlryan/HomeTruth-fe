@@ -63,37 +63,6 @@ export const registerUser = async ({ email, password, confirmPassword, first_nam
   return res.data;
 };
 
-// --- Admin Login API ---
-export const adminLogin = async ({ email, password, remember_me = false }) => {
-  const res = await api.post("/api/auth/admin/login", { 
-    email, 
-    password, 
-    remember_me 
-  });
-
-  const token = res.data?.data?.token;
-  const userId = res.data?.data?.user?.id;
-  const userRole = res.data?.data?.user?.role;
-
-  if (token) {
-    localStorage.setItem("token", token);
-  } else {
-    console.warn("Token not found in response", res.data);
-  }
-
-  if (userId) {
-    localStorage.setItem("userId", userId);
-  } else {
-    console.warn("User ID not found in response", res.data);
-  }
-
-  if (userRole) {
-    localStorage.setItem("user_role", userRole);
-  }
-
-  return res.data;
-};
-
 // --- Budget Calculator APIs ---
 // export const calculateBudget = async ({ income, debt, deposit, interest_rate, loan_term }) => {
 //   const res = await api.post("/api/budget-calculation", {

@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -44,7 +45,7 @@ const Resources = () => {
                     <div className="flex-1 space-y-6 flex flex-col justify-center">
                         <div>
                             <div className="inline-flex items-center gap-2 bg-sky-50 text-ht-dark px-4 py-1.5 rounded-full text-[11px] font-bold tracking-tight border border-sky-100">
-                                <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
+                                <HTGlyph name="suggestion" size={24} className="text-[16px]" />
                                 HomeTruth Resources
                             </div>
                         </div>
@@ -70,7 +71,7 @@ const Resources = () => {
                     <div className="w-full lg:w-[480px] bg-gray-50 rounded-[2rem] p-6 flex flex-col justify-center space-y-4 border border-sky-50">
                         <div className="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-gray-50 group cursor-pointer hover:shadow-md transition-all">
                             <div className="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-ht-cyan shrink-0">
-                                <span className="material-symbols-outlined text-[22px]">description</span>
+                                <HTGlyph name="document" size={24} className="text-[22px]" />
                             </div>
                             <div>
                                 <h3 className="font-bold text-gray-900 text-[15px] mb-0.5">HomeTruth Profiling System</h3>
@@ -80,7 +81,7 @@ const Resources = () => {
 
                         <div className="bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-gray-100/50 group cursor-pointer hover:shadow-md transition-all">
                             <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-ht-purple shrink-0">
-                                <span className="material-symbols-outlined text-[22px]">arrow_forward</span>
+                                <HTGlyph name="arrow-right" size={24} className="text-[22px]" />
                             </div>
                             <div>
                                 <h3 className="font-bold text-gray-900 text-[15px] mb-0.5">Add more explainers</h3>
@@ -147,7 +148,7 @@ const Resources = () => {
                                 <div className="flex items-center gap-3 mt-auto">
                                     <button className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-5 py-2 rounded-lg font-medium text-sm flex items-center gap-1.5 transition-all shadow-sm shadow-blue-100">
                                         Open explainer
-                                        <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                        <HTGlyph name="arrow-right" size={24} className="text-[14px]" />
                                     </button>
 
                                     <div className="flex items-center bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-100">

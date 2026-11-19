@@ -17,14 +17,14 @@ test('narrow screens retain every navigation action in a compact rail', () => {
  window.innerWidth=390;
  const {container}=render(<Sidebar/>);
  expect(container.querySelector('.ht-sidebar-shell')).toHaveAttribute('data-collapsed','true');
- expect(screen.getByRole('button',{name:'Documents'})).toBeVisible();
+ expect(screen.getByRole('button',{name:'Vault'})).toBeVisible();
  fireEvent.click(screen.getByRole('button',{name:'Expand navigation'}));
  const drawer=screen.getByRole('dialog',{name:'HomeTruth navigation'});
  expect(drawer).toHaveAttribute('aria-modal','true');
  fireEvent.keyDown(drawer,{key:'Escape'});
  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
  expect(screen.getByRole('button',{name:'Expand navigation'})).toHaveFocus();
- fireEvent.click(screen.getByRole('button',{name:'Documents'}));
+ fireEvent.click(screen.getByRole('button',{name:'Vault'}));
  expect(mockNavigate).toHaveBeenCalledWith('/documents');
 });
 test('collapsed navigation retains settings destinations and accessible names', () => {

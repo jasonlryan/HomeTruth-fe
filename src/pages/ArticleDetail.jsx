@@ -1,9 +1,9 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getPublicArticleBySlug } from "../api/api";
-import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
 
@@ -57,7 +57,7 @@ export default function ArticleDetail() {
             to="/home-truths"
             className="inline-flex items-center gap-2 text-ht-cyan hover:text-ht-cyan-light text-sm font-medium mb-8 transition-colors"
           >
-            <ArrowLeft size={16} />
+            <HTGlyph name="arrow-left" size={16} />
             Back to Home Truths
           </Link>
 
@@ -75,7 +75,7 @@ export default function ArticleDetail() {
                 to="/home-truths"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-ht-cyan text-white rounded-lg font-medium hover:bg-ht-cyan-light transition-colors"
               >
-                <ArrowLeft size={16} />
+                <HTGlyph name="arrow-left" size={16} />
                 Browse all articles
               </Link>
             </div>
@@ -105,11 +105,11 @@ export default function ArticleDetail() {
               {/* Meta Row */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
                 <div className="flex items-center gap-1.5">
-                  <User size={14} className="shrink-0" />
+                  <HTGlyph name="user" size={14} className="shrink-0" />
                   <span>{article.author}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Calendar size={14} className="shrink-0" />
+                  <HTGlyph name="calendar" size={14} className="shrink-0" />
                   <span>{formatDate(article.published_at)}</span>
                 </div>
               </div>
@@ -117,7 +117,7 @@ export default function ArticleDetail() {
               {/* Tags */}
               {article.tags && article.tags.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2 mb-8">
-                  <Tag size={14} className="text-gray-400 shrink-0" />
+                  <HTGlyph name="model" size={14} className="text-gray-400 shrink-0" />
                   {article.tags.map((tag, idx) => (
                     <span
                       key={idx}
@@ -150,7 +150,7 @@ export default function ArticleDetail() {
                   to="/home-truths"
                   className="inline-flex items-center gap-2 text-ht-cyan hover:text-ht-cyan-light text-sm font-medium transition-colors"
                 >
-                  <ArrowLeft size={16} />
+                  <HTGlyph name="arrow-left" size={16} />
                   Back to all articles
                 </Link>
               </div>

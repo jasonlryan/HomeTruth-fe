@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -206,10 +207,7 @@ export default function AboutUs() {
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-gray-100">
               <div className="flex flex-col items-start gap-3 mb-6 md:mb-0">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-cyan)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                  <HTGlyph name="home" size={24} className="text-ht-cyan" />
                 </div>
                 <span className="text-sm font-medium text-ht-black">Specific, not generic</span>
               </div>
@@ -222,10 +220,7 @@ export default function AboutUs() {
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-gray-100">
               <div className="flex flex-col items-start gap-3 mb-6 md:mb-0">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-orange)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                  </svg>
+                  <HTGlyph name="reminder" size={24} className="text-ht-orange" />
                 </div>
                 <span className="text-sm font-medium text-ht-black">Proactive, not reactive</span>
               </div>
@@ -238,10 +233,7 @@ export default function AboutUs() {
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8 border-b border-gray-100">
               <div className="flex flex-col items-start gap-3 mb-6 md:mb-0">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-purple-light)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                    <polyline points="22 4 12 14.01 9 11.01" />
-                  </svg>
+                  <HTGlyph name="source" size={24} className="text-ht-purple-light" />
                 </div>
                 <span className="text-sm font-medium text-ht-black">Real answers, not opinions</span>
               </div>
@@ -254,10 +246,7 @@ export default function AboutUs() {
             <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] items-center py-8">
               <div className="flex flex-col items-start gap-3">
                 <div className="w-7 h-7 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--ht-green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                    <polyline points="17 6 23 6 23 12" />
-                  </svg>
+                  <HTGlyph name="trend-up" size={24} className="text-ht-green" />
                 </div>
                 <span className="text-sm font-medium text-ht-black">Gets better over time</span>
               </div>
@@ -438,9 +427,7 @@ export default function AboutUs() {
           onClick={() => window.location.href = '/register'}
         >
           Get Started Free
-          <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
+          <HTGlyph name="arrow-right" size={20} />
         </button>
       </section>
 

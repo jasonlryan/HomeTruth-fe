@@ -1,3 +1,5 @@
+import "../../components/workspace.css";
+import HTGlyph from "../../components/HTGlyph";
 import { useState, useEffect } from "react";
 import PageTitle from "../../components/PageTitle";
 import api, { resetPrivacySettings } from "../../api/api";
@@ -78,10 +80,10 @@ export default function DataPrivacySettings() {
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 space-y-6 mt-4 mb-20">
+    <div className="ht-workspace-page space-y-6">
       <div className="flex items-start gap-3">
         <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full">
-          <img src="/assets/settings/data-privacy.svg" alt="" className="w-5 h-5" />
+          <HTGlyph name="consent" size={20} />
         </div>
         <PageTitle>Data Privacy</PageTitle>
       </div>
@@ -224,12 +226,10 @@ function ToggleRow({ label, value, onChange, border }) {
     >
       <div className="mr-4 flex items-center gap-1">
         <span className="font-normal text-sm mt-4 text-ht-black">{label}</span>
-        <span
-          className="material-symbols-outlined text-[16px] mt-4 text-gray-400 cursor-pointer"
+        <HTGlyph name="info" size={24}
+          className="text-[16px] mt-4 text-gray-400 cursor-pointer"
           title="Info"
-        >
-          info
-        </span>
+         />
       </div>
       <label className="relative inline-flex items-center cursor-pointer">
         <input

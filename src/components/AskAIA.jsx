@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 import { useState } from "react";
 import { askAIChat } from "../api/api"; // Adjust path as needed
 
@@ -81,17 +82,14 @@ export default function AiAssistant({ suggestions = [] }) {
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
               aria-label={msg.saved ? "Unsave message" : "Save message"}
             >
-              <span
-                className="material-symbols-outlined"
+              <HTGlyph name="bookmark" size={24}
                 style={{
                   fontFamily: "Material Symbols Outlined",
                   fontVariationSettings: `'FILL' ${msg.saved ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`,
                   fontSize: "24px",
                   color: msg.saved ? "var(--ht-cyan)" : "inherit"
                 }}
-              >
-                bookmark
-              </span>
+               />
             </button>
 
             {/* Combined Q&A */}

@@ -1,16 +1,15 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { registerUser } from "../api/api";
 import Footer from "../components/Footer";
+import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
 
 export default function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "";
-  const partnerInvite =
-    searchParams.get("partner_invite") ||
-    localStorage.getItem("partner_invite_code") ||
-    "";
+  const partnerInvite = getEntryPartnerInvite(searchParams, redirectTo === HOME_RECORD_PATH);
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || "";
 
   const [firstName, setFirstName] = useState("");
@@ -65,7 +64,7 @@ export default function Register() {
 
       await registerUser(registrationData);
 
-      setSuccess("Registration successful! Redirecting to quiz...");
+      setSuccess("Account created. Taking you to log in…");
 
       // Set new user flag to trigger quiz after login
       localStorage.setItem("new_user", "true");
@@ -216,11 +215,10 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                 >
-                   <span className="material-symbols-outlined text-xl">
-                    {showPassword ? "visibility_off" : "visibility"}
-                  </span>
+                   <HTGlyph name={showPassword ? "hidden" : "visible"} size={20} />
                 </button>
               </div>
             </div>
@@ -240,11 +238,10 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide confirmed password" : "Show confirmed password"}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                 >
-                  <span className="material-symbols-outlined text-xl">
-                    {showConfirmPassword ? "visibility_off" : "visibility"}
-                  </span>
+                  <HTGlyph name={showConfirmPassword ? "hidden" : "visible"} size={20} />
                 </button>
               </div>
             </div>
@@ -272,7 +269,7 @@ export default function Register() {
                   navigate(
                     partnerInvite
                       ? `/login?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
-                      : "/login"
+                      : redirectTo === HOME_RECORD_PATH ? "/login" + HOME_RECORD_REDIRECT : "/login"
                   )
                 }
                 className="font-bold text-black hover:text-ht-cyan transition-colors"

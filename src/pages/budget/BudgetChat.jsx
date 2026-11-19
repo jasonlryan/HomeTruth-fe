@@ -1,3 +1,4 @@
+import HTGlyph from "../../components/HTGlyph";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -367,30 +368,12 @@ export default function BudgetChat() {
                   className="flex-grow px-3 py-2 text-sm bg-transparent focus:outline-none"
                 />
                 <div className="h-6 w-px bg-gray-300 mx-2"></div>
-                <button
+                <button aria-label="Send budget question"
                   onClick={sendMessage}
                   disabled={loading || initializing}
                   className="p-2 text-ht-cyan disabled:opacity-50"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="29"
-                    height="30"
-                    viewBox="0 0 29 30"
-                    fill="none"
-                  >
-                    <path
-                      d="M12.428 17.0709L1.03516 11.8923L27.9637 1.53516L17.6066 28.4637L12.428 17.0709Z"
-                      fill="var(--ht-cyan)"
-                    />
-                    <path
-                      d="M12.428 17.0709L18.6423 10.8566"
-                      stroke="var(--ht-cyan)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <HTGlyph name="send" size={24} />
                 </button>
               </div>
             </div>
@@ -503,19 +486,7 @@ export default function BudgetChat() {
                 onClick={() => setShowTitleModal(false)}
                 aria-label="Close"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
+                <HTGlyph name="close" size={20} />
               </button>
               
               <h2 className="text-lg font-semibold text-gray-900 mb-2">

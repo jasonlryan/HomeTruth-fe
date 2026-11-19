@@ -1,21 +1,5 @@
+import HTGlyph from "../components/HTGlyph";
 import { cloneElement, useCallback, useEffect, useId, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  Activity,
-  AlertTriangle,
-  Building2,
-  CheckCircle2,
-  Layers3,
-  Megaphone,
-  PauseCircle,
-  PlayCircle,
-  Plus,
-  KeyRound,
-  RefreshCw,
-  ShieldCheck,
-  Users,
-  XCircle,
-} from "lucide-react";
 import PartnerAccessManager from "../components/PartnerAccessManager";
 import {
   createAdminPartnerProgramme,
@@ -58,7 +42,7 @@ function Field({ label, hint, error, children }) {
       {control}
       {error && (
         <span id={errorId} className="mt-2 flex items-center gap-2 text-xs text-[var(--color-action-primary)]">
-          <AlertTriangle size={14} aria-hidden="true" />
+          <HTGlyph name="warning" size={14} aria-hidden="true" />
           {error}
         </span>
       )}
@@ -88,11 +72,11 @@ function StatusBadge({ status }) {
   );
 }
 
-function Metric({ icon: Icon, label, value }) {
+function Metric({ icon, label, value }) {
   return (
     <div className={`${surface} flex items-center gap-4 p-4`}>
       <span className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-accent)_12%,var(--color-surface-default))] text-[var(--color-accent)]">
-        <Icon size={21} aria-hidden="true" />
+        <HTGlyph name={icon} size={21} aria-hidden="true" />
       </span>
       <div>
         <p className="text-2xl font-bold text-[var(--color-text-default)]">{value}</p>
@@ -103,9 +87,9 @@ function Metric({ icon: Icon, label, value }) {
 }
 
 function transitionPresentation(status) {
-  if (status === "active") return { label: "Activate", Icon: PlayCircle };
-  if (status === "paused") return { label: "Pause", Icon: PauseCircle };
-  return { label: "Close", Icon: XCircle };
+  if (status === "active") return { label: "Activate", icon: "play" };
+  if (status === "paused") return { label: "Pause", icon: "pause" };
+  return { label: "Close", icon: "error" };
 }
 
 function ProgrammeCard({ programme, busy, onTransition }) {
@@ -133,10 +117,10 @@ function ProgrammeCard({ programme, busy, onTransition }) {
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" className={secondaryButton} onClick={() => setShowAccess((current) => !current)} aria-expanded={showAccess}>
-              <KeyRound size={16} /> {showAccess ? "Hide access" : "Manage access"}
+              <HTGlyph name="key" size={16} /> {showAccess ? "Hide access" : "Manage access"}
             </button>
             {nextProgrammeStatuses(programme.status).map((status) => {
-              const { label, Icon } = transitionPresentation(status);
+              const { label, icon } = transitionPresentation(status);
               return (
                 <button
                   key={status}
@@ -145,7 +129,7 @@ function ProgrammeCard({ programme, busy, onTransition }) {
                   disabled={busy}
                   onClick={() => onTransition(programme, status)}
                 >
-                  {busy ? <RefreshCw className="animate-spin" size={16} /> : <Icon size={16} />}
+                  {busy ? <HTGlyph name="refresh" className="animate-spin" size={16} /> : <HTGlyph name={icon} size={16} />}
                   {label}
                 </button>
               );
@@ -156,7 +140,7 @@ function ProgrammeCard({ programme, busy, onTransition }) {
         <div className="mt-5 grid gap-3 md:grid-cols-3">
           <div className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
             <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-text-default)]">
-              <Megaphone size={17} className="text-[var(--color-secondary)]" /> Campaign
+              <HTGlyph name="campaign" size={17} className="text-[var(--color-secondary)]" /> Campaign
             </div>
             <p className="mt-2 text-sm text-[var(--color-text-muted)]">
               {campaign?.name || "Not configured"}
@@ -165,7 +149,7 @@ function ProgrammeCard({ programme, busy, onTransition }) {
           </div>
           <div className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
             <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-text-default)]">
-              <Users size={17} className="text-[var(--color-accent)]" /> Cohort
+              <HTGlyph name="household" size={17} className="text-[var(--color-accent)]" /> Cohort
             </div>
             <p className="mt-2 text-sm text-[var(--color-text-muted)]">
               {cohort?.name || "Not configured"}
@@ -178,7 +162,7 @@ function ProgrammeCard({ programme, busy, onTransition }) {
           </div>
           <div className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
             <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-text-default)]">
-              <ShieldCheck size={17} className="text-[var(--color-success)]" /> Data boundary
+              <HTGlyph name="consent" size={17} className="text-[var(--color-success)]" /> Data boundary
             </div>
             <p className="mt-2 text-sm text-[var(--color-text-muted)]">
               Aggregate-only by default
@@ -257,7 +241,7 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
 
         {submitError && (
           <div role="alert" className="mt-6 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_10%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <AlertTriangle className="mt-0.5 flex-none" size={18} /> {submitError}
+            <HTGlyph name="warning" className="mt-0.5 flex-none" size={18} /> {submitError}
           </div>
         )}
 
@@ -338,7 +322,7 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
           </legend>
           <div className="mt-5 grid gap-6 lg:grid-cols-2">
             <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-5">
-              <h3 className="flex items-center gap-2 font-bold text-[var(--color-text-default)]"><Megaphone size={18} /> Acquisition campaign</h3>
+              <h3 className="flex items-center gap-2 font-bold text-[var(--color-text-default)]"><HTGlyph name="campaign" size={18} /> Acquisition campaign</h3>
               <div className="mt-5 grid gap-5">
                 <Field label="Campaign name" error={errors.campaignName}><input className={inputClass} value={form.campaignName} onChange={update("campaignName")} /></Field>
                 <Field label="Campaign key" error={errors.campaignKey}><input className={inputClass} value={form.campaignKey} onChange={update("campaignKey")} /></Field>
@@ -351,7 +335,7 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
               </div>
             </section>
             <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-5">
-              <h3 className="flex items-center gap-2 font-bold text-[var(--color-text-default)]"><Users size={18} /> Homeowner cohort</h3>
+              <h3 className="flex items-center gap-2 font-bold text-[var(--color-text-default)]"><HTGlyph name="household" size={18} /> Homeowner cohort</h3>
               <div className="mt-5 grid gap-5">
                 <Field label="Cohort name" error={errors.cohortName}><input className={inputClass} value={form.cohortName} onChange={update("cohortName")} /></Field>
                 <Field label="Cohort key" error={errors.cohortKey}><input className={inputClass} value={form.cohortKey} onChange={update("cohortKey")} /></Field>
@@ -417,14 +401,14 @@ function ProgrammeForm({ partners, onCancel, onCreated }) {
 
         <div className="mt-8 flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--color-success)] bg-[color-mix(in_srgb,var(--color-success)_8%,var(--color-surface-default))] p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <ShieldCheck className="mt-0.5 flex-none text-[var(--color-success)]" size={20} />
+            <HTGlyph name="consent" className="mt-0.5 flex-none text-[var(--color-success)]" size={20} />
             <div>
               <p className="font-bold text-[var(--color-text-default)]">Privacy boundary is fixed</p>
               <p className="mt-1 text-sm text-[var(--color-text-muted)]">Creating a programme never grants access to individual homeowner data.</p>
             </div>
           </div>
           <button type="submit" className={primaryButton} disabled={submitting}>
-            {submitting ? <RefreshCw className="animate-spin" size={17} /> : <Plus size={17} />}
+            {submitting ? <HTGlyph name="refresh" className="animate-spin" size={17} /> : <HTGlyph name="add" size={17} />}
             Create draft programme
           </button>
         </div>
@@ -499,20 +483,12 @@ export default function PartnerProgrammeAdmin() {
   return (
     <main className="min-h-screen bg-[color-mix(in_srgb,var(--color-accent)_4%,var(--color-surface-default))] px-4 py-6 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <nav aria-label="Admin" className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/knowledge-base">Knowledge base</Link>
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/dashboard">Dashboard</Link>
-          <span aria-current="page" className="font-bold text-[var(--color-text-default)]">Partner programmes</span>
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/data-access">Data access</Link>
-          <Link className="text-[var(--color-accent)] hover:underline" to="/admin/articles">Articles</Link>
-        </nav>
-
         <header className={`${surface} relative overflow-hidden p-6 sm:p-8`}>
           <div className="absolute inset-y-0 left-0 w-1 bg-ht-gradient-warm" />
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-4">
               <span className="flex h-12 w-12 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-secondary)_12%,var(--color-surface-default))] text-[var(--color-secondary)]">
-                <Building2 size={24} />
+                <HTGlyph name="building" size={24} />
               </span>
               <div>
                 <p className="text-sm font-bold text-[var(--color-secondary)]">B2B partnership foundation</p>
@@ -524,29 +500,29 @@ export default function PartnerProgrammeAdmin() {
             </div>
             <div className="flex flex-wrap gap-3">
               <button type="button" className={secondaryButton} onClick={load} disabled={loading}>
-                <RefreshCw className={loading ? "animate-spin" : ""} size={17} /> Refresh
+                <HTGlyph name="refresh" className={loading ? "animate-spin" : ""} size={17} /> Refresh
               </button>
               <button type="button" className={primaryButton} onClick={() => setShowForm(true)}>
-                <Plus size={17} /> New programme
+                <HTGlyph name="add" size={17} /> New programme
               </button>
             </div>
           </div>
         </header>
 
         <section aria-label="Programme summary" className="mt-6 grid gap-4 sm:grid-cols-3">
-          <Metric icon={Layers3} label="Programmes" value={counts.total} />
-          <Metric icon={Activity} label="Active" value={counts.active} />
-          <Metric icon={Building2} label="Partner organisations" value={counts.partners} />
+          <Metric icon="programme" label="Programmes" value={counts.total} />
+          <Metric icon="activity" label="Active" value={counts.active} />
+          <Metric icon="building" label="Partner organisations" value={counts.partners} />
         </section>
 
         {notice && (
           <div role="status" className="mt-6 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-success)] bg-[color-mix(in_srgb,var(--color-success)_9%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <CheckCircle2 className="mt-0.5 flex-none text-[var(--color-success)]" size={18} /> {notice}
+            <HTGlyph name="success" className="mt-0.5 flex-none text-[var(--color-success)]" size={18} /> {notice}
           </div>
         )}
         {error && (
           <div role="alert" className="mt-6 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_9%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <AlertTriangle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} /> {error}
+            <HTGlyph name="warning" className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} /> {error}
           </div>
         )}
 
@@ -559,7 +535,7 @@ export default function PartnerProgrammeAdmin() {
           </div>
           {loading ? (
             <div className={`${surface} flex min-h-48 items-center justify-center text-[var(--color-text-muted)]`}>
-              <RefreshCw className="mr-2 animate-spin" size={18} /> Loading programmes
+              <HTGlyph name="refresh" className="mr-2 animate-spin" size={18} /> Loading programmes
             </div>
           ) : programmes.length ? (
             <div className="grid gap-5">
@@ -569,10 +545,10 @@ export default function PartnerProgrammeAdmin() {
             </div>
           ) : (
             <div className={`${surface} flex min-h-56 flex-col items-center justify-center p-8 text-center`}>
-              <Layers3 size={32} className="text-[var(--color-accent)]" />
+              <HTGlyph name="programme" size={32} className="text-[var(--color-accent)]" />
               <h3 className="mt-4 text-lg font-bold text-[var(--color-text-default)]">No programmes configured</h3>
               <p className="mt-2 max-w-md text-sm text-[var(--color-text-muted)]">Create the first shared partner programme and keep vertical differences in configuration.</p>
-              <button type="button" className={`${primaryButton} mt-5`} onClick={() => setShowForm(true)}><Plus size={17} /> New programme</button>
+              <button type="button" className={`${primaryButton} mt-5`} onClick={() => setShowForm(true)}><HTGlyph name="add" size={17} /> New programme</button>
             </div>
           )}
         </section>

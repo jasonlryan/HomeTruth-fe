@@ -1,7 +1,7 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function FAQ() {
   const [openItems, setOpenItems] = useState({});
@@ -79,9 +79,9 @@ export default function FAQ() {
                   {item.question}
                 </span>
                 {openItems[index] ? (
-                  <ChevronUp className="w-5 h-5 text-gray-500" />
+                  <HTGlyph name="chevron-up" className="w-5 h-5 text-gray-500" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                  <HTGlyph name="chevron-down" className="w-5 h-5 text-gray-500" />
                 )}
               </button>
 

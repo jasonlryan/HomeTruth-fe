@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -106,27 +107,6 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    // Check if user is admin - admins skip all onboarding flows
-    const userRole = user?.role || localStorage.getItem("user_role");
-    const isAdmin = userRole === "admin";
-
-    // If admin, skip all onboarding and redirect to knowledge base if not already there
-    if (isAdmin) {
-      // Clear any onboarding flags for admin
-      localStorage.removeItem("require_profile");
-      localStorage.removeItem("new_user");
-      localStorage.removeItem("quiz_modal_active");
-      localStorage.removeItem("onboarding_lock");
-      localStorage.setItem("quiz_completed", "true");
-      localStorage.setItem("quiz_checked_this_session", "true");
-      
-      // Redirect admin to knowledge base if they're on dashboard
-      if (window.location.pathname === "/dashboard") {
-        navigate("/admin/knowledge-base", { replace: true });
-      }
-      return;
-    }
-
     const needsProfile = localStorage.getItem("require_profile") === "true";
     const isNewUser = localStorage.getItem("new_user") === "true";
     const fromWelcomePage = localStorage.getItem("from_welcome_page") === "true";
@@ -296,49 +276,18 @@ export default function Dashboard() {
                 placeholder="Ask any property question..."
                 className="flex-1 text-base bg-white h-14 pl-4 pr-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-ht-cyan"
               />
-              <button
+              <button aria-label="Send question"
                 onClick={handleSearch}
                 className="h-14 w-14 rounded-lg bg-ht-cyan text-white flex items-center justify-center hover:bg-ht-cyan-light transition"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 29 30"
-                  fill="none"
-                >
-                  <path
-                    d="M12.428 17.0709L1.03516 11.8923L27.9637 1.53516L17.6066 28.4637L12.428 17.0709Z"
-                    fill="white"
-                  />
-                  <path
-                    d="M12.428 17.0709L18.6423 10.8566"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="send" size={20} />
               </button>
             </div>
 
             {/* Search the web button */}
             <div className="mb-4">
               <button className="flex items-center text-sm px-4 py-2 rounded-md bg-white hover:bg-gray-50 transition">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
-                  />
-                </svg>
+                <HTGlyph name="globe" size={16} />
                 <span className="ml-2">Search the web</span>
               </button>
             </div>
@@ -394,7 +343,7 @@ export default function Dashboard() {
                   onClick={() => navigate('/saved-notes')}
                   title="Edit notes"
                 >
-                  <span className="material-symbols-outlined text-xl">edit</span>
+                  <HTGlyph name="edit" size={20} />
                 </button>
 
                 <h3 className="text-md font-semibold mb-2">{item.title || item.name || "Saved Item"}</h3>
@@ -527,13 +476,11 @@ export default function Dashboard() {
                       index === 1 ? '' :
                       ' border-green-200'
                     }`}>
-                      <span className={`material-symbols-outlined text-lg ${
+                      <HTGlyph name="document" size={20} className={`${
                         index === 0 ? 'text-red-600' :
                         index === 1 ? 'text-ht-cyan' :
                         'text-green-600'
-                      }`}>
-                        docs
-                      </span>
+                      }`} />
                     </div>
                     
                     {/* Document Name */}
@@ -561,7 +508,7 @@ export default function Dashboard() {
                         className="text-gray-500 hover:text-gray-700 transition-colors"
                         title="Preview document"
                       >
-                        <span className="material-symbols-outlined text-lg">visibility</span>
+                        <HTGlyph name="visible" size={20} />
                       </button>
                     </div>
                   </div>
@@ -579,7 +526,7 @@ export default function Dashboard() {
             <div className="flex flex-col items-center">
               {/* Upload Icon with Gradient Background */}
               <div className="w-20 h-20 rounded-full bg-ht-gradient-cool flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-white text-4xl">upload</span>
+                <HTGlyph name="upload" size={36} className="text-white " />
               </div>
               
               <p className="text-gray-700 text-lg font-medium mb-2">
@@ -624,9 +571,7 @@ export default function Dashboard() {
                     onClick={handleNextBatch}
                     className="text-sm text-gray-500 px-4 py-2 inline-flex items-center gap-x-2"
                   >
-                    <span className="material-symbols-outlined text-base align-middle">
-                      forward_media
-                    </span>
+                    <HTGlyph name="share" size={16} className="align-middle" />
                     Generate new listings
                   </button>
                 </div>
@@ -659,11 +604,11 @@ export default function Dashboard() {
               <h2 className="text-lg font-bold text-gray-900 truncate pr-8">
                 {selectedNote.title || selectedNote.name}
               </h2>
-              <button
+              <button aria-label="Close note"
                 className="text-gray-500 hover:text-black transition-colors"
                 onClick={() => setShowNoteModal(false)}
               >
-                <span className="material-symbols-outlined text-lg">close</span>
+                <HTGlyph name="close" size={20} />
               </button>
             </div>
 
@@ -909,11 +854,11 @@ export default function Dashboard() {
                   {selectedDocument.report_type || 'Document'}
                 </p>
               </div>
-              <button
+              <button aria-label="Close document"
                 onClick={() => setShowDocumentModal(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <span className="material-symbols-outlined text-2xl">close</span>
+                <HTGlyph name="close" size={24} />
               </button>
             </div>
 
@@ -929,7 +874,7 @@ export default function Dashboard() {
                     </div>
                   ) : previewError ? (
                     <div className="text-center">
-                      <span className="material-symbols-outlined text-6xl text-red-400 mb-4 block">description</span>
+                      <HTGlyph name="document" size={48} className="text-red-400 mb-4 block" />
                       <p className="text-red-500 text-lg">Preview Error</p>
                       <p className="text-red-400 text-sm">{previewError}</p>
                     </div>
@@ -961,7 +906,7 @@ export default function Dashboard() {
                         />
                       ) : (
                         <div className="text-center">
-                          <span className="material-symbols-outlined text-6xl text-gray-400 mb-4 block">description</span>
+                          <HTGlyph name="document" size={48} className="text-gray-400 mb-4 block" />
                           <p className="text-gray-500 text-lg">Document Preview</p>
                           <p className="text-gray-400 text-sm">Preview format not supported</p>
                         </div>
@@ -969,7 +914,7 @@ export default function Dashboard() {
                     </div>
                   ) : (
                     <div className="text-center">
-                      <span className="material-symbols-outlined text-6xl text-gray-400 mb-4 block">description</span>
+                      <HTGlyph name="document" size={48} className="text-gray-400 mb-4 block" />
                       <p className="text-gray-500 text-lg">Document Preview</p>
                       <p className="text-gray-400 text-sm">Preview format not supported</p>
                     </div>
@@ -1027,7 +972,7 @@ export default function Dashboard() {
                 onClick={() => navigate('/documents')}
                 className="bg-ht-cyan hover:bg-ht-cyan-light text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
               >
-                <span className="material-symbols-outlined text-lg">auto_awesome</span>
+                <HTGlyph name="suggestion" size={20} />
                 Ask HomeTruth
               </button>
             </div>

@@ -1,0 +1,96 @@
+/* Shared by the app and the localhost design-system reference. */
+.ht-route > span,
+.ht-content-tab,
+.ht-nav-item {
+  --nav-ink: color-mix(in srgb, var(--color-accent) 55%, var(--color-surface-dark));
+  --nav-hover: color-mix(in srgb, var(--color-text-default) 5%, var(--color-surface-default));
+  --nav-selected-surface: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface-default));
+  color: var(--color-text-default);
+}
+
+.ht-content-tab {
+  display: inline-grid;
+  grid-auto-flow: column;
+  align-items: first baseline;
+  align-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: start;
+}
+
+.ht-nav-item {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: first baseline;
+  align-content: center;
+  justify-content: start;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 48px;
+  padding: var(--space-3);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  text-align: start;
+  text-decoration: none;
+}
+
+.ht-route input:enabled:hover + span,
+.ht-route[data-preview-state="hover"] > span,
+.ht-content-tab:enabled:hover,
+.ht-content-tab[data-preview-state="hover"],
+.ht-nav-item:not(:disabled):hover,
+.ht-nav-item[data-preview-state="hover"] {
+  background: var(--nav-hover);
+}
+
+.ht-route input:checked + span,
+.ht-content-tab:is([aria-selected="true"], [data-preview-state="selected"]) {
+  color: var(--nav-ink);
+  border-bottom-color: var(--color-accent);
+}
+
+.ht-nav-item:is(.ht-nav-active, [aria-current="page"], [data-preview-state="selected"]) {
+  color: var(--nav-ink);
+  background: var(--nav-selected-surface);
+}
+
+.ht-nav-item:is(.ht-nav-active, [aria-current="page"], [data-preview-state="selected"])::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+.ht-ui .ht-route input:focus-visible + span,
+.ht-ui .ht-route[data-preview-state="focus"] > span,
+.ht-content-tab:focus-visible,
+.ht-content-tab[data-preview-state="focus"],
+.ht-nav-item:focus-visible,
+.ht-nav-item[data-preview-state="focus"] {
+  outline: 2px solid var(--nav-ink);
+  outline-offset: -2px;
+}
+
+.ht-route input:disabled + span,
+.ht-content-tab:disabled,
+.ht-nav-item:disabled {
+  color: color-mix(in srgb, var(--color-text-default) 58%, var(--color-surface-default));
+  cursor: default;
+}
+
+.ht-route input:disabled {cursor: default}
+.ht-content-tab img,
+.ht-nav-item > img {width: 16px;height: 16px}
