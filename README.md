@@ -16,6 +16,16 @@ working.
 
 - [HT-FLOW-001 · First answer to home record](docs/user-flows/HT-FLOW-001.md)
 
+## Staging homepage
+
+`npm run start:staging` and `npm run build:staging` enable the Buying, Improving and Selling question chooser at `/`. **Start a home record** opens `/start-home-record`, then uses the existing account and property setup routes.
+
+To review it locally using the backend on port 8005, run:
+
+```sh
+HOST=127.0.0.1 PORT=3014 BROWSER=none HOMETRUTH_PREVIEW_API_PROXY=true REACT_APP_API_BASE_URL= REACT_APP_HOMEPAGE_QUESTIONS=true npm start
+```
+
 ## Coming Soon Mode
 
 This app includes a "Coming Soon" mode that blocks access to all routes and displays only the Coming Soon page until you're ready to launch.

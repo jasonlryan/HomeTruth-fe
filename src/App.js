@@ -62,7 +62,9 @@ const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
 const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
 const hasHomepagePreview = process.env.NODE_ENV === "development" || isVisualReviewMode;
 const openHomepagePreviewByDefault = hasHomepagePreview && process.env.REACT_APP_HOMEPAGE_PREVIEW_DEFAULT === "true";
+const showHomepageQuestions = process.env.REACT_APP_HOMEPAGE_QUESTIONS === "true";
 const Homepage = lazy(() => import("./pages/Homepage"));
+const FindMyManualPreview = lazy(() => import("./pages/FindMyManualPreview"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
@@ -129,22 +131,29 @@ function App() {
           {adminRoutes}
           {/* Public Routes */}
           {hasHomepagePreview && (
-            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>}>
-              <Route path="start-home-record" element={<StartHomeRecord />} />
+            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage questionHome="/homepage-preview" /></Suspense>}>
+              <Route path="start-home-record" element={<StartHomeRecord homeHref="/homepage-preview" />} />
             </Route>
           )}
           {hasHomepagePreview && (
             <Route path="/workspace-preview" element={<Suspense fallback={null}><ControlCentrePreview /></Suspense>} />
           )}
           <Route path="/demo" element={<DemoEntry />} />
-          <Route
-            path="/"
-            element={openHomepagePreviewByDefault ? <Navigate to="/homepage-preview" replace /> : (
-              <PublicRoute allowAdmin>
-                <Suspense fallback={null}><Homepage /></Suspense>
-              </PublicRoute>
-            )}
-          />
+          {showHomepageQuestions ? (
+            <Route path="/" element={<Suspense fallback={null}><Homepage questionHome="/" /></Suspense>}>
+              <Route path="start-home-record" element={<StartHomeRecord />} />
+              <Route path="find-my-manual" element={<FindMyManualPreview />} />
+            </Route>
+          ) : (
+            <Route
+              path="/"
+              element={openHomepagePreviewByDefault ? <Navigate to="/homepage-preview" replace /> : (
+                <PublicRoute allowAdmin>
+                  <Suspense fallback={null}><Homepage /></Suspense>
+                </PublicRoute>
+              )}
+            />
+          )}
           <Route path="/how-it-works" element={<PublicRoute allowAdmin><HowHomeTruthWorks /></PublicRoute>} />
           <Route
             path="/pro-features"
