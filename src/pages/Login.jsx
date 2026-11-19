@@ -19,7 +19,8 @@ export default function Login({ comingSoon = false }) {
   const loginSucceeded = useRef(false);
   const redirectTo = searchParams.get("redirect") || null;
   const startingRecord = redirectTo === HOME_RECORD_PATH;
-  const partnerInvite = getEntryPartnerInvite(searchParams, startingRecord);
+  const openingControlCentre = redirectTo === "/control-centre" || redirectTo?.startsWith("/control-centre?");
+  const partnerInvite = getEntryPartnerInvite(searchParams, startingRecord || openingControlCentre);
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || null;
 
   const [email, setEmail] = useState("");
@@ -174,7 +175,7 @@ export default function Login({ comingSoon = false }) {
   if (signedInUser && !loginSucceeded.current && !switchingLocalAccount) {
     if (comingSoon) return <Navigate to={comingSoonDestination(signedInUser)} replace />;
     if (startingRecord) return <Navigate to={HOME_RECORD_PATH} replace state={{ claimHomepageAnswer: true }} />;
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={openingControlCentre ? redirectTo : "/dashboard"} replace />;
   }
 
   const showLocalAdmin = process.env.NODE_ENV === "development" &&

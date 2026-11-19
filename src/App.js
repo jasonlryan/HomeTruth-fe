@@ -68,6 +68,7 @@ const localApplianceFlow = process.env.NODE_ENV === "development" && process.env
 const LocalApplianceWorkspace = lazy(() => import("./pages/LocalApplianceWorkspace"));
 const FindMyManualPreview = lazy(() => import("./pages/FindMyManualPreview"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
+const ControlCentre = lazy(() => import("./pages/ControlCentre"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
 
@@ -216,6 +217,7 @@ function App() {
             }
           >
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="control-centre" element={<Suspense fallback={null}><ControlCentre /></Suspense>} />
             <Route path="welcome" element={<WelcomePage />} />
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="documents" element={<Documents />} />

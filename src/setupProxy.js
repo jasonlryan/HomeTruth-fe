@@ -26,7 +26,7 @@ module.exports = app => {
     app.use(createProxyMiddleware("/api/ai_chat", { target: "http://127.0.0.1:8015", changeOrigin: true }));
     app.use(createProxyMiddleware(path => /^\/api\/property-records\/[1-9]\d*\/items(?:\/|$)/.test(path), { target: "http://127.0.0.1:8014", changeOrigin: true }));
   }
-  app.use(createProxyMiddleware("/api", { target: "http://localhost:8005", changeOrigin: true }));
+  app.use(createProxyMiddleware("/api", { target: process.env.HOMETRUTH_PREVIEW_API_TARGET || "http://localhost:8005", changeOrigin: true }));
 };
 
 // One successful sign-in per explicitly enabled loopback server, for 20 minutes.

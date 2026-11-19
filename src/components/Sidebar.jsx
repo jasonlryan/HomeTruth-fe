@@ -1,9 +1,9 @@
-import HTGlyph from "./HTGlyph";
 import { localManualAskEnabled } from "../features/items/manualAskContext";
 import { useAuth } from '../context/AuthContext';
 import { isDemoWorkspaceUser } from '../utils/demoHomeHistory';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import HTGlyph from "./HTGlyph";
 import { HTIcon } from "./homepage/HomeTruth";
 import { getPartnerProgrammeAccessStatus } from '../api/api';
 import './sidebar.css';
@@ -61,6 +61,7 @@ export default function Sidebar() {
       <nav id="home-navigation" aria-label="Main navigation" className="ht-sidebar-items">
         {isDemoWorkspaceUser(user?.email) && item('activity', 'Operations', '/operations')}
         {item('dashboard', 'Dashboard', '/dashboard')}
+        {item('calendar', 'Control centre', '/control-centre')}
         {hasPartnerAccess && item('key', 'Partner programmes', '/partner-programmes')}
         {item('home', 'Property profile', '/property-profile')}
         {localManualAskEnabled && item('appliance', 'Appliances', '/appliances')}
@@ -90,7 +91,9 @@ function NavItem({ icon, label, active, onClick, collapsed, expanded, controls }
     aria-current={active && expanded === undefined ? 'page' : undefined}
     aria-expanded={expanded} aria-controls={controls} onClick={onClick}
     className={`ht-nav-item ${active ? 'ht-nav-active' : ''}`}>
-    <span className="shrink-0" aria-hidden="true">{icon === "appliance" ? <HTGlyph name="appliance" size={24} /> : <HTIcon name={icon} size={24} assetBase={iconBase} />}</span>
+    <span className="shrink-0" aria-hidden="true">
+      {["appliance", "calendar"].includes(icon) ? <HTGlyph name={icon} size={24} /> : <HTIcon name={icon} size={24} assetBase={iconBase} />}
+    </span>
     <span className={collapsed ? 'ht-nav-tooltip' : ''} aria-hidden={collapsed ? 'true' : undefined}>{label}</span>
   </button>;
 }

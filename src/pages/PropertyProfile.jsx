@@ -544,6 +544,11 @@ export default function PropertyProfile() {
                 {selectedRecord ? "Documents, work history and useful next steps, together in one place." : "Create the home record that documents, facts and actions will attach to."}
               </p>
             </div>
+            {selectedRecord && (
+              <Link className="ht-workspace-control self-start lg:self-auto" to={`/control-centre?propertyId=${selectedRecord.property.id}`}>
+                <HTGlyph name="calendar" size={18} /> Open Control centre
+              </Link>
+            )}
             {records.length > 1 && (
               <label className="flex flex-col gap-2 text-sm text-[var(--color-text-muted)]">
                 Active property
