@@ -8,6 +8,8 @@
 .ht-record-entry .ht-button[data-variant=record] {color:var(--color-text-on-dark)}
 .ht-record-entry .ht-button[data-variant=secondary] {color:var(--color-text-default)}
 .ht-account-main form > a {justify-self:start}
+.ht-account-name-row {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+@media (max-width: 360px) {.ht-account-name-row {grid-template-columns:1fr}}
 .ht-account-password {position:relative}
 .ht-account-password input {padding-inline-end:52px}
 .ht-account-visibility {position:absolute;top:25px;inset-inline-end:2px;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:var(--radius-sm);background:transparent}
