@@ -62,3 +62,14 @@ test("programme preview and sharing preference actions produce local results", (
     JSON.parse(sessionStorage.getItem("ht-presentation-sharing")).documents,
   ).toBe(true);
 });
+
+test("RAG ingestion records and editorial resources have separate destinations", () => {
+  render(<OperationsDemo />);
+  fireEvent.click(screen.getByRole("button", { name: "RAG" }));
+  expect(screen.getByText("Qdrant ingestion records")).toBeVisible();
+  expect(screen.queryByText("Understanding your survey")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Resources" }));
+  expect(screen.getByText("Understanding your survey")).toBeVisible();
+  expect(screen.getByRole("link", { name: /Platform documentation/ })).toHaveAttribute("href", "/faq");
+  expect(screen.queryByText("Qdrant ingestion records")).toBeNull();
+});

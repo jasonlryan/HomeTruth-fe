@@ -3,11 +3,10 @@ import HTGlyph from "../components/HTGlyph";
 import "./admin-workspace.css";
 
 const destinations = [
-  ["knowledge-base", "Knowledge", "knowledge", "Add and review sources used by Ask HomeTruth."],
+  ["knowledge-base", "RAG", "knowledge", "Inspect records ingested into the shared Qdrant index."],
   ["dashboard", "Reporting", "analytics", "Review product usage and programme activity."],
   ["partner-programmes", "Partner programmes", "programme", "Manage programmes, invitations and partner access."],
-  ["articles", "Content", "content", "Manage and publish Home Truths articles."],
-  ["user-flows", "Product resources", "list", "Open user-flow blueprints, the design system and the ontology."],
+  ["resources", "Resources", "list", "Manage HomeTruth articles and browse platform documentation."],
   ["data-access", "Data access", "lock", "View authorised user data and export records when needed."],
 ];
 
@@ -24,6 +23,22 @@ export default function AdminWorkspace() {
       </nav>
       <Outlet />
     </>
+  );
+}
+
+export function AdminResources() {
+  return (
+    <section className="ht-ui ht-admin-overview">
+      <h1>Resources</h1>
+      <div className="ht-admin-destinations">
+        <Link className="ht-panel ht-admin-destination" to="/admin/articles">
+          <h2>HomeTruth articles</h2><p>Write, edit and publish articles.</p>
+        </Link>
+        <Link className="ht-panel ht-admin-destination" to="/admin/user-flows">
+          <h2>Platform documentation</h2><p>Browse user flows, the design system and the ontology.</p>
+        </Link>
+      </div>
+    </section>
   );
 }
 

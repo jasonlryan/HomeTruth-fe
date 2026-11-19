@@ -30,7 +30,7 @@ const homes = [
     review: "Warranty details to confirm",
   },
 ];
-const sources = [
+const articles = [
   {
     title: "Understanding your survey",
     category: "Buying & surveys",
@@ -59,10 +59,10 @@ const sources = [
 const sections = [
   "Overview",
   "Home records",
-  "Knowledge",
+  "RAG",
   "Programmes",
   "Connections",
-  "Content",
+  "Resources",
 ];
 const panel =
   "rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5 sm:p-6";
@@ -73,7 +73,6 @@ export default function OperationsDemo() {
   const [section, setSection] = useState("Overview");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(null);
-  const [source, setSource] = useState(null);
   const [programme, setProgramme] = useState("Completion to home ownership");
   const [message, setMessage] = useState("");
   const [preferences, setPreferences] = useState(() => {
@@ -98,7 +97,6 @@ export default function OperationsDemo() {
     setSection(value);
     setMessage("");
     setSelected(null);
-    setSource(null);
   }
   return (
     <div className="p-4 sm:p-8 text-[var(--color-text-default)]">
@@ -310,46 +308,13 @@ export default function OperationsDemo() {
           )}
         </section>
       )}
-      {section === "Knowledge" && (
+      {section === "RAG" && (
         <section className={panel}>
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <HTGlyph name="knowledge" size={20} />
-            Knowledge library
-          </h2>
-          <p className="mt-3 text-sm ht-workspace-muted">
-            Prepare, review and organise the guidance behind homeowner answers.
+          <h2 className="text-lg font-semibold">Qdrant ingestion records</h2>
+          <p className="mt-3 ht-workspace-muted">
+            Administrators can inspect the indexed chunks in Admin tools under RAG.
+            Live ingestion records are unavailable in this presentation.
           </p>
-          <div className="mt-5 grid gap-3">
-            {sources.map((item) => (
-              <button
-                className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4 text-left"
-                key={item.title}
-                onClick={() => setSource(item)}
-              >
-                <div>
-                  <h3>{item.title}</h3>
-                  <p className="mt-1 text-sm ht-workspace-muted">
-                    {item.category} · Updated {item.date}
-                  </p>
-                </div>
-                <span className="text-sm text-[var(--color-secondary)]">
-                  {item.status}
-                </span>
-              </button>
-            ))}
-          </div>
-          {source && (
-            <div className="mt-5 border-t border-[var(--color-border-default)] pt-5">
-              <h3 className="text-lg">{source.title}</h3>
-              <p className="mt-3 text-sm leading-6">
-                Review the original source, the claims it supports, its date and
-                any limits before publishing it as guidance.
-              </p>
-              <p className="mt-3 text-sm ht-workspace-muted">
-                Workflow: received → extracted → reviewed → published
-              </p>
-            </div>
-          )}
         </section>
       )}
       {section === "Programmes" && (
@@ -501,17 +466,18 @@ export default function OperationsDemo() {
           </section>
         </div>
       )}
-      {section === "Content" && (
+      {section === "Resources" && (
         <section className={panel}>
           <h2 className="flex items-center gap-2 text-lg font-semibold">
             <HTGlyph name="document" size={20} />
-            Homeowner content
+            HomeTruth articles
           </h2>
           <p className="mt-3 text-sm ht-workspace-muted">
             Practical guidance for each stage of owning a home.
           </p>
+          <Link className={button} to="/faq">Platform documentation · HomeTruth FAQ</Link>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {sources.map((item) => (
+            {articles.map((item) => (
               <article
                 className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4"
                 key={item.title}

@@ -1,3 +1,4 @@
+import IndexedRecords from "./IndexedRecords";
 import HTGlyph from "../components/HTGlyph";
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,7 +10,6 @@ export default function KnowledgeBaseAdmin() {
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [kbRecords] = useState(1215); // This would come from an API call
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [urlInputs, setUrlInputs] = useState([""]);
@@ -601,7 +601,7 @@ export default function KnowledgeBaseAdmin() {
       }
       
       // Calculate total pages if total count is provided
-      const total = response?.data?.total || response?.total || response?.count || documentsData.length;
+      const total = response?.data?.total_count ?? response?.data?.total ?? response?.total ?? response?.count ?? documentsData.length;
       setTotalPages(Math.ceil(total / limit));
     } catch (error) {
       console.error("Error fetching documents:", error);
@@ -947,7 +947,7 @@ export default function KnowledgeBaseAdmin() {
 
   const quickActions = [
     {
-      title: "Document Library",
+      title: "Source documents",
       description: "Review uploaded sources and manage deletions.",
       icon: "folder",
       onClick: handleDocumentLibraryClick,
@@ -969,9 +969,9 @@ export default function KnowledgeBaseAdmin() {
             <HTGlyph name="database" size={20} className="text-white " />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Knowledge</h1>
+            <h1 className="text-2xl font-bold text-gray-900">RAG</h1>
             <p className="text-gray-500 text-sm mt-0.5">
-              Manage the RAG knowledge base for HomeTruth assistant.
+              Inspect the shared Qdrant index used by Ask HomeTruth.
             </p>
           </div>
         </div>
@@ -1281,6 +1281,7 @@ export default function KnowledgeBaseAdmin() {
         </div>
       ) : (
         <>
+          <IndexedRecords />
           {/* Quick Actions Section */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="mb-5">
@@ -1311,14 +1312,14 @@ export default function KnowledgeBaseAdmin() {
             </div>
           </div>
 
-          {/* Document Library Section */}
+          {/* Source documents Section */}
           {showDocumentLibrary && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <HTGlyph name="folder" size={24} className="text-ht-purple " />
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Document Library</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Source documents</h2>
                     <p className="text-sm text-gray-600 mt-1">
                       Browse uploaded knowledge files, inspect metadata, and delete specific documents when they go out of date.
                     </p>
@@ -1350,12 +1351,6 @@ export default function KnowledgeBaseAdmin() {
                   <h3 className="text-base font-semibold text-gray-900">Search Documents</h3>
                 </div>
                 
-                <div className="mb-3">
-                  <p className="text-gray-600 text-xs">
-                    KB records: <span className="font-semibold text-gray-900">{kbRecords.toLocaleString()}</span>
-                  </p>
-                </div>
-
                 <div className="flex gap-2">
                   <input
                     type="text"
