@@ -48,6 +48,51 @@ working.
 
 - [HT-FLOW-001 · First answer to home record](docs/user-flows/HT-FLOW-001.md)
 
+## Local homeowner demo
+
+The Buying, Improving and Selling question chooser is enabled by
+`REACT_APP_HOMEPAGE_QUESTIONS=true`. The selected-home Control centre is
+enabled by `REACT_APP_CONTROL_CENTRE_ENABLED=true`. A standard build leaves
+these flags off.
+
+To rehearse against the local HomeTruth backend, add the synthetic Maya
+account to the frontend checkout’s ignored `.env.local`:
+
+```sh
+HOMETRUTH_LOCAL_MAYA_EMAIL=maya.demo@example.invalid
+HOMETRUTH_LOCAL_MAYA_PASSWORD=<the local demo fixture password>
+```
+
+Then run this from the frontend checkout:
+
+```sh
+HOST=127.0.0.1 PORT=3014 BROWSER=none \
+  HOMETRUTH_PREVIEW_API_PROXY=true REACT_APP_API_BASE_URL= \
+  REACT_APP_HOMEPAGE_QUESTIONS=true REACT_APP_CONTROL_CENTRE_ENABLED=true \
+  REACT_APP_HOMEOWNER_DEMO=true REACT_APP_LOCAL_APPLIANCE_FLOW=true npm start
+```
+
+- Open `/login?switch=1` and choose **Log in as Maya** to go to Control centre.
+  Direct demo entry to equipment is at `/demo?to=appliances`.
+- From **Appliances**, open the washer, then ask **get me my washing machine
+  manual** in the top bar. An exact Vault match can be opened or linked to that
+  appliance. A manufacturer lookup requires confirmation.
+- The optional **Admin login · localhost only** shortcut needs
+  `REACT_APP_LOCAL_ADMIN_LOGIN=true` and `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` pointing
+  to a private local env file with `LOCAL_ADMIN_EMAIL` and `LOCAL_ADMIN_PASSWORD`.
+  The shortcut logs in through the normal API, allows one successful use
+  during the first 20 minutes, and opens `/admin/operations`.
+- For a separate frontend rehearsal, set both `PORT` and
+  `REACT_APP_LOCAL_DEMO_PORT` to the same free loopback port. The API proxy
+  defaults to 8005 for core, 8015 for Ask and 8014 for appliances. For a single
+  consolidated backend, point `HOMETRUTH_LOCAL_CORE_API_PORT`,
+  `HOMETRUTH_LOCAL_ASK_API_PORT`, and `HOMETRUTH_LOCAL_ITEMS_API_PORT` to its port.
+  `HOMETRUTH_LOCAL_SURVEY_API_PORT` can route Vault passages and follow-ups to a
+  separate local backend while testing.
+
+Use only synthetic data and the local development database. Keep fixture
+credentials in private env files.
+
 ## Coming Soon Mode
 
 This app includes a "Coming Soon" mode that blocks access to all routes and displays only the Coming Soon page until you're ready to launch.

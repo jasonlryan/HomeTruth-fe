@@ -1,9 +1,12 @@
+import { mayaHomeDestination } from "./utils/demoEntry";
+import { localManualAskEnabled } from "./features/items/manualAskContext";
+import { controlCentreEnabled } from "./utils/localDemo";
 import DemoEntry from './pages/DemoEntry';
 import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -62,8 +65,12 @@ const isComingSoonMode = process.env.REACT_APP_COMING_SOON === 'true';
 const isVisualReviewMode = process.env.REACT_APP_VISUAL_REVIEW === 'true';
 const hasHomepagePreview = process.env.NODE_ENV === "development" || isVisualReviewMode;
 const openHomepagePreviewByDefault = hasHomepagePreview && process.env.REACT_APP_HOMEPAGE_PREVIEW_DEFAULT === "true";
+const showHomepageQuestions = process.env.REACT_APP_HOMEPAGE_QUESTIONS === "true";
 const Homepage = lazy(() => import("./pages/Homepage"));
+const LocalApplianceWorkspace = lazy(() => import("./pages/LocalApplianceWorkspace"));
+const FindMyManualPreview = lazy(() => import("./pages/FindMyManualPreview"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
+const ControlCentre = lazy(() => import("./pages/ControlCentre"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
 
@@ -71,6 +78,7 @@ const adminRoutes = (
   <Route path="/admin" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
     <Route element={<AdminWorkspace />}>
       <Route index element={<AdminOverview />} />
+      <Route path="operations" element={<OperationsDemo />} />
       <Route path="knowledge-base" element={<KnowledgeBaseAdmin />} />
       <Route path="dashboard" element={<AdminReportingDashboard />} />
       <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />
@@ -84,6 +92,12 @@ const adminRoutes = (
     </Route>
   </Route>
 );
+
+function CustomerHome({ children }) {
+  const { user } = useAuth();
+  const destination = mayaHomeDestination(user);
+  return destination ? <Navigate to={destination} replace /> : children;
+}
 
 function App() {
   // If Coming Soon mode is enabled, show only the Coming Soon page (except admin routes)
@@ -130,22 +144,29 @@ function App() {
           {adminRoutes}
           {/* Public Routes */}
           {hasHomepagePreview && (
-            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage showQuestionOptions /></Suspense>}>
-              <Route path="start-home-record" element={<StartHomeRecord />} />
+            <Route path="/homepage-preview" element={<Suspense fallback={null}><Homepage questionHome="/homepage-preview" /></Suspense>}>
+              <Route path="start-home-record" element={<StartHomeRecord homeHref="/homepage-preview" />} />
             </Route>
           )}
           {hasHomepagePreview && (
             <Route path="/workspace-preview" element={<Suspense fallback={null}><ControlCentrePreview /></Suspense>} />
           )}
           <Route path="/demo" element={<DemoEntry />} />
-          <Route
-            path="/"
-            element={openHomepagePreviewByDefault ? <Navigate to="/homepage-preview" replace /> : (
-              <PublicRoute allowAdmin>
-                <Suspense fallback={null}><Homepage /></Suspense>
-              </PublicRoute>
-            )}
-          />
+          {showHomepageQuestions ? (
+            <Route path="/" element={<Suspense fallback={null}><Homepage questionHome="/" /></Suspense>}>
+              <Route path="start-home-record" element={<StartHomeRecord />} />
+              <Route path="find-my-manual" element={<FindMyManualPreview />} />
+            </Route>
+          ) : (
+            <Route
+              path="/"
+              element={openHomepagePreviewByDefault ? <Navigate to="/homepage-preview" replace /> : (
+                <PublicRoute allowAdmin>
+                  <Suspense fallback={null}><Homepage /></Suspense>
+                </PublicRoute>
+              )}
+            />
+          )}
           <Route path="/how-it-works" element={<PublicRoute allowAdmin><HowHomeTruthWorks /></PublicRoute>} />
           <Route
             path="/pro-features"
@@ -205,13 +226,15 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard" element={<CustomerHome><Dashboard /></CustomerHome>} />
+            {controlCentreEnabled() && <Route path="control-centre" element={<Suspense fallback={null}><ControlCentre /></Suspense>} />}
             <Route path="welcome" element={<WelcomePage />} />
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="documents" element={<Documents />} />
             <Route path="property-profile" element={<PropertyProfile />} />
-            <Route path="operations" element={<OperationsDemo />} />
-            <Route path="home" element={<Home />} />
+            {localManualAskEnabled && <Route path="appliances" element={<Suspense fallback={null}><LocalApplianceWorkspace /></Suspense>} />}
+            <Route path="operations" element={<Navigate to={controlCentreEnabled() ? "/control-centre" : "/dashboard"} replace />} />
+            <Route path="home" element={<CustomerHome><Home /></CustomerHome>} />
             <Route path="quiz" element={<QuizPage />} />
             {/* <Route path="budget" element={<BudgetRedirect />} /> */}
             {/* <Route path="budget-calculator" element={<BudgetCalculator />} /> */}

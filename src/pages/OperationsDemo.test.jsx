@@ -17,23 +17,18 @@ jest.mock(
   { virtual: true },
 );
 beforeEach(() => {
-  mockUser = { email: "maya.demo@example.invalid" };
-  process.env.REACT_APP_HOMEOWNER_DEMO = "true";
+  mockUser = { email: "operator@example.invalid", role: "admin" };
   sessionStorage.clear();
 });
-afterAll(() => {
-  delete process.env.REACT_APP_HOMEOWNER_DEMO;
-});
-test("presentation workspace never renders for other users or disabled flag", () => {
-  mockUser = { email: "other@example.invalid" };
+test("Operations is visible only to administrators, including on direct entry", () => {
+  mockUser = { email: "maya.demo@example.invalid", role: "user" };
   const { rerender } = render(<OperationsDemo />);
   expect(screen.getByText("Redirected to dashboard")).toBeVisible();
-  mockUser = { email: "maya.demo@example.invalid" };
-  process.env.REACT_APP_HOMEOWNER_DEMO = "false";
+  mockUser = { email: "operator@example.invalid", role: "admin" };
   rerender(<OperationsDemo />);
-  expect(screen.getByText("Redirected to dashboard")).toBeVisible();
+  expect(screen.getByRole("heading", { name: "Operations" })).toBeVisible();
 });
-test("directory filters and opens the homeowner record without operational API access", () => {
+test("directory filters and shows sample records within the admin workspace", () => {
   render(<OperationsDemo />);
   fireEvent.click(
     screen.getByRole("button", { name: "Home records", exact: true }),
@@ -43,9 +38,8 @@ test("directory filters and opens the homeowner record without operational API a
   });
   expect(screen.queryByText("Robin")).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "View record" }));
-  expect(
-    screen.getByRole("link", { name: "Open home history" }),
-  ).toHaveAttribute("href", "/property-profile");
+  expect(screen.getByRole("heading", { name: /Maya ·/ })).toBeVisible();
+  expect(screen.queryByRole("link", { name: "Open home history" })).not.toBeInTheDocument();
 });
 test("programme preview and sharing preference actions produce local results", () => {
   render(<OperationsDemo />);
@@ -65,11 +59,6 @@ test("programme preview and sharing preference actions produce local results", (
 
 test("RAG ingestion records and editorial resources have separate destinations", () => {
   render(<OperationsDemo />);
-  fireEvent.click(screen.getByRole("button", { name: "RAG" }));
-  expect(screen.getByText("Qdrant ingestion records")).toBeVisible();
-  expect(screen.queryByText("Understanding your survey")).toBeNull();
-  fireEvent.click(screen.getByRole("button", { name: "Resources" }));
-  expect(screen.getByText("Understanding your survey")).toBeVisible();
-  expect(screen.getByRole("link", { name: /Platform documentation/ })).toHaveAttribute("href", "/faq");
-  expect(screen.queryByText("Qdrant ingestion records")).toBeNull();
+  expect(screen.getByRole("link", { name: "RAG" })).toHaveAttribute("href", "/admin/knowledge-base");
+  expect(screen.getByRole("link", { name: "Resources" })).toHaveAttribute("href", "/admin/resources");
 });

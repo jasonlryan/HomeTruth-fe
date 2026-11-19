@@ -1,0 +1,79 @@
+.ht-centre {
+  display: grid;
+  gap: var(--space-6);
+}
+.ht-centre-header,
+.ht-centre-section-header,
+.ht-centre-row-actions {
+  display: flex;
+  align-items: first baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.ht-centre-header p {
+  margin-top: var(--space-1);
+}
+.ht-centre-home {
+  min-width: 0;
+  padding-block: var(--space-2);
+}
+.ht-centre-home .ht-field {
+  width: min(100%, 480px);
+}
+.ht-centre-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+.ht-centre-section {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  overflow-wrap: anywhere;
+}
+.ht-centre-section h2 {
+  font-size: 1.375rem;
+}
+.ht-centre-heading {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: first baseline;
+  gap: var(--space-2);
+}
+.ht-centre-list li {
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--color-border-default);
+}
+.ht-centre-list li:last-child {
+  padding-bottom: 0;
+}
+.ht-app-shell .ht-centre-list h3 {
+  font: 500 0.9375rem/1.4 var(--font-reading);
+}
+.ht-centre-date,
+.ht-centre-row-actions {
+  justify-content: flex-start;
+  margin-top: var(--space-1);
+}
+.ht-centre-date {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.ht-centre-form {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+.ht-centre-form button {
+  justify-self: start;
+}
+@media (max-width: 900px) {
+  .ht-centre-grid {
+    grid-template-columns: 1fr;
+  }
+}

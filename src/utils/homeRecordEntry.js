@@ -1,8 +1,10 @@
 import { claimGuestSession } from "../api/api";
 
+export const FIND_APPLIANCE_MANUAL_ACTION = "find_appliance_manual";
 export const HOME_RECORD_PATH = "/property-profile";
 export const HOME_RECORD_REDIRECT = "?redirect=%2Fproperty-profile";
 const guestSessionKey = "home_record_guest_session_id";
+const taskKey = "home_record_task";
 const answerKey = "home_record_claimed_answer";
 const claimsInFlight = new Map();
 
@@ -59,7 +61,32 @@ export function claimHomeRecordAnswer(userId, sessionId) {
   return request;
 }
 
+export function setHomeRecordTask(action) {
+  try {
+    sessionStorage.setItem(taskKey, action);
+  } catch {
+    // The account flow can continue when browser storage is unavailable.
+  }
+}
+
+export function hasHomeRecordTask() {
+  try {
+    return sessionStorage.getItem(taskKey) === FIND_APPLIANCE_MANUAL_ACTION;
+  } catch {
+    return false;
+  }
+}
+
+export function clearHomeRecordTask() {
+  try {
+    sessionStorage.removeItem(taskKey);
+  } catch {
+    // The account flow can continue when browser storage is unavailable.
+  }
+}
+
 export function clearHomeRecordHandoff() {
+  clearHomeRecordTask();
   setHomeRecordGuestSession(null);
   try {
     sessionStorage.removeItem(answerKey);

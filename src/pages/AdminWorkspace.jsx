@@ -4,6 +4,7 @@ import "./admin-workspace.css";
 
 const destinations = [
   ["knowledge-base", "RAG", "knowledge", "Inspect records ingested into the shared Qdrant index."],
+  ["operations", "Operations", "activity", "Explore the sample home record and programme workflows."],
   ["dashboard", "Reporting", "analytics", "Review product usage and programme activity."],
   ["partner-programmes", "Partner programmes", "programme", "Manage programmes, invitations and partner access."],
   ["resources", "Resources", "list", "Manage HomeTruth articles and browse platform documentation."],

@@ -4,7 +4,6 @@ import "../components/workspace.css";
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { isDemoWorkspaceUser } from "../utils/demoHomeHistory";
 
 // Presentation fixtures remain separate from all operational/admin APIs.
 const homes = [
@@ -30,39 +29,11 @@ const homes = [
     review: "Warranty details to confirm",
   },
 ];
-const articles = [
-  {
-    title: "Understanding your survey",
-    category: "Buying & surveys",
-    date: "12 Nov 2026",
-    status: "Published",
-  },
-  {
-    title: "Keeping records of home repairs",
-    category: "Maintenance",
-    date: "10 Nov 2026",
-    status: "Published",
-  },
-  {
-    title: "What a quotation and invoice establish",
-    category: "Documents",
-    date: "14 Nov 2026",
-    status: "In review",
-  },
-  {
-    title: "Preparing your home information for a sale",
-    category: "Selling",
-    date: "16 Nov 2026",
-    status: "Draft",
-  },
-];
 const sections = [
   "Overview",
   "Home records",
-  "RAG",
   "Programmes",
   "Connections",
-  "Resources",
 ];
 const panel =
   "rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5 sm:p-6";
@@ -88,8 +59,7 @@ export default function OperationsDemo() {
       return { summary: true, documents: false, history: false };
     }
   });
-  if (!isDemoWorkspaceUser(user?.email))
-    return <Navigate to="/dashboard" replace />;
+  if (user?.role !== "admin") return <Navigate to="/dashboard" replace />;
   const filtered = homes.filter((home) =>
     `${home.name} ${home.address}`.toLowerCase().includes(query.toLowerCase()),
   );
@@ -111,8 +81,8 @@ export default function OperationsDemo() {
             put homeowners in control.
           </p>
         </div>
-        <Link className={button} to="/property-profile">
-          Open Maya’s home
+        <Link className={button} to="/admin">
+          Admin overview
           <HTGlyph name="arrow-right" size={16} />
         </Link>
       </header>
@@ -130,6 +100,8 @@ export default function OperationsDemo() {
             {value}
           </button>
         ))}
+        <Link className={button} to="/admin/knowledge-base">RAG</Link>
+        <Link className={button} to="/admin/resources">Resources</Link>
       </nav>
       {message && (
         <p role="status" className={`${panel} mb-5`}>
@@ -138,11 +110,10 @@ export default function OperationsDemo() {
       )}
       {section === "Overview" && (
         <>
-          <div className="mb-6 grid gap-4 sm:grid-cols-3">
+          <div className="mb-6 grid gap-4 sm:grid-cols-2">
             {[
               ["Home records", "3", "Documents, work history and next steps"],
               ["Documents", "12", "Linked to the right home"],
-              ["Guidance in review", "1", "Source quality before publication"],
             ].map(([label, value, detail]) => (
               <div className={panel} key={label}>
                 <p className="text-sm ht-workspace-muted">{label}</p>
@@ -171,9 +142,7 @@ export default function OperationsDemo() {
                   </li>
                 ))}
               </ol>
-              <Link className={`${button} mt-6`} to="/property-profile">
-                Follow the homeowner journey
-              </Link>
+              <p className="mt-6 text-sm ht-workspace-muted">These sample records illustrate the homeowner journey.</p>
             </section>
             <section className={panel}>
               <h2 className="text-lg font-semibold">Work to review</h2>
@@ -287,34 +256,11 @@ export default function OperationsDemo() {
                 {selected.name} · {selected.address}
               </h3>
               <p className="mt-3 text-sm">{selected.review}</p>
-              {selected.name === "Maya" ? (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link className={button} to="/property-profile">
-                    Open home history
-                  </Link>
-                  <Link className={button} to="/documents">
-                    Open documents
-                  </Link>
-                  <Link className={button} to="/saved-notes">
-                    Open notes
-                  </Link>
-                </div>
-              ) : (
-                <p className="mt-3 text-sm ht-workspace-muted">
-                  {selected.documents} documents · {selected.event}
-                </p>
-              )}
+              <p className="mt-3 text-sm ht-workspace-muted">
+                {selected.documents} documents · {selected.event}
+              </p>
             </div>
           )}
-        </section>
-      )}
-      {section === "RAG" && (
-        <section className={panel}>
-          <h2 className="text-lg font-semibold">Qdrant ingestion records</h2>
-          <p className="mt-3 ht-workspace-muted">
-            Administrators can inspect the indexed chunks in Admin tools under RAG.
-            Live ingestion records are unavailable in this presentation.
-          </p>
         </section>
       )}
       {section === "Programmes" && (
@@ -465,44 +411,6 @@ export default function OperationsDemo() {
             </div>
           </section>
         </div>
-      )}
-      {section === "Resources" && (
-        <section className={panel}>
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <HTGlyph name="document" size={20} />
-            HomeTruth articles
-          </h2>
-          <p className="mt-3 text-sm ht-workspace-muted">
-            Practical guidance for each stage of owning a home.
-          </p>
-          <Link className={button} to="/faq">Platform documentation · HomeTruth FAQ</Link>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {articles.map((item) => (
-              <article
-                className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4"
-                key={item.title}
-              >
-                <p className="text-xs text-[var(--color-secondary)]">
-                  {item.category} · {item.status}
-                </p>
-                <h3 className="mt-3 text-lg">{item.title}</h3>
-                <p className="mt-3 text-sm ht-workspace-muted">
-                  Updated {item.date}
-                </p>
-                <button
-                  className={`${button} mt-4`}
-                  onClick={() =>
-                    setMessage(
-                      `${item.title}: check source attribution, owner usefulness, clarity and publication status.`,
-                    )
-                  }
-                >
-                  Review content
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
       )}
     </div>
   );

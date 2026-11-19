@@ -11,6 +11,7 @@ jest.mock("../api/api", () => ({
   getDocumentPreviewFile: jest.fn(),
   askDocumentAI: jest.fn(),
 }));
+jest.mock("react-router-dom", () => ({ Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a> }), { virtual: true });
 jest.mock("react-markdown", () => ({
   __esModule: true,
   default: ({ children }) => <div>{children}</div>,
@@ -192,4 +193,22 @@ test("a pending older page cannot populate a different document", async () => {
   expect(screen.queryByText("Older Home A question")).not.toBeInTheDocument();
   expect(screen.queryByText("Home A question")).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Load older questions" })).not.toBeInTheDocument();
+});
+
+test("a saved source opens the correct page and highlights only the selected wording", async () => {
+  const selection = "staining below the gutter";
+  const text = `The survey noted ${selection}. No measurements were made.`;
+  const start = text.indexOf(selection);
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      savedPassage={{ available: true, text, start, end: start + selection.length, pageNumber: 2 }}
+      onClose={() => {}}
+    />
+  );
+  expect(screen.getByRole("tab", { name: "Passages" })).toHaveAttribute("aria-selected", "true");
+  expect(screen.getByText(selection).tagName).toBe("MARK");
+  await waitFor(() => expect(screen.getByTitle("Preview of survey.pdf")).toBeInTheDocument());
+  fireEvent.click(screen.getByRole("button", { name: "View PDF page" }));
+  expect(screen.getByTitle("Preview of survey.pdf")).toHaveAttribute("src", "blob:preview#page=2");
 });

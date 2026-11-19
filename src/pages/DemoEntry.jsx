@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { demoEntryEnabled, startDemoSession } from '../utils/demoEntry';
+import { demoReturnTo, localMayaEntry, mayaHomeDestination, startDemoSession } from '../utils/demoEntry';
 import '../components/workspace.css';
 
 export default function DemoEntry() {
@@ -12,9 +12,14 @@ export default function DemoEntry() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    if (!demoEntryEnabled()) { navigate('/login', { replace: true }); return; }
-    const destination = new URLSearchParams(window.location.search).get('to') === 'operations' ? '/operations' : '/property-profile';
+    if (!localMayaEntry()) { navigate('/login', { replace: true }); return; }
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('to');
+    const explicit = demoReturnTo(params.get('returnTo'));
     startDemoSession().then(({ token, user }) => {
+      const destination = explicit || (target === 'appliances' ? '/appliances'
+        : target === 'home-record' ? '/property-profile'
+        : mayaHomeDestination(user) || '/property-profile');
       login(token, user);
       navigate(destination, { replace: true });
     }).catch(err => setError(err.message));

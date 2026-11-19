@@ -1,6 +1,10 @@
 import { useId, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { FIND_APPLIANCE_MANUAL_ACTION } from "../../utils/homeRecordEntry";
 import { Button, HTIcon, RouteChoice } from "./HomeTruth";
 import "./styles/question-options.css";
+
+const manualStarter = { action: FIND_APPLIANCE_MANUAL_ACTION, label: "Can you find the manual for my washing machine?" };
 
 const prompts = {
   buy: [
@@ -23,11 +27,14 @@ const prompts = {
   ],
 };
 
-export default function QuestionOptions({ route, onRouteChange, question, onQuestionChange, onAsk, pending, limited, assetBase }) {
+export default function QuestionOptions({ route, onRouteChange, question, onQuestionChange, onAsk, pending, limited, assetBase, manualPreviewHref }) {
   const id = useId();
   const input = useRef(null);
   const [customOpen, setCustomOpen] = useState(false);
   const disabled = pending || limited;
+  const starterQuestions = route.id === "improve" && manualPreviewHref
+    ? [manualStarter, prompts.improve[0], prompts.improve[1], prompts.improve[3]]
+    : prompts[route.id];
 
   const toggleCustom = () => {
     if (customOpen) {
@@ -42,13 +49,21 @@ export default function QuestionOptions({ route, onRouteChange, question, onQues
     <section className="ht-panel ht-composer ht-question-options" aria-label="Property questions">
       <RouteChoice name={id + "-route"} selected={route.id} onChange={onRouteChange} disabled={pending} assetBase={assetBase + "icons/"} />
       <ul className="ht-question-options-list" aria-label={route.label + " questions"}>
-        {prompts[route.id].map(prompt => (
-          <li key={prompt}>
-            <Button variant="text" disabled={disabled} onClick={() => onAsk(prompt)}>
-              <span>{prompt}</span><HTIcon name="arrow-right" assetBase={assetBase + "icons/"} />
-            </Button>
-          </li>
-        ))}
+        {starterQuestions.map(starter => {
+          const action = starter.action;
+          const label = starter.label ?? starter;
+          const content = <><span>{label}</span><HTIcon name="arrow-right" assetBase={assetBase + "icons/"} /></>;
+          return (
+            <li key={action || label}>
+              {action === FIND_APPLIANCE_MANUAL_ACTION ? (
+                <Link className="ht-button" data-variant="text" data-action-id={action} to={manualPreviewHref}
+                  aria-disabled={pending || undefined} onClick={event => { if (pending) event.preventDefault(); }}>{content}</Link>
+              ) : (
+                <Button variant="text" disabled={disabled} onClick={() => onAsk(label)}>{content}</Button>
+              )}
+            </li>
+          );
+        })}
       </ul>
       <Button className="ht-button ht-custom-question" variant="text" disabled={disabled} onClick={toggleCustom}
         aria-controls={id + "-custom"} aria-expanded={customOpen}>I have a different question</Button>

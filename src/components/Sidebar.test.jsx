@@ -1,16 +1,20 @@
 import { render,screen,fireEvent } from '@testing-library/react';
 import Sidebar from './Sidebar';
 const mockNavigate=jest.fn();
-jest.mock('react-router-dom',()=>({useNavigate:()=>mockNavigate,useLocation:()=>({pathname:'/operations'})}),{virtual:true});
+jest.mock('react-router-dom',()=>({useNavigate:()=>mockNavigate,useLocation:()=>({pathname:'/control-centre'})}),{virtual:true});
 jest.mock('../context/AuthContext',()=>({useAuth:()=>({user:{email:'maya.demo@example.invalid'}})}));
 jest.mock('../api/api',()=>({getPartnerProgrammeAccessStatus:async()=>false}));
 beforeEach(() => { window.innerWidth = 1440; window.matchMedia = jest.fn(() => ({ matches: false, addEventListener: jest.fn(), removeEventListener: jest.fn() })); });
-test('operator navigation is a keyboard-focusable native control with current-page semantics',async()=>{
- process.env.REACT_APP_HOMEOWNER_DEMO='true';
- render(<Sidebar/>);const operations=screen.getByRole('button',{name:'Operations'});
- expect(operations.tagName).toBe('BUTTON');expect(operations).toHaveAttribute('aria-current','page');expect(operations.tabIndex).toBe(0);
- fireEvent.click(operations);expect(mockNavigate).toHaveBeenCalledWith('/operations');
- delete process.env.REACT_APP_HOMEOWNER_DEMO;
+test('Maya has access to Control centre through homeowner navigation', async () => {
+ process.env.REACT_APP_CONTROL_CENTRE_ENABLED='true';
+ render(<Sidebar/>);
+ const centre=screen.getByRole('button',{name:'Control centre'});
+ expect(centre).toHaveAttribute('aria-current','page');
+ expect(centre.tabIndex).toBe(0);
+ expect(screen.queryByRole('button',{name:'Operations'})).not.toBeInTheDocument();
+ fireEvent.click(centre);
+ expect(mockNavigate).toHaveBeenCalledWith('/control-centre');
+ delete process.env.REACT_APP_CONTROL_CENTRE_ENABLED;
 });
 
 test('narrow screens retain every navigation action in a compact rail', () => {
