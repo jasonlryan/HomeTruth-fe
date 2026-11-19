@@ -221,10 +221,10 @@ export default function SavedNotes() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
+    <div className="ht-workspace-page min-h-screen">
+      <div className="ht-workspace-title-row">
         <div>
-          <PageTitle as="h2">Notebooks</PageTitle>
+          <PageTitle>Notebooks</PageTitle>
           <p className="text-sm text-gray-500">Keep your AI insights in one place</p>
         </div>
         <button

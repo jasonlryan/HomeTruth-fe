@@ -1,0 +1,998 @@
+[
+  {
+    "id": "ht-home",
+    "group": "Navigation",
+    "label": "Home",
+    "usage": "Home overview"
+  },
+  {
+    "id": "ht-dashboard",
+    "group": "Navigation",
+    "label": "Dashboard",
+    "usage": "Dashboard and summary"
+  },
+  {
+    "id": "ht-property-switch",
+    "group": "Navigation",
+    "label": "Switch home",
+    "usage": "Select another home"
+  },
+  {
+    "id": "ht-goal-switch",
+    "group": "Navigation",
+    "label": "Change goal",
+    "usage": "Buying, owning or selling goal"
+  },
+  {
+    "id": "ht-menu",
+    "group": "Navigation",
+    "label": "Menu",
+    "usage": "Open navigation"
+  },
+  {
+    "id": "ht-close",
+    "group": "Navigation",
+    "label": "Close",
+    "usage": "Close a dialog"
+  },
+  {
+    "id": "ht-arrow-left",
+    "group": "Navigation",
+    "label": "Back",
+    "usage": "Previous page"
+  },
+  {
+    "id": "ht-arrow-right",
+    "group": "Navigation",
+    "label": "Next",
+    "usage": "Next step"
+  },
+  {
+    "id": "ht-arrow-up",
+    "group": "Navigation",
+    "label": "Up",
+    "usage": "Move up"
+  },
+  {
+    "id": "ht-arrow-down",
+    "group": "Navigation",
+    "label": "Down",
+    "usage": "Move down"
+  },
+  {
+    "id": "ht-chevron-left",
+    "group": "Navigation",
+    "label": "Previous",
+    "usage": "Pagination previous"
+  },
+  {
+    "id": "ht-chevron-right",
+    "group": "Navigation",
+    "label": "Continue",
+    "usage": "Pagination next"
+  },
+  {
+    "id": "ht-chevron-up",
+    "group": "Navigation",
+    "label": "Collapse",
+    "usage": "Collapse disclosure"
+  },
+  {
+    "id": "ht-chevron-down",
+    "group": "Navigation",
+    "label": "Expand",
+    "usage": "Expand disclosure"
+  },
+  {
+    "id": "ht-list",
+    "group": "Navigation",
+    "label": "List view",
+    "usage": "Switch to list"
+  },
+  {
+    "id": "ht-grid",
+    "group": "Navigation",
+    "label": "Grid view",
+    "usage": "Switch to tile view"
+  },
+  {
+    "id": "ht-add",
+    "group": "Actions",
+    "label": "Add",
+    "usage": "Add an item or record"
+  },
+  {
+    "id": "ht-remove",
+    "group": "Actions",
+    "label": "Remove",
+    "usage": "Remove from selection"
+  },
+  {
+    "id": "ht-search",
+    "group": "Actions",
+    "label": "Search",
+    "usage": "Search records"
+  },
+  {
+    "id": "ht-filter",
+    "group": "Actions",
+    "label": "Filter",
+    "usage": "Filter results"
+  },
+  {
+    "id": "ht-sort",
+    "group": "Actions",
+    "label": "Sort",
+    "usage": "Change sort order"
+  },
+  {
+    "id": "ht-more",
+    "group": "Actions",
+    "label": "More actions",
+    "usage": "Overflow menu"
+  },
+  {
+    "id": "ht-edit",
+    "group": "Actions",
+    "label": "Edit",
+    "usage": "Edit record"
+  },
+  {
+    "id": "ht-delete",
+    "group": "Actions",
+    "label": "Delete",
+    "usage": "Delete with appropriate confirmation"
+  },
+  {
+    "id": "ht-archive",
+    "group": "Actions",
+    "label": "Archive",
+    "usage": "Archive record"
+  },
+  {
+    "id": "ht-restore",
+    "group": "Actions",
+    "label": "Restore",
+    "usage": "Restore retained record"
+  },
+  {
+    "id": "ht-upload",
+    "group": "Actions",
+    "label": "Upload",
+    "usage": "Upload selected file"
+  },
+  {
+    "id": "ht-download",
+    "group": "Actions",
+    "label": "Download",
+    "usage": "Download authorised material"
+  },
+  {
+    "id": "ht-copy",
+    "group": "Actions",
+    "label": "Copy",
+    "usage": "Copy text or reference"
+  },
+  {
+    "id": "ht-link",
+    "group": "Actions",
+    "label": "Link",
+    "usage": "Associate records or add URL"
+  },
+  {
+    "id": "ht-unlink",
+    "group": "Actions",
+    "label": "Unlink",
+    "usage": "Remove an association"
+  },
+  {
+    "id": "ht-external",
+    "group": "Actions",
+    "label": "Open externally",
+    "usage": "Open external source"
+  },
+  {
+    "id": "ht-share",
+    "group": "Actions",
+    "label": "Share",
+    "usage": "Review recipient and material before sharing"
+  },
+  {
+    "id": "ht-save",
+    "group": "Actions",
+    "label": "Save",
+    "usage": "Save draft or answer"
+  },
+  {
+    "id": "ht-print",
+    "group": "Actions",
+    "label": "Print",
+    "usage": "Print report"
+  },
+  {
+    "id": "ht-expand",
+    "group": "Actions",
+    "label": "Full screen",
+    "usage": "Expand preview"
+  },
+  {
+    "id": "ht-collapse",
+    "group": "Actions",
+    "label": "Exit full screen",
+    "usage": "Restore preview size"
+  },
+  {
+    "id": "ht-refresh",
+    "group": "Actions",
+    "label": "Refresh",
+    "usage": "Retry or reload"
+  },
+  {
+    "id": "ht-undo",
+    "group": "Actions",
+    "label": "Undo",
+    "usage": "Undo last local edit"
+  },
+  {
+    "id": "ht-check",
+    "group": "Actions",
+    "label": "Confirm",
+    "usage": "Confirm a selection; not a verification badge"
+  },
+  {
+    "id": "ht-bookmark",
+    "group": "Actions",
+    "label": "Bookmark",
+    "usage": "Save listing or article"
+  },
+  {
+    "id": "ht-buy",
+    "group": "Property journeys",
+    "label": "Buying",
+    "usage": "Buying workspace"
+  },
+  {
+    "id": "ht-own",
+    "group": "Property journeys",
+    "label": "Home management",
+    "usage": "Manage an owned home"
+  },
+  {
+    "id": "ht-sell",
+    "group": "Property journeys",
+    "label": "Selling",
+    "usage": "Selling preparation"
+  },
+  {
+    "id": "ht-improve",
+    "group": "Property journeys",
+    "label": "Improvements",
+    "usage": "Home improvement records"
+  },
+  {
+    "id": "ht-handover",
+    "group": "Property journeys",
+    "label": "Handover",
+    "usage": "Selected record transfer"
+  },
+  {
+    "id": "ht-viewing",
+    "group": "Property journeys",
+    "label": "Viewing",
+    "usage": "Viewing questions and preparation"
+  },
+  {
+    "id": "ht-compare",
+    "group": "Property journeys",
+    "label": "Compare properties",
+    "usage": "Compare selected listings"
+  },
+  {
+    "id": "ht-location",
+    "group": "Property journeys",
+    "label": "Address",
+    "usage": "Property address"
+  },
+  {
+    "id": "ht-building",
+    "group": "Property journeys",
+    "label": "Building",
+    "usage": "Building or portfolio"
+  },
+  {
+    "id": "ht-floorplan",
+    "group": "Property journeys",
+    "label": "Rooms and spaces",
+    "usage": "Rooms and property layout"
+  },
+  {
+    "id": "ht-document",
+    "group": "Documents and evidence",
+    "label": "Document",
+    "usage": "General document"
+  },
+  {
+    "id": "ht-documents",
+    "group": "Documents and evidence",
+    "label": "Document library",
+    "usage": "All documents"
+  },
+  {
+    "id": "ht-folder",
+    "group": "Documents and evidence",
+    "label": "Folder",
+    "usage": "Document folder"
+  },
+  {
+    "id": "ht-folder-empty",
+    "group": "Documents and evidence",
+    "label": "Empty folder",
+    "usage": "No results or no records"
+  },
+  {
+    "id": "ht-note",
+    "group": "Documents and evidence",
+    "label": "Note",
+    "usage": "Saved note"
+  },
+  {
+    "id": "ht-manual",
+    "group": "Documents and evidence",
+    "label": "Manual",
+    "usage": "Product manual"
+  },
+  {
+    "id": "ht-receipt",
+    "group": "Documents and evidence",
+    "label": "Receipt",
+    "usage": "Purchase receipt"
+  },
+  {
+    "id": "ht-warranty",
+    "group": "Documents and evidence",
+    "label": "Warranty",
+    "usage": "Warranty terms; does not confirm cover"
+  },
+  {
+    "id": "ht-survey",
+    "group": "Documents and evidence",
+    "label": "Survey",
+    "usage": "Property survey"
+  },
+  {
+    "id": "ht-certificate",
+    "group": "Documents and evidence",
+    "label": "Certificate",
+    "usage": "Certificate file; not an approval state"
+  },
+  {
+    "id": "ht-image",
+    "group": "Documents and evidence",
+    "label": "Photo",
+    "usage": "Photo evidence"
+  },
+  {
+    "id": "ht-attachment",
+    "group": "Documents and evidence",
+    "label": "Attachment",
+    "usage": "Attach selected evidence"
+  },
+  {
+    "id": "ht-source",
+    "group": "Documents and evidence",
+    "label": "Source reference",
+    "usage": "Provenance and supporting evidence"
+  },
+  {
+    "id": "ht-history",
+    "group": "Documents and evidence",
+    "label": "History",
+    "usage": "Recorded events"
+  },
+  {
+    "id": "ht-report",
+    "group": "Documents and evidence",
+    "label": "Property report",
+    "usage": "Report based on available records"
+  },
+  {
+    "id": "ht-document-unknown",
+    "group": "Documents and evidence",
+    "label": "Unreadable document",
+    "usage": "Unreadable or unresolved document"
+  },
+  {
+    "id": "ht-document-locked",
+    "group": "Documents and evidence",
+    "label": "Restricted document",
+    "usage": "Document access restricted"
+  },
+  {
+    "id": "ht-lease",
+    "group": "Documents and evidence",
+    "label": "Lease or title",
+    "usage": "Tenure / title document"
+  },
+  {
+    "id": "ht-calendar",
+    "group": "Maintenance and tasks",
+    "label": "Calendar",
+    "usage": "Recorded date"
+  },
+  {
+    "id": "ht-clock",
+    "group": "Maintenance and tasks",
+    "label": "Time",
+    "usage": "Time or schedule"
+  },
+  {
+    "id": "ht-task",
+    "group": "Maintenance and tasks",
+    "label": "Task",
+    "usage": "Task details"
+  },
+  {
+    "id": "ht-checklist",
+    "group": "Maintenance and tasks",
+    "label": "Checklist",
+    "usage": "Preparation checklist"
+  },
+  {
+    "id": "ht-repair",
+    "group": "Maintenance and tasks",
+    "label": "Repair",
+    "usage": "Repair and maintenance"
+  },
+  {
+    "id": "ht-service",
+    "group": "Maintenance and tasks",
+    "label": "Service record",
+    "usage": "Recorded service event"
+  },
+  {
+    "id": "ht-contractor",
+    "group": "Maintenance and tasks",
+    "label": "Contractor",
+    "usage": "Tradesperson contact"
+  },
+  {
+    "id": "ht-paint",
+    "group": "Maintenance and tasks",
+    "label": "Decorating",
+    "usage": "Decorating and improvements"
+  },
+  {
+    "id": "ht-reminder",
+    "group": "Maintenance and tasks",
+    "label": "Due date",
+    "usage": "Recorded due date reminder"
+  },
+  {
+    "id": "ht-issue",
+    "group": "Maintenance and tasks",
+    "label": "Issue",
+    "usage": "Recorded issue; not a diagnosis"
+  },
+  {
+    "id": "ht-budget",
+    "group": "Costs and value",
+    "label": "Budget planner",
+    "usage": "Affordability and budget"
+  },
+  {
+    "id": "ht-wallet",
+    "group": "Costs and value",
+    "label": "Costs",
+    "usage": "Spending records"
+  },
+  {
+    "id": "ht-pound",
+    "group": "Costs and value",
+    "label": "Amount",
+    "usage": "GBP amount"
+  },
+  {
+    "id": "ht-invoice",
+    "group": "Costs and value",
+    "label": "Invoice",
+    "usage": "Invoice and bill"
+  },
+  {
+    "id": "ht-estimate",
+    "group": "Costs and value",
+    "label": "Estimate",
+    "usage": "Dated estimate, not valuation"
+  },
+  {
+    "id": "ht-replacement-value",
+    "group": "Costs and value",
+    "label": "Replacement cost",
+    "usage": "Separate replacement cost estimate"
+  },
+  {
+    "id": "ht-trend-up",
+    "group": "Costs and value",
+    "label": "Increase",
+    "usage": "Upward change with period label"
+  },
+  {
+    "id": "ht-trend-down",
+    "group": "Costs and value",
+    "label": "Decrease",
+    "usage": "Downward change with period label"
+  },
+  {
+    "id": "ht-premium",
+    "group": "Costs and value",
+    "label": "Pro membership",
+    "usage": "Paid plan designation"
+  },
+  {
+    "id": "ht-appliance",
+    "group": "Home equipment and spaces",
+    "label": "Appliance",
+    "usage": "General appliance"
+  },
+  {
+    "id": "ht-washing-machine",
+    "group": "Home equipment and spaces",
+    "label": "Washing machine",
+    "usage": "Laundry equipment"
+  },
+  {
+    "id": "ht-dishwasher",
+    "group": "Home equipment and spaces",
+    "label": "Dishwasher",
+    "usage": "Dishwasher"
+  },
+  {
+    "id": "ht-oven",
+    "group": "Home equipment and spaces",
+    "label": "Oven",
+    "usage": "Oven / cooker"
+  },
+  {
+    "id": "ht-fridge",
+    "group": "Home equipment and spaces",
+    "label": "Fridge",
+    "usage": "Fridge / freezer"
+  },
+  {
+    "id": "ht-heating",
+    "group": "Home equipment and spaces",
+    "label": "Heating system",
+    "usage": "Heating, cooling and ventilation category"
+  },
+  {
+    "id": "ht-boiler",
+    "group": "Home equipment and spaces",
+    "label": "Boiler",
+    "usage": "Boiler"
+  },
+  {
+    "id": "ht-radiator",
+    "group": "Home equipment and spaces",
+    "label": "Radiator",
+    "usage": "Radiator"
+  },
+  {
+    "id": "ht-thermostat",
+    "group": "Home equipment and spaces",
+    "label": "Thermostat",
+    "usage": "Heating control"
+  },
+  {
+    "id": "ht-ventilation",
+    "group": "Home equipment and spaces",
+    "label": "Ventilation",
+    "usage": "Ventilation / air handling"
+  },
+  {
+    "id": "ht-plumbing",
+    "group": "Home equipment and spaces",
+    "label": "Plumbing",
+    "usage": "Water and pipework"
+  },
+  {
+    "id": "ht-electrical",
+    "group": "Home equipment and spaces",
+    "label": "Electrical",
+    "usage": "Electrical installation"
+  },
+  {
+    "id": "ht-solar",
+    "group": "Home equipment and spaces",
+    "label": "Solar panels",
+    "usage": "Solar installation"
+  },
+  {
+    "id": "ht-battery",
+    "group": "Home equipment and spaces",
+    "label": "Battery",
+    "usage": "Battery / energy storage"
+  },
+  {
+    "id": "ht-ev-charger",
+    "group": "Home equipment and spaces",
+    "label": "EV charger",
+    "usage": "EV charging"
+  },
+  {
+    "id": "ht-roof",
+    "group": "Home equipment and spaces",
+    "label": "Roof",
+    "usage": "Roof / building fabric"
+  },
+  {
+    "id": "ht-window",
+    "group": "Home equipment and spaces",
+    "label": "Window",
+    "usage": "Windows and doors"
+  },
+  {
+    "id": "ht-garden",
+    "group": "Home equipment and spaces",
+    "label": "Garden",
+    "usage": "Garden / external space"
+  },
+  {
+    "id": "ht-network",
+    "group": "Home equipment and spaces",
+    "label": "Home network",
+    "usage": "Connectivity equipment"
+  },
+  {
+    "id": "ht-sensor",
+    "group": "Home equipment and spaces",
+    "label": "Sensor",
+    "usage": "Sensor or control"
+  },
+  {
+    "id": "ht-camera",
+    "group": "Home equipment and spaces",
+    "label": "Camera",
+    "usage": "Take label photo"
+  },
+  {
+    "id": "ht-scan",
+    "group": "Home equipment and spaces",
+    "label": "Scan code",
+    "usage": "QR / barcode intake"
+  },
+  {
+    "id": "ht-model",
+    "group": "Home equipment and spaces",
+    "label": "Model identification",
+    "usage": "Model, serial and candidate match"
+  },
+  {
+    "id": "ht-assistant",
+    "group": "Assistance and connections",
+    "label": "AskAI",
+    "usage": "Property assistant conversation"
+  },
+  {
+    "id": "ht-agent",
+    "group": "Assistance and connections",
+    "label": "Agent",
+    "usage": "Optional agent task support"
+  },
+  {
+    "id": "ht-send",
+    "group": "Assistance and connections",
+    "label": "Send",
+    "usage": "Send message"
+  },
+  {
+    "id": "ht-microphone",
+    "group": "Assistance and connections",
+    "label": "Voice input",
+    "usage": "Voice input if supported"
+  },
+  {
+    "id": "ht-stop",
+    "group": "Assistance and connections",
+    "label": "Stop",
+    "usage": "Stop generation or recording"
+  },
+  {
+    "id": "ht-thumb-up",
+    "group": "Assistance and connections",
+    "label": "Helpful",
+    "usage": "Positive answer feedback"
+  },
+  {
+    "id": "ht-thumb-down",
+    "group": "Assistance and connections",
+    "label": "Not helpful",
+    "usage": "Negative answer feedback"
+  },
+  {
+    "id": "ht-suggestion",
+    "group": "Assistance and connections",
+    "label": "Suggested answer",
+    "usage": "Suggestion; not proof of accuracy"
+  },
+  {
+    "id": "ht-connection",
+    "group": "Assistance and connections",
+    "label": "Connection",
+    "usage": "Provider account connection"
+  },
+  {
+    "id": "ht-extension",
+    "group": "Assistance and connections",
+    "label": "Browser extension",
+    "usage": "Browser extension"
+  },
+  {
+    "id": "ht-globe",
+    "group": "Assistance and connections",
+    "label": "Web source",
+    "usage": "Online reference"
+  },
+  {
+    "id": "ht-user",
+    "group": "People and permissions",
+    "label": "Account",
+    "usage": "Account profile"
+  },
+  {
+    "id": "ht-household",
+    "group": "People and permissions",
+    "label": "People",
+    "usage": "Household or cohort members"
+  },
+  {
+    "id": "ht-invite",
+    "group": "People and permissions",
+    "label": "Invite person",
+    "usage": "Invite with defined role"
+  },
+  {
+    "id": "ht-user-confirmed",
+    "group": "People and permissions",
+    "label": "Person confirmed",
+    "usage": "Member status; not property verification"
+  },
+  {
+    "id": "ht-settings",
+    "group": "People and permissions",
+    "label": "Settings",
+    "usage": "General settings"
+  },
+  {
+    "id": "ht-preferences",
+    "group": "People and permissions",
+    "label": "Preferences",
+    "usage": "Preference controls"
+  },
+  {
+    "id": "ht-notification",
+    "group": "People and permissions",
+    "label": "Notification",
+    "usage": "Notification settings"
+  },
+  {
+    "id": "ht-lock",
+    "group": "People and permissions",
+    "label": "Private",
+    "usage": "Private / access restricted"
+  },
+  {
+    "id": "ht-unlock",
+    "group": "People and permissions",
+    "label": "Access allowed",
+    "usage": "Authorised access"
+  },
+  {
+    "id": "ht-visible",
+    "group": "People and permissions",
+    "label": "Show",
+    "usage": "Show value / preview"
+  },
+  {
+    "id": "ht-hidden",
+    "group": "People and permissions",
+    "label": "Hide",
+    "usage": "Hide private value"
+  },
+  {
+    "id": "ht-logout",
+    "group": "People and permissions",
+    "label": "Sign out",
+    "usage": "Sign out"
+  },
+  {
+    "id": "ht-consent",
+    "group": "People and permissions",
+    "label": "Permission",
+    "usage": "Permission granted for stated scope"
+  },
+  {
+    "id": "ht-key",
+    "group": "People and permissions",
+    "label": "Access key",
+    "usage": "Access role / credential"
+  },
+  {
+    "id": "ht-mail",
+    "group": "People and permissions",
+    "label": "Email",
+    "usage": "Email contact or selected message"
+  },
+  {
+    "id": "ht-info",
+    "group": "Status and feedback",
+    "label": "Information",
+    "usage": "Contextual information"
+  },
+  {
+    "id": "ht-help",
+    "group": "Status and feedback",
+    "label": "Help",
+    "usage": "Help and unknown question"
+  },
+  {
+    "id": "ht-success",
+    "group": "Status and feedback",
+    "label": "Completed",
+    "usage": "Operation completed; not source verification"
+  },
+  {
+    "id": "ht-warning",
+    "group": "Status and feedback",
+    "label": "Attention",
+    "usage": "Attention required"
+  },
+  {
+    "id": "ht-error",
+    "group": "Status and feedback",
+    "label": "Failed",
+    "usage": "Failed operation"
+  },
+  {
+    "id": "ht-loading",
+    "group": "Status and feedback",
+    "label": "Loading",
+    "usage": "Loading; animate only with reduced-motion support"
+  },
+  {
+    "id": "ht-pending",
+    "group": "Status and feedback",
+    "label": "Pending",
+    "usage": "Awaiting processing or action"
+  },
+  {
+    "id": "ht-blocked",
+    "group": "Status and feedback",
+    "label": "Unavailable",
+    "usage": "Unavailable / blocked"
+  },
+  {
+    "id": "ht-offline",
+    "group": "Status and feedback",
+    "label": "Offline",
+    "usage": "No current connection; not a device fault"
+  },
+  {
+    "id": "ht-connected",
+    "group": "Status and feedback",
+    "label": "Connected",
+    "usage": "Connection state; not data freshness"
+  },
+  {
+    "id": "ht-stale",
+    "group": "Status and feedback",
+    "label": "Out of date",
+    "usage": "Source older than expected"
+  },
+  {
+    "id": "ht-unknown",
+    "group": "Status and feedback",
+    "label": "Unknown",
+    "usage": "Fact not supplied"
+  },
+  {
+    "id": "ht-revoked",
+    "group": "Status and feedback",
+    "label": "Access revoked",
+    "usage": "Permission revoked"
+  },
+  {
+    "id": "ht-draft",
+    "group": "Status and feedback",
+    "label": "Draft",
+    "usage": "Unsaved or draft record"
+  },
+  {
+    "id": "ht-play",
+    "group": "Status and feedback",
+    "label": "Activate",
+    "usage": "Start / activate programme"
+  },
+  {
+    "id": "ht-pause",
+    "group": "Status and feedback",
+    "label": "Pause",
+    "usage": "Pause programme"
+  },
+  {
+    "id": "ht-search-empty",
+    "group": "Status and feedback",
+    "label": "No search results",
+    "usage": "Search returned no results"
+  },
+  {
+    "id": "ht-organisation",
+    "group": "Partners and administration",
+    "label": "Organisation",
+    "usage": "Partner organisation"
+  },
+  {
+    "id": "ht-programme",
+    "group": "Partners and administration",
+    "label": "Programme",
+    "usage": "Partner programme"
+  },
+  {
+    "id": "ht-cohort",
+    "group": "Partners and administration",
+    "label": "Cohort",
+    "usage": "Programme cohort"
+  },
+  {
+    "id": "ht-campaign",
+    "group": "Partners and administration",
+    "label": "Campaign",
+    "usage": "Invitation / acquisition campaign"
+  },
+  {
+    "id": "ht-analytics",
+    "group": "Partners and administration",
+    "label": "Reporting",
+    "usage": "Aggregate reports"
+  },
+  {
+    "id": "ht-database",
+    "group": "Partners and administration",
+    "label": "Data store",
+    "usage": "Knowledge ingestion and datasets"
+  },
+  {
+    "id": "ht-content",
+    "group": "Partners and administration",
+    "label": "Article",
+    "usage": "Editorial content"
+  },
+  {
+    "id": "ht-knowledge",
+    "group": "Partners and administration",
+    "label": "Knowledge base",
+    "usage": "Knowledge library"
+  },
+  {
+    "id": "ht-data-access",
+    "group": "Partners and administration",
+    "label": "Data access",
+    "usage": "Admin access review"
+  },
+  {
+    "id": "ht-audit",
+    "group": "Partners and administration",
+    "label": "Audit trail",
+    "usage": "Trace recorded activity"
+  },
+  {
+    "id": "ht-activity",
+    "group": "Partners and administration",
+    "label": "Activity",
+    "usage": "Activity metric"
+  },
+  {
+    "id": "ht-publish",
+    "group": "Partners and administration",
+    "label": "Publish",
+    "usage": "Publish article"
+  }
+]

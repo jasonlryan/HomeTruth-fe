@@ -80,7 +80,7 @@ export default function AuthenticatedLayout() {
   if (onboardingMode) {
     // Full white canvas; no chrome
     return (
-      <div className="min-h-screen bg-white">
+      <div className="ht-ui ht-app-shell min-h-screen bg-white">
         <main className="min-h-screen">
           <Outlet />
         </main>
@@ -90,7 +90,7 @@ export default function AuthenticatedLayout() {
 
   // Normal chrome layout
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="ht-ui ht-app-shell flex flex-col min-h-screen bg-gray-50">
       <div className="flex flex-1 min-w-0">
         {showProductNavigation && <Sidebar />}
         <div className="flex-1 min-w-0 flex flex-col">

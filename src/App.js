@@ -65,6 +65,7 @@ const openHomepagePreviewByDefault = hasHomepagePreview && process.env.REACT_APP
 const Homepage = lazy(() => import("./pages/Homepage"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
+const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
 
 const adminRoutes = (
   <Route path="/admin" element={<AdminProtectedRoute><AuthenticatedLayout /></AdminProtectedRoute>}>
@@ -75,6 +76,9 @@ const adminRoutes = (
       <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />
       <Route path="articles" element={<AdminArticleManager />} />
       <Route path="user-flows" element={<AdminUXSpecifications />} />
+      <Route path="design-system" element={<Suspense fallback={null}><AdminDesignSystem /></Suspense>} />
+      <Route path="design-system/reference" element={<Suspense fallback={null}><AdminDesignSystem /></Suspense>} />
+      <Route path="design-system/index.html" element={<Suspense fallback={null}><AdminDesignSystem /></Suspense>} />
       <Route path="data-access" element={<AdminDataAccess />} />
     </Route>
   </Route>

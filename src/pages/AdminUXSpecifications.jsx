@@ -12,7 +12,7 @@ import "../components/homepage/HomeTruth";
 import "./admin-ux-specifications.css";
 
 const domainModel = "https://github.com/jasonlryan/hometruth/blob/744cba50804c9e2f249af2448636fd43ed78b314/docs/product/hometruth-domain-model.md";
-const designSystem = "/admin/design-system/index.html";
+const designSystem = "/admin/design-system/reference";
 const blueprints = [
   { id: "HT-FLOW-001", label: "First answer to home record", url: blueprintUrl },
   { id: "HT-FLOW-002", label: "Buying", url: buyingUrl },

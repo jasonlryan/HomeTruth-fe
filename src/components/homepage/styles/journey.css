@@ -29,9 +29,6 @@
 .ht-composer textarea {display:block;width:100%;min-height:68px;padding:11px 12px;border:1px solid var(--control-border);border-radius:var(--radius-md);resize:vertical;background:var(--color-surface-default);color:inherit}
 .ht-composer textarea::placeholder {color:var(--reading-ink);opacity:1}
 .ht-composer-actions {display:flex;justify-content:flex-end;margin-top:10px}
-.ht-composer .ht-button[data-variant=cyan] {color:var(--color-text-on-dark);background:var(--color-accent)}
-.ht-composer .ht-button[data-variant=cyan]:hover:enabled {background:color-mix(in srgb,var(--color-accent) 90%,var(--ht-black))}
-.ht-composer .ht-button[data-variant=cyan]:disabled {opacity:.72;cursor:default}
 .ht-hero-more {display:inline-grid;grid-auto-flow:column;align-items:first baseline;align-content:center;gap:var(--space-2);margin-top:var(--space-6);text-decoration:none}
 .ht-hero-more:hover {text-decoration:underline}
 .ht-journey-flow {display:grid;gap:var(--space-3);padding-bottom:var(--space-16)}

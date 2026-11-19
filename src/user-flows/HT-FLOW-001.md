@@ -8,7 +8,7 @@
 | Delivery | HT-348 · `feature/ht-348-homepage-components` |
 | User outcome | Get a useful answer, start or return to a home record, and reopen the original conversation. |
 
-The COWORK onboarding decision flow supplies the intent-led journey and sign-in boundary. The [domain model][domain] supplies the shared property and people vocabulary. The [ontology reference](#ontology) points to implemented entities. The [localhost walkthrough](/home-record-walkthrough/index.html) shows the browser journey with test data.
+The COWORK onboarding decision flow supplies the intent-led journey and sign-in boundary. The [domain model][domain] supplies the shared property and people vocabulary. The [ontology reference](#ontology) points to implemented entities.
 
 | Step and screen | Data needed at this step | What carries forward and where it belongs |
 | --- | --- | --- |
@@ -20,8 +20,8 @@ The COWORK onboarding decision flow supplies the intent-led journey and sign-in 
 
 ## Design system references
 
-- Steps 1–2 use the [homepage and answer patterns](/admin/design-system/index.html#homepage-journey) for the question routes, delivery and record handoff.
-- Steps 3–5 use [components](/admin/design-system/index.html#components) for form fields and actions, [navigation](/admin/design-system/index.html#navigation) for record and conversation destinations, and [states and statuses](/admin/design-system/index.html#states) for feedback.
+- Steps 1–2 use the [homepage and answer patterns](/admin/design-system/reference#homepage-journey) for the question routes, delivery and record handoff.
+- Steps 3–5 use [components](/admin/design-system/reference#components) for form fields and actions, [navigation](/admin/design-system/reference#navigation) for record and conversation destinations, and [states and statuses](/admin/design-system/reference#states) for feedback.
 - Review the [ontology reference](/admin/user-flows#ontology) when a screen adds a new data requirement, relationship or permission.
 
 ## Failure and access states

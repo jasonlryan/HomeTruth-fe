@@ -468,6 +468,7 @@ export default function AskAI() {
   const inputRef = useRef(null);
   const streamingIntervalRef = useRef(null);
   const activeAnswerRef = useRef(null);
+  const historyRequestRef = useRef(0);
   const [canJumpToLatest, setCanJumpToLatest] = useState(false);
   const [jumpHasFocus, setJumpHasFocus] = useState(false);
   const hasMessages = messages.length > 0;
@@ -595,7 +596,7 @@ export default function AskAI() {
       const hasRestoredMessages = restoredMessages.length > 0;
       loadConversationHistory(claimId, { silent: hasRestoredMessages })
         .then((apiMsgs) => {
-          if (apiMsgs.length === 0 && restoredMessages.length > 0) {
+          if (apiMsgs?.length === 0 && restoredMessages.length > 0) {
             const questions = restoredMessages.filter((m) => m.role === "user").map((m) => m.content);
             setMessages(restoredMessages);
             setSessions((prev) => {
@@ -683,6 +684,7 @@ export default function AskAI() {
   useEffect(() => {
     return () => {
       activeAnswerRef.current = null;
+      historyRequestRef.current += 1;
       stopConversationMotion();
       if (streamingIntervalRef.current) {
         clearInterval(streamingIntervalRef.current);
@@ -693,9 +695,11 @@ export default function AskAI() {
 
   const loadConversationHistory = async (sessionId, options = {}) => {
     const { silent = false } = options;
+    const request = ++historyRequestRef.current;
     if (!silent) setIsLoadingHistory(true);
     try {
       const msgs = await getAIChatHistory(sessionId);
+      if (request !== historyRequestRef.current) return null;
       const questions = msgs.filter((m) => m.role === "user").map((m) => m.content);
       setSessions((prev) => {
         const existing = prev.find((s) => s.id === sessionId);
@@ -722,11 +726,12 @@ export default function AskAI() {
       setMessages(msgs);
       return msgs;
     } catch (err) {
+      if (request !== historyRequestRef.current) return null;
       console.error(err);
       setMessages([]);
       return [];
     } finally {
-      if (!silent) setIsLoadingHistory(false);
+      if (request === historyRequestRef.current) setIsLoadingHistory(false);
     }
   };
 
@@ -1057,6 +1062,8 @@ export default function AskAI() {
 
   const resetAnswerDelivery = () => {
     stopConversationMotion();
+    historyRequestRef.current += 1;
+    setIsLoadingHistory(false);
     activeAnswerRef.current = null;
     placeAnswerRef.current = null;
     setIsAnswering(false);

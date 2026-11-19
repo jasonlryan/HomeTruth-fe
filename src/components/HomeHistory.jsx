@@ -67,6 +67,7 @@ export default function HomeHistory({ record }) {
               <Link
                 className="mt-3 inline-flex items-center gap-2 text-sm ht-workspace-link"
                 to={`/documents?preview=${encodeURIComponent(entry.documentId)}`}
+                state={{ sourcePropertyId: record.property?.id }}
               >
                 <HTGlyph name="document" size={15} aria-hidden="true" />
                 Open {entry.file}

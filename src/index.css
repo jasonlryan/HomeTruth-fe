@@ -116,8 +116,22 @@ code {
 }
 
 /* Default app typography */
-* {
+body {
   font-family: var(--font-base);
+}
+
+.ht-app-shell {
+  --system-chat-font-stack: var(--font-reading);
+  --color-text-muted: var(--reading-ink);
+}
+
+.ht-app-shell :is(h1, h2, h3, h4) {
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+
+.ht-app-shell .ht-page-title {
+  font-size: clamp(26px, 4vw, 32px);
 }
 
 /* Shared chat font utility for all chat experiences */

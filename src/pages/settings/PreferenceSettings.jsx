@@ -1,3 +1,4 @@
+import "../../components/workspace.css";
 import HTGlyph from "../../components/HTGlyph";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -79,11 +80,11 @@ export default function PreferenceSettings() {
   }
 
   return (
-    <div className="mt-4 mb-20">
+    <div className="ht-workspace-page space-y-6">
       <div className="max-w-7xl mx-auto px-4 space-y-6">
         <div className="flex items-start gap-3 ">
           <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full ">
-            <img src="/assets/settings/preferences.svg" alt="" className="w-5 h-5" />
+            <HTGlyph name="preferences" size={20} />
           </div>
           <PageTitle>Preferences</PageTitle>
         </div>

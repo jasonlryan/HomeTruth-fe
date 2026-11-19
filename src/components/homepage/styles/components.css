@@ -10,6 +10,7 @@
   --status-error-ink:#8a3225;
   --status-review-ink:#6c4a1b;
   --route-ink:color-mix(in srgb,var(--color-accent) 55%,var(--color-surface-dark));
+  --ht-action-orange:color-mix(in srgb,var(--color-action-primary) 76%,var(--color-surface-dark));
 }
 .ht-ui {font:400 14px/1.55 var(--font-reading);color:var(--color-text-default);font-synthesis:none}
 .ht-ui :is(h1,h2,h3,h4) {font-family:var(--font-heading);font-weight:400;line-height:1.12}
@@ -19,15 +20,15 @@
 .ht-button {
   display:inline-grid;grid-auto-flow:column;align-items:first baseline;align-content:center;justify-content:center;gap:var(--space-2);
   min-height:40px;padding:7px var(--space-3);border:1px solid transparent;
-  border-radius:var(--radius-md);cursor:pointer;background:var(--color-action-primary);
+  border-radius:var(--radius-md);cursor:pointer;background:var(--ht-action-orange);
   color:var(--color-text-on-dark);font:inherit;text-decoration:none;
 }
-.ht-button:hover {background:var(--color-action-primary-hover)}
+.ht-button:not(:disabled):hover {background:color-mix(in srgb,var(--ht-action-orange) 90%,var(--color-surface-dark))}
 .ht-button[data-variant=cyan] {background:var(--color-accent)}
-.ht-button[data-variant=cyan]:hover {background:var(--color-accent-hover)}
+.ht-button[data-variant=cyan]:not(:disabled):hover {background:var(--color-accent-hover)}
 .ht-button[data-variant=secondary] {background:var(--color-surface-default);border-color:var(--color-border-default);color:var(--color-surface-dark)}
 .ht-button[data-variant=text] {background:transparent;color:var(--route-ink)}
-.ht-button[data-variant=secondary]:hover,.ht-button[data-variant=text]:hover {background:var(--surface-subtle)}
+.ht-button[data-variant=secondary]:not(:disabled):hover,.ht-button[data-variant=text]:not(:disabled):hover {background:var(--surface-subtle)}
 .ht-button:disabled {background:var(--surface-subtle);color:var(--reading-ink);border-color:var(--color-border-default);cursor:default}
 .ht-field {display:grid;gap:var(--space-1)}
 .ht-field :is(input,textarea,select) {width:100%;min-width:0;border:1px solid var(--color-border-default);border-radius:var(--radius-md);padding:8px 12px;min-height:42px;color:inherit;background:var(--color-surface-default)}

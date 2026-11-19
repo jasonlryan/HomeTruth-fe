@@ -156,7 +156,7 @@ export default function DocumentWorkspace({
   const button = "ht-workspace-control";
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-surface-dark)]/50 p-2 sm:p-6"
+      className="ht-ui fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-surface-dark)]/50 p-2 sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -316,7 +316,7 @@ export default function DocumentWorkspace({
                     value={question}
                     onChange={(event) => setQuestion(event.target.value)}
                     disabled={asking || historyLoading}
-                    className="min-w-0 flex-1 rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-3 text-sm"
+                    className="ht-workspace-input min-w-0 flex-1"
                     placeholder="What does this document establish?"
                   />
                   <button

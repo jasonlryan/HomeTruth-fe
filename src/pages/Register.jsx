@@ -3,16 +3,13 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { registerUser } from "../api/api";
 import Footer from "../components/Footer";
-import { HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
+import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
 
 export default function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "";
-  const partnerInvite =
-    searchParams.get("partner_invite") ||
-    localStorage.getItem("partner_invite_code") ||
-    "";
+  const partnerInvite = getEntryPartnerInvite(searchParams, redirectTo === HOME_RECORD_PATH);
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || "";
 
   const [firstName, setFirstName] = useState("");

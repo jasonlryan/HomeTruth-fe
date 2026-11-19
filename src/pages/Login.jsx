@@ -4,7 +4,7 @@ import { loginUser, claimGuestSession } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import { Button, Field, HTIcon } from "../components/homepage/HomeTruth";
 import { PublicFooter, PublicHeader } from "../components/homepage/Journey";
-import { HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
+import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
 import "./account-entry.css";
 
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
@@ -20,10 +20,7 @@ export default function Login({ comingSoon = false }) {
   const loginSucceeded = useRef(false);
   const redirectTo = searchParams.get("redirect") || null;
   const startingRecord = redirectTo === HOME_RECORD_PATH;
-  const partnerInvite =
-    searchParams.get("partner_invite") ||
-    localStorage.getItem("partner_invite_code") ||
-    "";
+  const partnerInvite = getEntryPartnerInvite(searchParams, startingRecord);
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || null;
 
   const [email, setEmail] = useState("");
