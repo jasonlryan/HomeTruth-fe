@@ -1,6 +1,6 @@
 # HT-FLOW-005 · Put the Truth agent to work
 
-**Version 0.3 · 19 November 2026 · Roadmap for review**
+**Version 0.4 · 19 November 2026 · Roadmap for review**
 
 ## Find my manual · a worked example of property intelligence
 
@@ -24,7 +24,7 @@ A homeowner wants their existing personal agent to answer “What needs attentio
 | --- | --- | --- |
 | 1. Choose the task | In a future pilot, start the property review from the selected home’s Control centre and choose a supported external agent. | Preserve the home, task and return destination. Switching homes clears the previous source selection and rechecks access. |
 | 2. Review a supported provider | When released for this cohort, show the provider, named home, purpose, material it may read and access duration. Cancel returns to the original task. | Authenticate the person and check their current Property Person relationship and authority to delegate. Issue a scoped, expiring, revocable grant after explicit approval. |
-| 3. Continue in the agent’s app | Offer the starter question. On provider failure, retain the task and offer Ask HomeTruth. | The read-only MCP service checks the client, grant and current home/document access on each call. Return evidence dates, source references and unknowns. A missing service receipt leaves the service date unknown. |
+| 3. Continue in the agent’s app | Offer the starter question. On provider failure, retain the task and offer Ask HomeTruth. | Authenticate the external client through the agreed OAuth discovery/PKCE flow and verify its token claims. On each query and evidence-link request, check the grant and the granting person’s current property and document permissions, including when a previous request succeeded. Return evidence dates, source references and unknowns. A missing service receipt leaves the service date unknown. |
 | 4. Inspect the evidence | Open the cited passage in the authorised home record. The homeowner can choose Save follow-up inside HomeTruth. | Recheck access to the Evidence Source and Property Document. An explicit save creates a Reminder / Task. Reading dates creates no schedule. |
 | 5. Manage access | In Settings → Connections → Agents, show the provider, home, scope, expiry and disconnect action. Expired access requires fresh consent. | Disconnect stops future reads. Explain at consent that previously exported information may remain with the provider. Loss of the underlying property or document permission takes effect on the next read. |
 
@@ -43,7 +43,7 @@ These planning requirements use the local MySQL inventory reviewed on 19 Novembe
 | Area | Reuse | Missing or required | Decision needed |
 | --- | --- | --- | --- |
 | Homeowner delegation (HT-337) | Use `users`, `properties` and the active `property_people` relationship to identify who can access the home. | A revocable grant must link the granting person, external client, home, purpose, permitted reads and evidence, expiry and revocation. Check the grant and current property and document permissions on every read. Record the grant, operation, time and outcome for access review. | Which roles may delegate, which sources may leave HomeTruth, how long can a grant last, and how long should access records be kept? |
-| Answers and citations (HT-338) | Read dated tasks and facts from `property_tasks` and `property_facts`. Resolve citations through `property_documents` and `evidence_sources`. | The local schema has no dedicated maintenance-event or compliance record. Report missing dates as unknown. Each fact currently references one evidence source. A claim reconciled across several documents needs a way to retain all supporting sources. | Which dated records support the first pilot answer? Do we need multi-source claims or a dedicated event model for that pilot? |
+| Answers and citations (HT-338) | Read dated tasks and facts from `property_tasks` and `property_facts`. Resolve citations through `property_documents` and `evidence_sources`. | The local schema has no dedicated maintenance-event or compliance record. Report missing dates as unknown. An answer may cite several permitted documents without creating a property fact. Each stored fact currently references one source. Saving a reconciled fact supported by several documents requires a fact-to-evidence link for each supporting source. | Which dated records support the first pilot answer? Do we need multi-source claims or a dedicated event model for that pilot? |
 | Provider availability (HT-339) | Use the HT-337 grant and HT-338 evidence-backed response to exercise a named provider on its actual surface. | Record the tested operation, provider surface, cohort or region, validation evidence and release decision. A successful private test establishes eligibility for that cohort only. | Who owns provider eligibility, approval and withdrawal, and where should those decisions be maintained? |
 | Internal specialist definitions (HT-350) | Keep specialist definitions, revisions, allowed operations and tools in the version-controlled SDK registry. Use the existing appliance service and `appliance_agent_runs` for manual lookup. | Each invocation must be attributable to its operation and pinned revision. HT-351 owns durable run metadata. | Which revision is approved for the appliance pilot, and who may enable or roll it back? |
 | Run identity and retries (HT-351) | Extend the existing `appliance_agent_runs` record and its request-key handling for the initial specialist. | Bind a run to its initiating user, selected resource, operation, revision and input fingerprint. Retain state and usage so repeat clicks reuse the same result and changed inputs under the same key are rejected. | Which concurrency and cost limits apply to the pilot? |
@@ -62,4 +62,15 @@ These planning requirements use the local MySQL inventory reviewed on 19 Novembe
 
 Walk through the homepage preview as a guest. In the proposed signed-in journey, start from the Control centre and from a washer record. Check that both reach the right appliance, that the owner reviews the model before import, and that a failed match leaves a usable fallback. Confirm the external-agent roadmap mention offers no connection action.
 
-For the future external pilot, using synthetic records, connect for Home A and open a cited source. Check an empty record, cancellation and provider failure. Deny Home B, an unselected private document and an unsupported write. Revoke the grant and repeat both the original query and evidence request. Repeat after expiry and loss of property access. Preserve the original task on return.
+For the future external pilot, using synthetic records, connect for Home A and open a cited source. Check an empty record, cancellation and provider failure. Deny Home B, an unselected private document and an unsupported write. Preserve the original task on return.
+
+Run the following cases independently. Start each with a valid client token, an active grant and a homeowner who can read Home A and its selected document. Verify that the property query succeeds and its evidence link opens.
+
+| Change one condition | Required outcome |
+| --- | --- |
+| Revoke the external grant. Keep the token valid and the homeowner’s own access intact. | Repeat the same query and request the same evidence link. Both must be denied. Explain during consent that HomeTruth cannot recall copies already exported. |
+| In a fresh case, remove the homeowner’s access to Home A. Keep the token valid and the grant active and unexpired. | Repeat the same query and request the same evidence link. Both must be denied even if the client previously used them successfully. |
+| Remove only the selected document permission. Retain property access. | The next answer must exclude that document’s contents and its evidence link must be denied. |
+| Let the grant expire while the token and underlying permissions remain valid. | Deny both reads until fresh consent is granted. |
+
+For appliance review, use a controlled clock. Confirm and save the manual, expire the temporary candidate, then verify that the candidate can no longer be retrieved or imported and the homeowner can still open the saved manual from the same washer. The 30-day candidate lifetime awaits approval. In a separate case, remove property access during an unexpired review and require both candidate retrieval and confirmation to fail.
