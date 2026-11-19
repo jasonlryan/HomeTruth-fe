@@ -1,13 +1,12 @@
 import { useRef, useState } from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { loginUser, claimGuestSession } from "../api/api";
 import { useAuth } from "../context/AuthContext";
-import { Button, Field, HTIcon } from "../components/homepage/HomeTruth";
-import { PublicFooter, PublicHeader } from "../components/homepage/Journey";
+import { Button, Field } from "../components/homepage/HomeTruth";
+import AccountPage, { AccountPasswordField } from "../components/homepage/AccountPage";
+import { controlCentreEnabled, isLocalDemoOrigin } from "../utils/localDemo";
+import { demoReturnTo, localMayaEntry } from "../utils/demoEntry";
 import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
-import "./account-entry.css";
-
-const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
 
 function comingSoonDestination(user) {
   return user?.role === "admin" ? "/admin" : "/";
@@ -15,12 +14,16 @@ function comingSoonDestination(user) {
 
 export default function Login({ comingSoon = false }) {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [searchParams] = useSearchParams();
   const { login, user: signedInUser, loading: checkingSession } = useAuth();
   const loginSucceeded = useRef(false);
-  const redirectTo = searchParams.get("redirect") || null;
+  const requestedRedirect = searchParams.get("redirect");
+  const redirectTo = requestedRedirect && /^\/(?![/\\])/.test(requestedRedirect) ? requestedRedirect : null;
   const startingRecord = redirectTo === HOME_RECORD_PATH;
-  const partnerInvite = getEntryPartnerInvite(searchParams, startingRecord);
+  const openingControlCentre = controlCentreEnabled() &&
+    (redirectTo === "/control-centre" || redirectTo?.startsWith("/control-centre?"));
+  const partnerInvite = getEntryPartnerInvite(searchParams, startingRecord || openingControlCentre);
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || null;
 
   const [email, setEmail] = useState("");
@@ -29,22 +32,25 @@ export default function Login({ comingSoon = false }) {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [pending, setPending] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    await signIn(false);
+  };
+
+  const signIn = async localAdmin => {
     if (pending) return;
     setError("");
     setEmailError("");
     setPasswordError("");
 
     let valid = true;
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!localAdmin && !/\S+@\S+\.\S+/.test(email)) {
       setEmailError("Please enter a valid email address.");
       valid = false;
     }
-    if (password.length < 6) {
+    if (!localAdmin && password.length < 6) {
       setPasswordError("Password must be at least 6 characters.");
       valid = false;
     }
@@ -52,8 +58,17 @@ export default function Login({ comingSoon = false }) {
 
     setPending(true);
     try {
-      // Regular user login
-      const res = await loginUser({ email, password });
+      let res;
+      if (localAdmin) {
+        const response = await fetch("/_local/admin-login", {
+          method: "POST",
+          headers: { "X-HomeTruth-Local-Admin": "1" },
+        });
+        res = await response.json();
+        if (!response.ok) throw new Error(res.message || "Temporary admin login failed.");
+      } else {
+        res = await loginUser({ email, password });
+      }
 
       const token = res.data?.token || res.data?.data?.token;
       const user = res.data?.user || res.data?.data?.user;
@@ -75,14 +90,14 @@ export default function Login({ comingSoon = false }) {
       } else {
         localStorage.setItem("require_profile", "true");
       }
-      localStorage.setItem("user_email", email);
+      localStorage.setItem("user_email", localAdmin ? user.email : email);
 
       // Handle extension redirect if present
       const redirectUri = new URLSearchParams(window.location.search).get(
         "redirect_uri"
       );
 
-      if (redirectUri?.startsWith("chrome-extension://")) {
+      if (!localAdmin && redirectUri?.startsWith("chrome-extension://")) {
         window.location.href = `${redirectUri}#access_token=${token}`;
         return;
       }
@@ -92,7 +107,7 @@ export default function Login({ comingSoon = false }) {
         return;
       }
 
-      if (partnerInvite) {
+      if (!localAdmin && partnerInvite) {
         localStorage.setItem("partner_invite_code", partnerInvite);
         const partnerRedirect =
           redirectTo?.startsWith("/partner/")
@@ -125,11 +140,13 @@ export default function Login({ comingSoon = false }) {
       // Check if this is a new user
       const isNewUser = localStorage.getItem("new_user") === "true";
       
-      if (isNewUser) {
+      if (isNewUser && !localAdmin) {
         // Redirect new users to welcome page
         navigate("/welcome", { replace: true, state: { startHomeRecord: startingRecord } });
-      } else if (redirectTo?.startsWith("/")) {
+      } else if (localAdmin ? startingRecord : redirectTo?.startsWith("/")) {
         navigate(redirectTo, { replace: true, state: { claimHomepageAnswer: startingRecord } });
+      } else if (localAdmin) {
+        navigate("/admin/operations", { replace: true });
       } else {
         // Default behavior (normal login) - Dashboard will check for quiz completion
         navigate("/dashboard", { replace: true });
@@ -157,43 +174,42 @@ export default function Login({ comingSoon = false }) {
     }
   };
 
+  const showLocalMaya = localMayaEntry();
+  const switchingLocalAccount = showLocalMaya && searchParams.get("switch") === "1";
   if (checkingSession) return null;
-  if (signedInUser && !loginSucceeded.current) {
+  if (signedInUser && !loginSucceeded.current && !switchingLocalAccount) {
     if (comingSoon) return <Navigate to={comingSoonDestination(signedInUser)} replace />;
     if (startingRecord) return <Navigate to={HOME_RECORD_PATH} replace state={{ claimHomepageAnswer: true }} />;
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={openingControlCentre ? redirectTo : "/dashboard"} replace />;
   }
+
+  const showLocalAdmin = process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" && isLocalDemoOrigin();
+  const demoReturn = demoReturnTo(redirectTo);
+  const demoDestination = demoReturn ? `/demo?returnTo=${encodeURIComponent(demoReturn)}` : "/demo";
 
   const registrationHref = partnerInvite
     ? `/register?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
     : startingRecord ? "/register" + HOME_RECORD_REDIRECT : "/register";
 
   return (
-    <div className="ht-ui ht-journey ht-account">
-      <PublicHeader assetBase={assetBase} homeHref="/" />
-      <main className="ht-account-main">
-        <h1>Log in to HomeTruth</h1>
-        {startingRecord && <p>Log in to set up or return to your home record.</p>}
-        <form onSubmit={handleLogin}>
-          <Field id="login-email" label="Email" type="email" autoComplete="username"
-            required value={email} error={emailError} onChange={event => setEmail(event.target.value)} />
-          <div className="ht-account-password">
-            <Field id="login-password" label="Password" type={showPassword ? "text" : "password"}
-              autoComplete="current-password" required value={password} error={passwordError}
-              onChange={event => setPassword(event.target.value)} />
-            <button className="ht-account-visibility" type="button" aria-pressed={showPassword}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword(value => !value)}>
-              <HTIcon name="visible" assetBase={assetBase + "icons/"} />
-            </button>
-          </div>
-          <a href="/forgot-password">Forgot your password?</a>
-          {error && <p className="ht-error" role="alert">{error}</p>}
-          <Button variant="cyan" type="submit" pending={pending}>{pending ? "Logging in…" : "Log in"}</Button>
-        </form>
-        {!comingSoon && <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>}
-      </main>
-      <PublicFooter assetBase={assetBase} homeHref="/" />
-    </div>
+    <AccountPage title="Log in to HomeTruth" description={startingRecord ? "Log in to set up or return to your home record." : undefined}>
+      {state?.accountCreated && <p role="status">Account created. Log in to continue.</p>}
+      <form onSubmit={handleLogin}>
+        <Field id="login-email" label="Email" type="email" autoComplete="username"
+          required value={email} error={emailError} onChange={event => setEmail(event.target.value)} />
+        <AccountPasswordField id="login-password" autoComplete="current-password"
+          required value={password} error={passwordError} onChange={event => setPassword(event.target.value)} />
+        <a href="/forgot-password">Forgot your password?</a>
+        {error && <p className="ht-error" role="alert">{error}</p>}
+        <Button variant="cyan" type="submit" pending={pending}>{pending ? "Logging in…" : "Log in"}</Button>
+      </form>
+      {(showLocalAdmin || showLocalMaya) && (
+        <div className="ht-journey-actions" aria-label="Local demo sign-in">
+          {showLocalMaya && <Button variant="secondary" disabled={pending} onClick={() => navigate(demoDestination)}>Log in as Maya</Button>}
+          {showLocalAdmin && <Button variant="secondary" disabled={pending} onClick={() => signIn(true)}>Admin login · localhost only</Button>}
+        </div>
+      )}
+      {!comingSoon && <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>}
+    </AccountPage>
   );
 }

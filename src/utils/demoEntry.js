@@ -1,23 +1,33 @@
-export function demoEntryEnabled(hostname = window.location.hostname) {
+import { controlCentreEnabled, isLocalDemoOrigin } from "./localDemo";
+import { readManualContext } from "../features/items/manualAskContext";
+
+export function localMayaEntry() {
   return process.env.REACT_APP_HOMEOWNER_DEMO === 'true' &&
-    ['localhost', '127.0.0.1', '[::1]'].includes(hostname) &&
-    Boolean(process.env.REACT_APP_DEMO_PASSWORD);
+    process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === 'true' && isLocalDemoOrigin();
+}
+
+export function mayaHomeDestination(user) {
+  if (!localMayaEntry() || !controlCentreEnabled() || user?.email !== 'maya.demo@example.invalid' ||
+      !['user', 'customer'].includes(user.role)) return null;
+  const homeId = readManualContext(user.id)?.homeId;
+  return homeId ? `/control-centre?propertyId=${encodeURIComponent(homeId)}` : '/control-centre';
+}
+
+export function demoReturnTo(path) {
+  if (!path || !/^\/(?:ask-ai|appliances|control-centre|property-profile)(?:[?#]|$)/.test(path)) return null;
+  return path;
 }
 
 export async function startDemoSession() {
-  if (!demoEntryEnabled()) throw new Error('Demo entry is unavailable here.');
-  const api = new URL(process.env.REACT_APP_API_BASE_URL);
-  if (!['localhost', '127.0.0.1', '[::1]'].includes(api.hostname)) {
-    throw new Error('Demo entry requires the local API.');
-  }
-  const response = await fetch(new URL('/api/auth/login', api), {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'maya.demo@example.invalid', password: process.env.REACT_APP_DEMO_PASSWORD }),
+  if (!localMayaEntry()) throw new Error('Demo entry is unavailable here.');
+  const response = await fetch('/_local/maya-login', {
+    method: 'POST',
+    headers: { 'x-hometruth-local-maya': '1' },
   });
   const body = await response.json();
   const data = body.data?.data || body.data || body;
   const { token, user } = data;
-  if (!response.ok || !token || user?.email !== 'maya.demo@example.invalid' || user?.role === 'admin') {
+  if (!response.ok || !token || user?.email !== 'maya.demo@example.invalid' || !['user', 'customer'].includes(user?.role)) {
     throw new Error('Could not open Maya’s workspace. Check the local demo API and try again.');
   }
   localStorage.setItem('token', token);

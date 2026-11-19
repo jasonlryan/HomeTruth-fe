@@ -1,6 +1,9 @@
+import { useAuth } from "../context/AuthContext";
+import ManualAskAction from "../features/items/ManualAskAction";
+import { isManualAction, localManualAskEnabled, readManualContext, rememberManualContext } from "../features/items/manualAskContext";
 import HTGlyph from "../components/HTGlyph";
 import { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import PageTitle from "../components/PageTitle";
@@ -87,7 +90,7 @@ function moveConversation(pane, top, frameRef) {
 // - Links open in new tab (target/rel set on <a>)
 // - No raw HTML allowed (avoids XSS)
 // - GFM enabled (lists, tables, autolink literals, etc.)
-function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false, streamingText = "" }) {
+function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false, streamingText = "", action }) {
   const displayText = isStreaming && streamingText ? streamingText : text;
 
   return (
@@ -141,6 +144,8 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
         <span className="inline-block w-2 h-4 bg-gray-600 ml-1 animate-pulse" />
       )}
 
+      {!isStreaming && action}
+
       {/* Save button at bottom right */}
       {!isStreaming && <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-300">
         <button
@@ -160,6 +165,8 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
 
 export default function AskAI() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [propertyContext, setPropertyContext] = useState(() =>
     getPropertyContextFromLocation(location)
   );
@@ -551,6 +558,7 @@ export default function AskAI() {
   useEffect(() => {
     const id =
       location.state?.conversationId ||
+      (localManualAskEnabled ? new URLSearchParams(location.search).get("conversation") : null) ||
       (typeof sessionStorage !== "undefined" ? sessionStorage.getItem("ask_ai_open_conversation_id") : null) ||
       null;
     const claimId = id && String(id).trim() !== "" ? id : null;
@@ -798,6 +806,13 @@ export default function AskAI() {
     setInput("");
 
     try {
+      const selected = localManualAskEnabled && readManualContext(user?.id);
+      const homeId = propertyContext?.id || selected?.homeId;
+      const refersToWasher = /\b(?:washers?|washing machines?)\b/i.test(input);
+      const manualScope = {
+        homeId,
+        itemId: refersToWasher && String(homeId) === String(selected?.homeId) ? selected?.itemId : null
+      };
       const result = await askAIChat(
         input,
         currentSessionId,
@@ -825,10 +840,21 @@ export default function AskAI() {
 
       const fullResponse = latestHistory?.assistantReply || result.reply || "";
 
+      const actions = result.actions || latestHistory?.actions;
+      if (localManualAskEnabled && chatHistoryId && isManualAction(actions)) {
+        rememberManualContext(user?.id, manualScope, chatHistoryId);
+        const params = new URLSearchParams(location.search);
+        if (result.conversation_id && params.get("conversation") !== String(result.conversation_id)) {
+          params.set("conversation", result.conversation_id);
+          navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+        }
+      }
       const assistantMsg = {
         id: assistantMessageId,
         role: "assistant",
         content: fullResponse,
+        actions,
+        manualScope,
         time,
         chatHistoryId: chatHistoryId, // Store the backend chat_history_id for saving
       };
@@ -1512,6 +1538,9 @@ export default function AskAI() {
                             messageId={pair.answer.id}
                             onSave={() => toggleSaveQAPair(pair.id)}
                             isSaved={isQAPairSaved(pair)}
+                            action={localManualAskEnabled && isManualAction(pair.answer.actions) &&
+                              <ManualAskAction key={pair.answer.id} userId={user?.id}
+                                scope={pair.answer.manualScope ?? readManualContext(user?.id, pair.answer.chatHistoryId)} />}
                             isStreaming={streamingMessageId === pair.answer.id}
                             streamingText={streamingMessageId === pair.answer.id ? streamingText : ""}
                           />

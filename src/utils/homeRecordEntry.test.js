@@ -5,6 +5,9 @@ import {
   getEntryPartnerInvite,
   getHomeRecordAnswer,
   getHomeRecordGuestSession,
+  hasHomeRecordTask,
+  FIND_APPLIANCE_MANUAL_ACTION,
+  setHomeRecordTask,
   setHomeRecordGuestSession,
 } from "./homeRecordEntry";
 
@@ -47,4 +50,12 @@ test("an explicit home-record journey takes precedence over a stored partner inv
   expect(getEntryPartnerInvite(new URLSearchParams(), true)).toBe("");
   expect(getEntryPartnerInvite(new URLSearchParams(), false)).toBe("previous-invite");
   expect(getEntryPartnerInvite(new URLSearchParams("partner_invite=new-invite"), true)).toBe("new-invite");
+});
+
+test("the manual preview handoff survives navigation and clears on sign-out", () => {
+  expect(hasHomeRecordTask()).toBe(false);
+  setHomeRecordTask(FIND_APPLIANCE_MANUAL_ACTION);
+  expect(hasHomeRecordTask()).toBe(true);
+  clearHomeRecordHandoff();
+  expect(hasHomeRecordTask()).toBe(false);
 });

@@ -286,7 +286,7 @@ export const getAIChatHistory = async (conversationId) => {
 
   raw.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-  const chats = raw.flatMap(({ id, userMessage, assistantReply, createdAt }) => {
+  const chats = raw.flatMap(({ id, userMessage, assistantReply, createdAt, actions }) => {
     const time = new Date(createdAt).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -308,6 +308,7 @@ export const getAIChatHistory = async (conversationId) => {
         id,
         role: "assistant",
         content: assistantReply,
+        actions,
         time,
         chatHistoryId: id, // Store the backend chat_history_id explicitly
       });
@@ -484,6 +485,11 @@ export const getPropertyTasks = async (propertyId, params = {}) => {
     `/api/property-records/${propertyId}/tasks${queryString ? `?${queryString}` : ""}`
   );
   return res.data?.data || [];
+};
+
+export const createPropertyFollowUp = async (propertyId, payload) => {
+  const res = await api.post(`/api/property-records/${propertyId}/tasks`, payload);
+  return res.data?.data;
 };
 
 export const generatePropertyTasks = async (propertyId) => {
@@ -866,4 +872,34 @@ export const getDocumentPreviewFile = async (documentId, signal) => {
 export const getUserDocumentRecord = async (id, signal) => {
   const res = await api.get(`/api/user-documents/${encodeURIComponent(id)}`, { signal });
   return res.data;
+};
+// Selected-home physical records (HT-341). These endpoints require the HT-341 backend.
+const itemPath = homeId => `/api/property-records/${homeId}/items`;
+export const getHomeItems = async homeId => (await api.get(itemPath(homeId))).data.data;
+export const getHomeItem = async (homeId, itemId) => (await api.get(`${itemPath(homeId)}/${itemId}`)).data.data;
+export const createHomeItem = async (homeId, payload) => (await api.post(itemPath(homeId), payload)).data.data;
+export const updateHomeItem = async (homeId, itemId, payload) => (await api.patch(`${itemPath(homeId)}/${itemId}`, payload)).data.data;
+export const identifyHomeItem = async (homeId, formData) => (await api.post(`${itemPath(homeId)}/identify`, formData)).data.data;
+export const keepVaultManual = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/vault-manual`, payload)).data.data;
+export const attachItemEvidence = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/evidence`, payload)).data.data;
+export const detachItemEvidence = async (homeId, itemId, evidenceId) => (await api.delete(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}`)).data.data;
+export const findItemManual = async (homeId, itemId, requestKey) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`, {requestKey}, {timeout:110000})).data.data;
+export const getApplianceAgentResult = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/agent/latest`)).data.data;
+export const saveAgentManual = async (homeId,itemId,runId,candidateIndex) => (await api.post(`${itemPath(homeId)}/${itemId}/agent/${runId}/save-manual`,{candidateIndex,confirmed:true},{timeout:110000})).data.data;
+export const askItemAI = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/ask`, payload)).data.data;
+export const getItemAnswers = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/answers`)).data.data;
+export const saveItemAnswer = async (homeId,itemId,token) => (await api.post(`${itemPath(homeId)}/${itemId}/answers`,{token})).data.data;
+export const deleteItemAnswer = async (homeId,itemId,answerId) => (await api.delete(`${itemPath(homeId)}/${itemId}/answers/${answerId}`)).data.data;
+
+export const getItemEvidenceFile = async (homeId,itemId,evidenceId) => (await api.get(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}/file`,{responseType:'blob'})).data;
+
+
+export const getSurveyPdfPage = async (documentId, page, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(documentId)}/pdf-page`, { params: { page }, signal });
+  return res.data?.data;
+};
+
+export const getFollowUpPassage = async (propertyId, taskId, signal) => {
+  const res = await api.get(`/api/property-records/${encodeURIComponent(propertyId)}/tasks/${encodeURIComponent(taskId)}/passage`, { signal });
+  return res.data?.data;
 };

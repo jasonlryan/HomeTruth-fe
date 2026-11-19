@@ -1,7 +1,10 @@
+import { mayaHomeDestination } from "../utils/demoEntry";
+import { localManualAskEnabled } from "../features/items/manualAskContext";
 import { useAuth } from '../context/AuthContext';
-import { isDemoWorkspaceUser } from '../utils/demoHomeHistory';
+import { controlCentreEnabled } from "../utils/localDemo";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import HTGlyph from "./HTGlyph";
 import { HTIcon } from "./homepage/HomeTruth";
 import { getPartnerProgrammeAccessStatus } from '../api/api';
 import './sidebar.css';
@@ -12,6 +15,8 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const location = useLocation();
+  const mayaHome = mayaHomeDestination(user);
+  const brandLabel = mayaHome ? "HomeTruth Control centre" : "HomeTruth dashboard";
   const [narrow, setNarrow] = useState(() => window.innerWidth < 1024);
   const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
   const [settingsOpen, setSettingsOpen] = useState(location.pathname.startsWith('/settings'));
@@ -47,7 +52,7 @@ export default function Sidebar() {
     {narrow && !collapsed && <button type="button" className="ht-sidebar-backdrop" tabIndex={-1} aria-label="Close navigation" onClick={event => { const toggle = event.currentTarget.parentElement.querySelector('[data-nav-toggle]'); setCollapsed(true); toggle.focus(); }} />}
     <aside className="ht-sidebar ht-ui" onKeyDown={handleKeys} role={narrow && !collapsed ? 'dialog' : undefined}
       aria-modal={narrow && !collapsed ? 'true' : undefined} aria-label="HomeTruth navigation">
-      <a href="/dashboard" className="ht-sidebar-brand" aria-label="HomeTruth dashboard" title="HomeTruth dashboard">
+      <a href={mayaHome || "/dashboard"} className="ht-sidebar-brand" aria-label={brandLabel} title={brandLabel}>
         <img src={collapsed ? "/assets/brand/hometruth-icon.svg" : "/assets/brand/hometruth-logo.svg"} alt="" width={collapsed ? 32 : 220} height={collapsed ? 32 : 42} />
       </a>
       <button type="button" data-nav-toggle className="ht-nav-item ht-nav-toggle" aria-expanded={!collapsed}
@@ -57,10 +62,11 @@ export default function Sidebar() {
         {!collapsed && <span>Collapse navigation</span>}
       </button>
       <nav id="home-navigation" aria-label="Main navigation" className="ht-sidebar-items">
-        {isDemoWorkspaceUser(user?.email) && item('activity', 'Operations', '/operations')}
-        {item('dashboard', 'Dashboard', '/dashboard')}
+        {!mayaHome && item('dashboard', 'Dashboard', '/dashboard')}
+        {controlCentreEnabled() && item('calendar', 'Control centre', mayaHome || '/control-centre', location.pathname === '/control-centre')}
         {hasPartnerAccess && item('key', 'Partner programmes', '/partner-programmes')}
         {item('home', 'Property profile', '/property-profile')}
+        {localManualAskEnabled && item('appliance', 'Appliances', '/appliances')}
         {item('documents', 'Vault', '/documents')}
         {item('note', 'Notebooks', '/saved-notes')}
         {item('grid', 'Tools', '/tools', location.pathname === '/tools' || location.pathname.startsWith('/budget'))}
@@ -87,7 +93,9 @@ function NavItem({ icon, label, active, onClick, collapsed, expanded, controls }
     aria-current={active && expanded === undefined ? 'page' : undefined}
     aria-expanded={expanded} aria-controls={controls} onClick={onClick}
     className={`ht-nav-item ${active ? 'ht-nav-active' : ''}`}>
-    <span className="shrink-0" aria-hidden="true"><HTIcon name={icon} size={24} assetBase={iconBase} /></span>
+    <span className="shrink-0" aria-hidden="true">
+      {["appliance", "calendar"].includes(icon) ? <HTGlyph name={icon} size={24} /> : <HTIcon name={icon} size={24} assetBase={iconBase} />}
+    </span>
     <span className={collapsed ? 'ht-nav-tooltip' : ''} aria-hidden={collapsed ? 'true' : undefined}>{label}</span>
   </button>;
 }
