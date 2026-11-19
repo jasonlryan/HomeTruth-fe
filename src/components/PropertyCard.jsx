@@ -38,7 +38,7 @@ export default function PropertyCard({ property, onClick }) {
   } = property;
 
   const mainImage =
-    localImages?.[0] || "http://18.223.231.19:8005/400x300?text=No+Image";
+    localImages?.[0] || `${process.env.PUBLIC_URL || ""}/images/property-placeholder.svg`;
   const owner = owners[0] || null;
   const { phone, email } = getContactInfo(owner);
   const displayName = owner?.name?.surname || agent?.name || "Agent";

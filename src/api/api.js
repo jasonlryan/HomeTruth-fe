@@ -13,10 +13,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = token;
     }
-    // Add ngrok-skip-browser-warning header for ngrok URLs
-    if (API_BASE_URL && API_BASE_URL.includes("ngrok")) {
-      config.headers["ngrok-skip-browser-warning"] = "true";
-    }
     return config;
   },
   (error) => Promise.reject(error)

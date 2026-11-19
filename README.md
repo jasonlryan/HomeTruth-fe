@@ -1,3 +1,35 @@
+# HomeTruth frontend
+
+## Current environment — 19 November 2026
+
+HomeTruth currently runs locally only. There is no hosted staging or production
+environment. Repository folder names ending in `-staging` are historical names,
+not deployment destinations. GitHub `main` is source control, not a deployment.
+An optimised frontend production build does not create a production environment.
+
+| Service | Local address |
+| --- | --- |
+| Frontend | http://localhost:3000 |
+| API | http://localhost:8005 |
+| MySQL | 127.0.0.1:3306, database `hometruth` |
+| Qdrant | http://localhost:6333 |
+
+Old team server addresses and staging scripts are retired. Do not use archived
+configuration or old tickets as connection instructions. Before introducing a
+hosted environment, provision separate credentials and storage, verify backup
+restoration, rehearse pending migrations on a database copy, and validate the
+actual deployed versions. Never overwrite the local database during setup.
+
+For a new checkout, copy `.env.example` to `.env`, install dependencies with
+`npm ci`, and run `npm start`. Do not overwrite an existing environment file.
+`npm run build` produces an optimised local artifact and does not deploy it.
+
+Create React App gives shell variables and `.env.development.local` precedence
+over `.env` during development. Review those overrides if an address differs.
+The optional `start:branch-preview` script uses a separate local port and proxies
+API requests to localhost:8005. Backend credentials never belong in frontend env
+files. The legacy extension login link also opens localhost:3000.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

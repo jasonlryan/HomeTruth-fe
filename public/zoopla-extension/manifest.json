@@ -4,11 +4,11 @@
   "version": "1.0",
   "permissions": ["storage", "identity"],
   "host_permissions": [
-    "https://hometruth.ohtplayground.com/*",
+    "http://localhost/*",
     "https://www.zoopla.co.uk/*"
   ],
   "externally_connectable": {
-    "matches": ["https://hometruth.ohtplayground.com/*"]
+    "matches": ["http://localhost/*"]
   },
   "action": {
     "default_popup": "popup.html"
@@ -19,7 +19,7 @@
   "web_accessible_resources": [
     {
       "resources": ["auth.html", "auth.js", "popup.css"],
-      "matches": ["https://hometruth.ohtplayground.com/*"]
+      "matches": ["http://localhost/*"]
     }
   ],
   "content_scripts": [
