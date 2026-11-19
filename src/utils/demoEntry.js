@@ -1,8 +1,16 @@
-import { isLocalDemoOrigin } from "./localDemo";
+import { controlCentreEnabled, isLocalDemoOrigin } from "./localDemo";
+import { readManualContext } from "../features/items/manualAskContext";
 
 export function localMayaEntry() {
   return process.env.REACT_APP_HOMEOWNER_DEMO === 'true' &&
     process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === 'true' && isLocalDemoOrigin();
+}
+
+export function mayaHomeDestination(user) {
+  if (!localMayaEntry() || !controlCentreEnabled() || user?.email !== 'maya.demo@example.invalid' ||
+      !['user', 'customer'].includes(user.role)) return null;
+  const homeId = readManualContext(user.id)?.homeId;
+  return homeId ? `/control-centre?propertyId=${encodeURIComponent(homeId)}` : '/control-centre';
 }
 
 export function demoReturnTo(path) {

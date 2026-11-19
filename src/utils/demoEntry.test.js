@@ -1,4 +1,4 @@
-import { demoReturnTo, localMayaEntry, startDemoSession } from './demoEntry';
+import { demoReturnTo, localMayaEntry, mayaHomeDestination, startDemoSession } from './demoEntry';
 import * as localDemo from './localDemo';
 
 const original = { ...process.env };
@@ -46,4 +46,16 @@ test('preserves supported demo return routes and rejects admin and off-origin de
   expect(demoReturnTo('/admin/operations')).toBeNull();
   expect(demoReturnTo('//example.com')).toBeNull();
   expect(demoReturnTo('/ask-ai-fake')).toBeNull();
+});
+
+
+test('Maya’s local home entry returns to the selected home and keeps admin entry separate', () => {
+  jest.spyOn(localDemo, 'isLocalDemoOrigin').mockReturnValue(true);
+  process.env.REACT_APP_CONTROL_CENTRE_ENABLED = 'true';
+  const user = { id: 7, email: 'maya.demo@example.invalid', role: 'user' };
+  sessionStorage.setItem('ht-manual-context:7:selected', JSON.stringify({ homeId: 31, itemId: 12 }));
+  expect(mayaHomeDestination(user)).toBe('/control-centre?propertyId=31');
+  expect(mayaHomeDestination({ ...user, role: 'admin' })).toBeNull();
+  expect(mayaHomeDestination({ ...user, email: 'other@example.invalid' })).toBeNull();
+  sessionStorage.removeItem('ht-manual-context:7:selected');
 });

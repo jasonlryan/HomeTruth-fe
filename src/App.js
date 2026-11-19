@@ -1,3 +1,4 @@
+import { mayaHomeDestination } from "./utils/demoEntry";
 import { localManualAskEnabled } from "./features/items/manualAskContext";
 import { controlCentreEnabled } from "./utils/localDemo";
 import DemoEntry from './pages/DemoEntry';
@@ -5,7 +6,7 @@ import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -90,6 +91,12 @@ const adminRoutes = (
     </Route>
   </Route>
 );
+
+function CustomerHome({ children }) {
+  const { user } = useAuth();
+  const destination = mayaHomeDestination(user);
+  return destination ? <Navigate to={destination} replace /> : children;
+}
 
 function App() {
   // If Coming Soon mode is enabled, show only the Coming Soon page (except admin routes)
@@ -218,7 +225,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard" element={<CustomerHome><Dashboard /></CustomerHome>} />
             {controlCentreEnabled() && <Route path="control-centre" element={<Suspense fallback={null}><ControlCentre /></Suspense>} />}
             <Route path="welcome" element={<WelcomePage />} />
             <Route path="ask-ai" element={<AskAI />} />
@@ -226,7 +233,7 @@ function App() {
             <Route path="property-profile" element={<PropertyProfile />} />
             {localManualAskEnabled && <Route path="appliances" element={<Suspense fallback={null}><LocalApplianceWorkspace /></Suspense>} />}
             <Route path="operations" element={<Navigate to={controlCentreEnabled() ? "/control-centre" : "/dashboard"} replace />} />
-            <Route path="home" element={<Home />} />
+            <Route path="home" element={<CustomerHome><Home /></CustomerHome>} />
             <Route path="quiz" element={<QuizPage />} />
             {/* <Route path="budget" element={<BudgetRedirect />} /> */}
             {/* <Route path="budget-calculator" element={<BudgetCalculator />} /> */}

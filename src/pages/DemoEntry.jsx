@@ -1,8 +1,7 @@
-import { controlCentreEnabled } from "../utils/localDemo";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { demoReturnTo, localMayaEntry, startDemoSession } from '../utils/demoEntry';
+import { demoReturnTo, localMayaEntry, mayaHomeDestination, startDemoSession } from '../utils/demoEntry';
 import '../components/workspace.css';
 
 export default function DemoEntry() {
@@ -17,10 +16,10 @@ export default function DemoEntry() {
     const params = new URLSearchParams(window.location.search);
     const target = params.get('to');
     const explicit = demoReturnTo(params.get('returnTo'));
-    const destination = explicit ||
-      (target === 'appliances' ? '/appliances'
-        : target === 'home-record' || !controlCentreEnabled() ? '/property-profile' : '/control-centre');
     startDemoSession().then(({ token, user }) => {
+      const destination = explicit || (target === 'appliances' ? '/appliances'
+        : target === 'home-record' ? '/property-profile'
+        : mayaHomeDestination(user) || '/property-profile');
       login(token, user);
       navigate(destination, { replace: true });
     }).catch(err => setError(err.message));

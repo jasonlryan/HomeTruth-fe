@@ -1,3 +1,4 @@
+import { mayaHomeDestination } from "../utils/demoEntry";
 import { localManualAskEnabled } from "../features/items/manualAskContext";
 import { useAuth } from '../context/AuthContext';
 import { controlCentreEnabled } from "../utils/localDemo";
@@ -14,6 +15,8 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const location = useLocation();
+  const mayaHome = mayaHomeDestination(user);
+  const brandLabel = mayaHome ? "HomeTruth Control centre" : "HomeTruth dashboard";
   const [narrow, setNarrow] = useState(() => window.innerWidth < 1024);
   const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
   const [settingsOpen, setSettingsOpen] = useState(location.pathname.startsWith('/settings'));
@@ -49,7 +52,7 @@ export default function Sidebar() {
     {narrow && !collapsed && <button type="button" className="ht-sidebar-backdrop" tabIndex={-1} aria-label="Close navigation" onClick={event => { const toggle = event.currentTarget.parentElement.querySelector('[data-nav-toggle]'); setCollapsed(true); toggle.focus(); }} />}
     <aside className="ht-sidebar ht-ui" onKeyDown={handleKeys} role={narrow && !collapsed ? 'dialog' : undefined}
       aria-modal={narrow && !collapsed ? 'true' : undefined} aria-label="HomeTruth navigation">
-      <a href="/dashboard" className="ht-sidebar-brand" aria-label="HomeTruth dashboard" title="HomeTruth dashboard">
+      <a href={mayaHome || "/dashboard"} className="ht-sidebar-brand" aria-label={brandLabel} title={brandLabel}>
         <img src={collapsed ? "/assets/brand/hometruth-icon.svg" : "/assets/brand/hometruth-logo.svg"} alt="" width={collapsed ? 32 : 220} height={collapsed ? 32 : 42} />
       </a>
       <button type="button" data-nav-toggle className="ht-nav-item ht-nav-toggle" aria-expanded={!collapsed}
@@ -59,8 +62,8 @@ export default function Sidebar() {
         {!collapsed && <span>Collapse navigation</span>}
       </button>
       <nav id="home-navigation" aria-label="Main navigation" className="ht-sidebar-items">
-        {item('dashboard', 'Dashboard', '/dashboard')}
-        {controlCentreEnabled() && item('calendar', 'Control centre', '/control-centre')}
+        {!mayaHome && item('dashboard', 'Dashboard', '/dashboard')}
+        {controlCentreEnabled() && item('calendar', 'Control centre', mayaHome || '/control-centre', location.pathname === '/control-centre')}
         {hasPartnerAccess && item('key', 'Partner programmes', '/partner-programmes')}
         {item('home', 'Property profile', '/property-profile')}
         {localManualAskEnabled && item('appliance', 'Appliances', '/appliances')}
