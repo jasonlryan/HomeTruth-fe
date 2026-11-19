@@ -621,6 +621,13 @@ export const getDocumentPreview = async (documentId) => {
 };
 
 // --- Knowledge Base Admin APIs ---
+export const getIndexedRecords = async (cursor) => {
+  const res = await api.get("/api/documents/knowledge/records", {
+    params: cursor == null ? {} : { cursor },
+  });
+  return res.data;
+};
+
 export const addKnowledgeBaseEntry = async (payload) => {
   const res = await api.post("/api/documents/knowledge", payload);
   return res.data;

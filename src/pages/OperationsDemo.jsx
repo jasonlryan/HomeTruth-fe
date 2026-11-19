@@ -29,39 +29,11 @@ const homes = [
     review: "Warranty details to confirm",
   },
 ];
-const sources = [
-  {
-    title: "Understanding your survey",
-    category: "Buying & surveys",
-    date: "12 Nov 2026",
-    status: "Published",
-  },
-  {
-    title: "Keeping records of home repairs",
-    category: "Maintenance",
-    date: "10 Nov 2026",
-    status: "Published",
-  },
-  {
-    title: "What a quotation and invoice establish",
-    category: "Documents",
-    date: "14 Nov 2026",
-    status: "In review",
-  },
-  {
-    title: "Preparing your home information for a sale",
-    category: "Selling",
-    date: "16 Nov 2026",
-    status: "Draft",
-  },
-];
 const sections = [
   "Overview",
   "Home records",
-  "Knowledge",
   "Programmes",
   "Connections",
-  "Content",
 ];
 const panel =
   "rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] p-5 sm:p-6";
@@ -72,7 +44,6 @@ export default function OperationsDemo() {
   const [section, setSection] = useState("Overview");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(null);
-  const [source, setSource] = useState(null);
   const [programme, setProgramme] = useState("Completion to home ownership");
   const [message, setMessage] = useState("");
   const [preferences, setPreferences] = useState(() => {
@@ -96,7 +67,6 @@ export default function OperationsDemo() {
     setSection(value);
     setMessage("");
     setSelected(null);
-    setSource(null);
   }
   return (
     <div className="p-4 sm:p-8 text-[var(--color-text-default)]">
@@ -130,6 +100,8 @@ export default function OperationsDemo() {
             {value}
           </button>
         ))}
+        <Link className={button} to="/admin/knowledge-base">RAG</Link>
+        <Link className={button} to="/admin/resources">Resources</Link>
       </nav>
       {message && (
         <p role="status" className={`${panel} mb-5`}>
@@ -138,11 +110,10 @@ export default function OperationsDemo() {
       )}
       {section === "Overview" && (
         <>
-          <div className="mb-6 grid gap-4 sm:grid-cols-3">
+          <div className="mb-6 grid gap-4 sm:grid-cols-2">
             {[
               ["Home records", "3", "Documents, work history and next steps"],
               ["Documents", "12", "Linked to the right home"],
-              ["Guidance in review", "1", "Source quality before publication"],
             ].map(([label, value, detail]) => (
               <div className={panel} key={label}>
                 <p className="text-sm ht-workspace-muted">{label}</p>
@@ -287,48 +258,6 @@ export default function OperationsDemo() {
               <p className="mt-3 text-sm">{selected.review}</p>
               <p className="mt-3 text-sm ht-workspace-muted">
                 {selected.documents} documents · {selected.event}
-              </p>
-            </div>
-          )}
-        </section>
-      )}
-      {section === "Knowledge" && (
-        <section className={panel}>
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <HTGlyph name="knowledge" size={20} />
-            Knowledge library
-          </h2>
-          <p className="mt-3 text-sm ht-workspace-muted">
-            Prepare, review and organise the guidance behind homeowner answers.
-          </p>
-          <div className="mt-5 grid gap-3">
-            {sources.map((item) => (
-              <button
-                className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4 text-left"
-                key={item.title}
-                onClick={() => setSource(item)}
-              >
-                <div>
-                  <h3>{item.title}</h3>
-                  <p className="mt-1 text-sm ht-workspace-muted">
-                    {item.category} · Updated {item.date}
-                  </p>
-                </div>
-                <span className="text-sm text-[var(--color-secondary)]">
-                  {item.status}
-                </span>
-              </button>
-            ))}
-          </div>
-          {source && (
-            <div className="mt-5 border-t border-[var(--color-border-default)] pt-5">
-              <h3 className="text-lg">{source.title}</h3>
-              <p className="mt-3 text-sm leading-6">
-                Review the original source, the claims it supports, its date and
-                any limits before publishing it as guidance.
-              </p>
-              <p className="mt-3 text-sm ht-workspace-muted">
-                Workflow: received → extracted → reviewed → published
               </p>
             </div>
           )}
@@ -482,43 +411,6 @@ export default function OperationsDemo() {
             </div>
           </section>
         </div>
-      )}
-      {section === "Content" && (
-        <section className={panel}>
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <HTGlyph name="document" size={20} />
-            Homeowner content
-          </h2>
-          <p className="mt-3 text-sm ht-workspace-muted">
-            Practical guidance for each stage of owning a home.
-          </p>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {sources.map((item) => (
-              <article
-                className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4"
-                key={item.title}
-              >
-                <p className="text-xs text-[var(--color-secondary)]">
-                  {item.category} · {item.status}
-                </p>
-                <h3 className="mt-3 text-lg">{item.title}</h3>
-                <p className="mt-3 text-sm ht-workspace-muted">
-                  Updated {item.date}
-                </p>
-                <button
-                  className={`${button} mt-4`}
-                  onClick={() =>
-                    setMessage(
-                      `${item.title}: check source attribution, owner usefulness, clarity and publication status.`,
-                    )
-                  }
-                >
-                  Review content
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
       )}
     </div>
   );

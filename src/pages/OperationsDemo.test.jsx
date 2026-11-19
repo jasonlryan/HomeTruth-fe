@@ -56,3 +56,9 @@ test("programme preview and sharing preference actions produce local results", (
     JSON.parse(sessionStorage.getItem("ht-presentation-sharing")).documents,
   ).toBe(true);
 });
+
+test("RAG ingestion records and editorial resources have separate destinations", () => {
+  render(<OperationsDemo />);
+  expect(screen.getByRole("link", { name: "RAG" })).toHaveAttribute("href", "/admin/knowledge-base");
+  expect(screen.getByRole("link", { name: "Resources" })).toHaveAttribute("href", "/admin/resources");
+});

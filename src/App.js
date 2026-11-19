@@ -50,7 +50,7 @@ import WelcomePage from "./pages/WelcomePage";
 import KnowledgeBaseAdmin from "./pages/KnowledgeBaseAdmin";
 import AdminReportingDashboard from "./pages/AdminReportingDashboard";
 import AdminUXSpecifications from "./pages/AdminUXSpecifications";
-import AdminWorkspace, { AdminOverview } from "./pages/AdminWorkspace";
+import AdminWorkspace, { AdminOverview, AdminResources } from "./pages/AdminWorkspace";
 import AdminDataAccess from "./pages/AdminDataAccess";
 import ComingSoon from "./pages/ComingSoon";
 import Pricing from "./pages/Pricing";
@@ -82,6 +82,7 @@ const adminRoutes = (
       <Route path="knowledge-base" element={<KnowledgeBaseAdmin />} />
       <Route path="dashboard" element={<AdminReportingDashboard />} />
       <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />
+      <Route path="resources" element={<AdminResources />} />
       <Route path="articles" element={<AdminArticleManager />} />
       <Route path="user-flows" element={<AdminUXSpecifications />} />
       <Route path="design-system" element={<Suspense fallback={null}><AdminDesignSystem /></Suspense>} />
