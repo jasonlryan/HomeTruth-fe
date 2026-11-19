@@ -1,3 +1,4 @@
+import { controlCentreEnabled } from "../utils/localDemo";
 import HTGlyph from "../components/HTGlyph";
 import DocumentWorkspace from '../components/DocumentWorkspace';
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -10,7 +11,7 @@ import { getUserDocuments, getFollowUpPassage, getUserDocumentRecord, deleteDocu
 export default function Documents() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { state } = useLocation();
-  const followUpId = searchParams.get("followUp");
+  const followUpId = controlCentreEnabled() ? searchParams.get("followUp") : null;
   const sourcePropertyId = Number(followUpId ? searchParams.get("propertyId") : state?.sourcePropertyId);
   const fromControlCentre = Boolean(followUpId || state?.fromControlCentre);
   const [passageResult, setPassageResult] = useState(null);
@@ -643,7 +644,7 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
 
       {openDocument && (
         <DocumentWorkspace key={followUpId ? `follow-up-${followUpId}` : openDocument.id} document={openDocument}
-          propertyId={hasSourceProperty ? sourcePropertyId : undefined} savedPassage={activePassage?.passage} onClose={closeWorkspace} />
+          allowPassages={controlCentreEnabled()} propertyId={hasSourceProperty ? sourcePropertyId : undefined} savedPassage={activePassage?.passage} onClose={closeWorkspace} />
       )}
     </div>
   );

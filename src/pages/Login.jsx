@@ -4,7 +4,8 @@ import { loginUser, claimGuestSession } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import { Button, Field } from "../components/homepage/HomeTruth";
 import AccountPage, { AccountPasswordField } from "../components/homepage/AccountPage";
-import { localMayaEntry } from "../utils/demoEntry";
+import { controlCentreEnabled, isLocalDemoOrigin } from "../utils/localDemo";
+import { demoReturnTo, localMayaEntry } from "../utils/demoEntry";
 import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
 
 function comingSoonDestination(user) {
@@ -17,9 +18,11 @@ export default function Login({ comingSoon = false }) {
   const [searchParams] = useSearchParams();
   const { login, user: signedInUser, loading: checkingSession } = useAuth();
   const loginSucceeded = useRef(false);
-  const redirectTo = searchParams.get("redirect") || null;
+  const requestedRedirect = searchParams.get("redirect");
+  const redirectTo = requestedRedirect && /^\/(?![/\\])/.test(requestedRedirect) ? requestedRedirect : null;
   const startingRecord = redirectTo === HOME_RECORD_PATH;
-  const openingControlCentre = redirectTo === "/control-centre" || redirectTo?.startsWith("/control-centre?");
+  const openingControlCentre = controlCentreEnabled() &&
+    (redirectTo === "/control-centre" || redirectTo?.startsWith("/control-centre?"));
   const partnerInvite = getEntryPartnerInvite(searchParams, startingRecord || openingControlCentre);
   const guestSessionId = searchParams.get("guest_session_id") || sessionStorage.getItem("guest_session_id_redirect") || null;
 
@@ -142,6 +145,8 @@ export default function Login({ comingSoon = false }) {
         navigate("/welcome", { replace: true, state: { startHomeRecord: startingRecord } });
       } else if (localAdmin ? startingRecord : redirectTo?.startsWith("/")) {
         navigate(redirectTo, { replace: true, state: { claimHomepageAnswer: startingRecord } });
+      } else if (localAdmin) {
+        navigate("/admin/operations", { replace: true });
       } else {
         // Default behavior (normal login) - Dashboard will check for quiz completion
         navigate("/dashboard", { replace: true });
@@ -178,9 +183,9 @@ export default function Login({ comingSoon = false }) {
     return <Navigate to={openingControlCentre ? redirectTo : "/dashboard"} replace />;
   }
 
-  const showLocalAdmin = process.env.NODE_ENV === "development" &&
-    process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" &&
-    ["localhost:3014", "127.0.0.1:3014"].includes(window.location.host);
+  const showLocalAdmin = process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" && isLocalDemoOrigin();
+  const demoReturn = demoReturnTo(redirectTo);
+  const demoDestination = demoReturn ? `/demo?returnTo=${encodeURIComponent(demoReturn)}` : "/demo";
 
   const registrationHref = partnerInvite
     ? `/register?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
@@ -200,7 +205,7 @@ export default function Login({ comingSoon = false }) {
       </form>
       {(showLocalAdmin || showLocalMaya) && (
         <div className="ht-journey-actions" aria-label="Local demo sign-in">
-          {showLocalMaya && <Button variant="secondary" disabled={pending} onClick={() => navigate("/demo?to=appliances")}>Log in as Maya</Button>}
+          {showLocalMaya && <Button variant="secondary" disabled={pending} onClick={() => navigate(demoDestination)}>Log in as Maya</Button>}
           {showLocalAdmin && <Button variant="secondary" disabled={pending} onClick={() => signIn(true)}>Admin login · localhost only</Button>}
         </div>
       )}

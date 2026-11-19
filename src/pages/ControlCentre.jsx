@@ -1,3 +1,4 @@
+import { localManualAskEnabled, rememberManualContext } from "../features/items/manualAskContext";
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPropertyFollowUp, getPropertyRecords, getPropertyTasks, updatePropertyTaskStatus } from "../api/api";
@@ -210,7 +211,10 @@ export default function ControlCentre() {
           <PageTitle>Control centre</PageTitle>
           <p className="ht-workspace-muted">Upcoming dates and follow-ups for your home.</p>
         </div>
-        {selected && <Link className="ht-workspace-control" to={`/property-profile?propertyId=${encodeURIComponent(selectedId)}`}><HTGlyph name="home" size={18} /> Open home record</Link>}
+        {selected && <div className="ht-centre-row-actions">
+          <Link className="ht-workspace-control" to={`/property-profile?propertyId=${encodeURIComponent(selectedId)}`}><HTGlyph name="home" size={18} /> Open home record</Link>
+          {localManualAskEnabled && <Link className="ht-workspace-control" to={`/appliances?home=${encodeURIComponent(selectedId)}`}><HTGlyph name="appliance" size={18} /> Appliances</Link>}
+        </div>}
       </header>
 
       {homes?.length > 0 && (
@@ -218,7 +222,11 @@ export default function ControlCentre() {
           {homes.length > 1 || !selected ? (
             <div className="ht-field">
               <label htmlFor="centre-home">Selected home</label>
-              <select id="centre-home" value={selectedId} onChange={event => setParams({ propertyId: event.target.value })}>
+              <select id="centre-home" value={selectedId} onChange={event => {
+                const homeId = event.target.value;
+                if (localManualAskEnabled) rememberManualContext(user?.id, { homeId });
+                setParams({ propertyId: homeId });
+              }}>
                 {!selected && <option value="" disabled>Choose a home</option>}
                 {homes.map(home => <option key={home.property.id} value={home.property.id}>{homeLabel(home)}</option>)}
               </select>

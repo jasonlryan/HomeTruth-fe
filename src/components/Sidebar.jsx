@@ -1,6 +1,6 @@
 import { localManualAskEnabled } from "../features/items/manualAskContext";
 import { useAuth } from '../context/AuthContext';
-import { isDemoWorkspaceUser } from '../utils/demoHomeHistory';
+import { controlCentreEnabled } from "../utils/localDemo";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import HTGlyph from "./HTGlyph";
@@ -59,9 +59,8 @@ export default function Sidebar() {
         {!collapsed && <span>Collapse navigation</span>}
       </button>
       <nav id="home-navigation" aria-label="Main navigation" className="ht-sidebar-items">
-        {isDemoWorkspaceUser(user?.email) && item('activity', 'Operations', '/operations')}
         {item('dashboard', 'Dashboard', '/dashboard')}
-        {item('calendar', 'Control centre', '/control-centre')}
+        {controlCentreEnabled() && item('calendar', 'Control centre', '/control-centre')}
         {hasPartnerAccess && item('key', 'Partner programmes', '/partner-programmes')}
         {item('home', 'Property profile', '/property-profile')}
         {localManualAskEnabled && item('appliance', 'Appliances', '/appliances')}

@@ -4,6 +4,7 @@ import "./admin-workspace.css";
 
 const destinations = [
   ["knowledge-base", "Knowledge", "knowledge", "Add and review sources used by Ask HomeTruth."],
+  ["operations", "Operations", "activity", "Explore the sample home record and programme workflows."],
   ["dashboard", "Reporting", "analytics", "Review product usage and programme activity."],
   ["partner-programmes", "Partner programmes", "programme", "Manage programmes, invitations and partner access."],
   ["articles", "Content", "content", "Manage and publish Home Truths articles."],

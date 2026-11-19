@@ -1,3 +1,5 @@
+import { controlCentreEnabled } from "../utils/localDemo";
+import { localManualAskEnabled, rememberManualContext } from "../features/items/manualAskContext";
 import HTGlyph from "../components/HTGlyph";
 import "../components/workspace.css";
 import PageTitle from "../components/PageTitle";
@@ -544,7 +546,7 @@ export default function PropertyProfile() {
                 {selectedRecord ? "Documents, work history and useful next steps, together in one place." : "Create the home record that documents, facts and actions will attach to."}
               </p>
             </div>
-            {selectedRecord && (
+            {selectedRecord && controlCentreEnabled() && (
               <Link className="ht-workspace-control self-start lg:self-auto" to={`/control-centre?propertyId=${selectedRecord.property.id}`}>
                 <HTGlyph name="calendar" size={18} /> Open Control centre
               </Link>
@@ -554,7 +556,11 @@ export default function PropertyProfile() {
                 Active property
                 <select
                   value={selectedRecord?.property?.id || ""}
-                  onChange={(event) => setSelectedId(Number(event.target.value))}
+                  onChange={event => {
+                    const homeId = Number(event.target.value);
+                    if (localManualAskEnabled) rememberManualContext(user?.id, { homeId });
+                    setSelectedId(homeId);
+                  }}
                   className="ht-workspace-input w-full"
                 >
                   {records.map((record) => (
@@ -569,7 +575,7 @@ export default function PropertyProfile() {
           </div>
         </header>
 
-        {process.env.NODE_ENV === "development" && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true" && selectedRecord ? (
+        {localManualAskEnabled && selectedRecord ? (
           <p><Link className="ht-workspace-link" to={`/appliances?home=${selectedRecord.property.id}`}>{hasHomeRecordTask() ? "Continue Find my manual" : "Open appliances and manuals"}</Link></p>
         ) : process.env.REACT_APP_HOMEPAGE_QUESTIONS === "true" && hasHomeRecordTask() && (
           <p><Link className="ht-workspace-link" to="/find-my-manual">Continue Find my manual preview</Link></p>

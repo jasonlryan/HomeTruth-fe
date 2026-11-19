@@ -1,48 +1,68 @@
 const { readFile } = require("node:fs/promises");
 const { createRequire } = require("node:module");
 
-// Keep the isolated preview on the same origin as its local API requests.
+const loopback = (value, fallback) => {
+  const port = value || fallback;
+  if (!/^[1-9]\d{0,4}$/.test(port) || Number(port) > 65535) {
+    throw new Error("Expected a valid loopback port for the local demo.");
+  }
+  return `http://127.0.0.1:${port}`;
+};
+
+const sameOriginDemoRequest = (req, port, header) => {
+  const host = req.get("host");
+  return req.socket.remoteAddress === "127.0.0.1" &&
+    [`localhost:${port}`, `127.0.0.1:${port}`].includes(host) &&
+    req.get("origin") === `http://${host}` && req.get("sec-fetch-site") === "same-origin" &&
+    req.get(header) === "1";
+};
+
 module.exports = app => {
   if (process.env.HOMETRUTH_PREVIEW_API_PROXY !== "true") return;
   const requireFromCRA = createRequire(require.resolve("react-scripts/package.json"));
-  if (process.env.NODE_ENV === "development" &&
-      process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" &&
-      process.env.HOST === "127.0.0.1" && process.env.PORT === "3014" &&
-      process.env.HOMETRUTH_LOCAL_ADMIN_ENV_FILE) {
-    serveLocalAdminLogin(app, requireFromCRA("dotenv").parse);
-  }
-
   const { createProxyMiddleware } = requireFromCRA("http-proxy-middleware");
-  if (process.env.NODE_ENV === "development" && process.env.HOST === "127.0.0.1" &&
-      process.env.PORT === "3014" && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true") {
+  const port = process.env.REACT_APP_LOCAL_DEMO_PORT || "3014";
+  const isLocalDemo = process.env.NODE_ENV === "development" && process.env.HOST === "127.0.0.1" &&
+    process.env.PORT === port && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true";
+
+  if (isLocalDemo) {
+    const core = loopback(process.env.HOMETRUTH_LOCAL_CORE_API_PORT, "8005");
+    const ask = loopback(process.env.HOMETRUTH_LOCAL_ASK_API_PORT, "8015");
+    const items = loopback(process.env.HOMETRUTH_LOCAL_ITEMS_API_PORT, "8014");
+    if (process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" && process.env.HOMETRUTH_LOCAL_ADMIN_ENV_FILE) {
+      serveLocalAdminLogin(app, requireFromCRA("dotenv").parse, { core, port });
+    }
     if (process.env.REACT_APP_HOMEOWNER_DEMO === "true" &&
         process.env.HOMETRUTH_LOCAL_MAYA_EMAIL === "maya.demo@example.invalid" &&
         process.env.HOMETRUTH_LOCAL_MAYA_PASSWORD) {
       serveLocalMayaLogin(app, {
         email: process.env.HOMETRUTH_LOCAL_MAYA_EMAIL,
-        password: process.env.HOMETRUTH_LOCAL_MAYA_PASSWORD
+        password: process.env.HOMETRUTH_LOCAL_MAYA_PASSWORD,
+        core, port,
       });
     }
-    app.use(createProxyMiddleware("/api/ai_chat", { target: "http://127.0.0.1:8015", changeOrigin: true }));
-    app.use(createProxyMiddleware(path => /^\/api\/property-records\/[1-9]\d*\/items(?:\/|$)/.test(path), { target: "http://127.0.0.1:8014", changeOrigin: true }));
+    app.use(createProxyMiddleware("/api/ai_chat", { target: ask, changeOrigin: true }));
+    app.use(createProxyMiddleware(path => /^\/api\/property-records\/[1-9]\d*\/items(?:\/|$)/.test(path), { target: items, changeOrigin: true }));
+    const surveyPort = process.env.HOMETRUTH_LOCAL_SURVEY_API_PORT;
+    if (surveyPort) {
+      const survey = loopback(surveyPort);
+      app.use(createProxyMiddleware(path => /^\/api\/(?:user-documents\/[1-9]\d*\/pdf-page|property-records\/[1-9]\d*\/tasks(?:\/|$))/.test(path), { target: survey, changeOrigin: true }));
+    }
+    app.use(createProxyMiddleware("/api", { target: core, changeOrigin: true }));
+    return;
   }
+
   app.use(createProxyMiddleware("/api", { target: process.env.HOMETRUTH_PREVIEW_API_TARGET || "http://localhost:8005", changeOrigin: true }));
 };
 
 // One successful sign-in per explicitly enabled loopback server, for 20 minutes.
-function serveLocalAdminLogin(app, parseEnv) {
+function serveLocalAdminLogin(app, parseEnv, { core, port }) {
   const expiresAt = Date.now() + 20 * 60_000;
   let used = false;
   let pending = false;
   app.post("/_local/admin-login", async (req, res) => {
     res.set("Cache-Control", "no-store");
-    const host = req.get("host");
-    const loopbackHost = host === "localhost:3014" || host === "127.0.0.1:3014";
-    if (req.socket.remoteAddress !== "127.0.0.1" || !loopbackHost ||
-        req.get("origin") !== `http://${host}` || req.get("sec-fetch-site") !== "same-origin" ||
-        req.get("x-hometruth-local-admin") !== "1") {
-      return res.sendStatus(403);
-    }
+    if (!sameOriginDemoRequest(req, port, "x-hometruth-local-admin")) return res.sendStatus(403);
     if (used || Date.now() >= expiresAt) {
       return res.status(410).json({ message: "This temporary admin login is no longer active." });
     }
@@ -54,7 +74,7 @@ function serveLocalAdminLogin(app, parseEnv) {
       const email = localEnv.LOCAL_ADMIN_EMAIL;
       const password = localEnv.LOCAL_ADMIN_PASSWORD;
       if (!email || !password) throw new Error("Local admin credentials unavailable");
-      const response = await fetch("http://127.0.0.1:8005/api/auth/login", {
+      const response = await fetch(core + "/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -75,19 +95,14 @@ function serveLocalAdminLogin(app, parseEnv) {
   });
 }
 
-
 // The local demo opens the existing synthetic customer using the normal password check.
-function serveLocalMayaLogin(app, { email, password }) {
+function serveLocalMayaLogin(app, { email, password, core, port }) {
   app.post("/_local/maya-login", async (req, res) => {
     res.set("Cache-Control", "no-store");
-    const host = req.get("host");
-    if (req.socket.remoteAddress !== "127.0.0.1" ||
-        !["localhost:3014", "127.0.0.1:3014"].includes(host) ||
-        req.get("origin") !== `http://${host}` || req.get("sec-fetch-site") !== "same-origin" ||
-        req.get("x-hometruth-local-maya") !== "1") return res.sendStatus(403);
+    if (!sameOriginDemoRequest(req, port, "x-hometruth-local-maya")) return res.sendStatus(403);
 
     try {
-      const response = await fetch("http://127.0.0.1:8005/api/auth/login", {
+      const response = await fetch(core + "/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

@@ -1,7 +1,8 @@
+import { controlCentreEnabled } from "../utils/localDemo";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { demoEntryEnabled, localMayaEntry, startDemoSession } from '../utils/demoEntry';
+import { demoReturnTo, localMayaEntry, startDemoSession } from '../utils/demoEntry';
 import '../components/workspace.css';
 
 export default function DemoEntry() {
@@ -12,10 +13,13 @@ export default function DemoEntry() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    if (!demoEntryEnabled()) { navigate('/login', { replace: true }); return; }
-    const target = new URLSearchParams(window.location.search).get('to');
-    const destination = target === 'appliances' && localMayaEntry() ? '/appliances'
-      : target === 'operations' ? '/operations' : '/property-profile';
+    if (!localMayaEntry()) { navigate('/login', { replace: true }); return; }
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('to');
+    const explicit = demoReturnTo(params.get('returnTo'));
+    const destination = explicit ||
+      (target === 'appliances' ? '/appliances'
+        : target === 'home-record' || !controlCentreEnabled() ? '/property-profile' : '/control-centre');
     startDemoSession().then(({ token, user }) => {
       login(token, user);
       navigate(destination, { replace: true });

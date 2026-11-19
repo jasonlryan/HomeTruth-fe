@@ -8,7 +8,7 @@ import { FIND_APPLIANCE_MANUAL_ACTION, HOME_RECORD_PATH, HOME_RECORD_REDIRECT, s
 import { localMayaEntry } from "../utils/demoEntry";
 import "./account-entry.css";
 
-const localApplianceFlow = process.env.NODE_ENV === "development" && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true";
+import { localManualAskEnabled as localApplianceFlow } from "../features/items/manualAskContext";
 const assetBase = process.env.PUBLIC_URL + "/assets/homepage/";
 
 export default function FindMyManualPreview() {

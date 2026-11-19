@@ -807,9 +807,12 @@ export default function AskAI() {
 
     try {
       const selected = localManualAskEnabled && readManualContext(user?.id);
-      const manualScope = propertyContext?.id && String(propertyContext.id) !== String(selected?.homeId)
-        ? { homeId: propertyContext.id }
-        : selected || null;
+      const homeId = propertyContext?.id || selected?.homeId;
+      const refersToWasher = /\b(?:washers?|washing machines?)\b/i.test(input);
+      const manualScope = {
+        homeId,
+        itemId: refersToWasher && String(homeId) === String(selected?.homeId) ? selected?.itemId : null
+      };
       const result = await askAIChat(
         input,
         currentSessionId,

@@ -1,5 +1,7 @@
+import { isLocalDemoOrigin } from "../../utils/localDemo";
+
 export const localManualAskEnabled =
-  process.env.NODE_ENV === "development" && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true";
+  process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true" && isLocalDemoOrigin();
 
 export const isManualAction = actions => Array.isArray(actions) &&
   actions.some(action => action?.actionId === "find_appliance_manual");

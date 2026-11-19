@@ -4,7 +4,6 @@ import "../components/workspace.css";
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { isDemoWorkspaceUser } from "../utils/demoHomeHistory";
 
 // Presentation fixtures remain separate from all operational/admin APIs.
 const homes = [
@@ -89,8 +88,7 @@ export default function OperationsDemo() {
       return { summary: true, documents: false, history: false };
     }
   });
-  if (!isDemoWorkspaceUser(user?.email))
-    return <Navigate to="/dashboard" replace />;
+  if (user?.role !== "admin") return <Navigate to="/dashboard" replace />;
   const filtered = homes.filter((home) =>
     `${home.name} ${home.address}`.toLowerCase().includes(query.toLowerCase()),
   );
@@ -113,8 +111,8 @@ export default function OperationsDemo() {
             put homeowners in control.
           </p>
         </div>
-        <Link className={button} to="/property-profile">
-          Open Maya’s home
+        <Link className={button} to="/admin">
+          Admin overview
           <HTGlyph name="arrow-right" size={16} />
         </Link>
       </header>
@@ -173,9 +171,7 @@ export default function OperationsDemo() {
                   </li>
                 ))}
               </ol>
-              <Link className={`${button} mt-6`} to="/property-profile">
-                Follow the homeowner journey
-              </Link>
+              <p className="mt-6 text-sm ht-workspace-muted">These sample records illustrate the homeowner journey.</p>
             </section>
             <section className={panel}>
               <h2 className="text-lg font-semibold">Work to review</h2>
@@ -289,23 +285,9 @@ export default function OperationsDemo() {
                 {selected.name} · {selected.address}
               </h3>
               <p className="mt-3 text-sm">{selected.review}</p>
-              {selected.name === "Maya" ? (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link className={button} to="/property-profile">
-                    Open home history
-                  </Link>
-                  <Link className={button} to="/documents">
-                    Open documents
-                  </Link>
-                  <Link className={button} to="/saved-notes">
-                    Open notes
-                  </Link>
-                </div>
-              ) : (
-                <p className="mt-3 text-sm ht-workspace-muted">
-                  {selected.documents} documents · {selected.event}
-                </p>
-              )}
+              <p className="mt-3 text-sm ht-workspace-muted">
+                {selected.documents} documents · {selected.event}
+              </p>
             </div>
           )}
         </section>

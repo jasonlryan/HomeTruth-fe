@@ -26,7 +26,7 @@ export default function ManualAskAction({ scope, userId }) {
     return () => { active = false; };
   }, [homeId, itemId, retry]);
 
-  if (!itemId) return <p className="mt-2"><Link to={appliancePath(homeId)} className="journey-link">Choose your washing machine</Link> to check Vault for its manual.</p>;
+  if (!itemId) return <p className="mt-2"><Link to={appliancePath(homeId)} className="journey-link">Choose your appliance</Link> to check Vault for its manual.</p>;
   if (!state) return <p className="mt-2" role="status">Checking Vault for the exact model…</p>;
   if (state.error) return <p className="mt-2" role="alert">I couldn’t check Vault. <button type="button" className="journey-link" onClick={() => setRetry(n => n + 1)}>Try again</button> or <Link className="journey-link" to={appliancePath(homeId)}>choose another appliance</Link>.</p>;
 

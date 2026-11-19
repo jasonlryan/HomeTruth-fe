@@ -16,6 +16,7 @@ export default function DocumentWorkspace({
   onClose,
   propertyId,
   savedPassage,
+  allowPassages = false,
 }) {
   const [tab, setTab] = useState(savedPassage ? "passages" : initialTab);
   const [pdfPage, setPdfPage] = useState(1);
@@ -39,7 +40,7 @@ export default function DocumentWorkspace({
   const previewTab = useRef(null);
   const chatTab = useRef(null);
   const passagesTab = useRef(null);
-  const canReadPassages = Boolean(savedPassage || doc.file_type === ".pdf" || /\.pdf$/i.test(doc.name || ""));
+  const canReadPassages = Boolean(savedPassage || (allowPassages && (doc.file_type === ".pdf" || /\.pdf$/i.test(doc.name || ""))));
   const tabs = [
     ["preview", "Preview", previewTab],
     ...(canReadPassages ? [["passages", "Passages", passagesTab]] : []),
