@@ -64,6 +64,7 @@ const hasHomepagePreview = process.env.NODE_ENV === "development" || isVisualRev
 const openHomepagePreviewByDefault = hasHomepagePreview && process.env.REACT_APP_HOMEPAGE_PREVIEW_DEFAULT === "true";
 const Homepage = lazy(() => import("./pages/Homepage"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
+const ControlCentre = lazy(() => import("./pages/ControlCentre"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
 
@@ -205,6 +206,7 @@ function App() {
             }
           >
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="control-centre" element={<Suspense fallback={null}><ControlCentre /></Suspense>} />
             <Route path="welcome" element={<WelcomePage />} />
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="documents" element={<Documents />} />

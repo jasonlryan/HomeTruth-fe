@@ -472,6 +472,11 @@ export const getPropertyTasks = async (propertyId, params = {}) => {
   return res.data?.data || [];
 };
 
+export const createPropertyFollowUp = async (propertyId, payload) => {
+  const res = await api.post(`/api/property-records/${propertyId}/tasks`, payload);
+  return res.data?.data;
+};
+
 export const generatePropertyTasks = async (propertyId) => {
   const res = await api.post(`/api/property-records/${propertyId}/tasks/generate`);
   return res.data?.data;
@@ -852,4 +857,14 @@ export const getDocumentPreviewFile = async (documentId, signal) => {
 export const getUserDocumentRecord = async (id, signal) => {
   const res = await api.get(`/api/user-documents/${encodeURIComponent(id)}`, { signal });
   return res.data;
+};
+
+export const getSurveyPdfPage = async (documentId, page, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(documentId)}/pdf-page`, { params: { page }, signal });
+  return res.data?.data;
+};
+
+export const getFollowUpPassage = async (propertyId, taskId, signal) => {
+  const res = await api.get(`/api/property-records/${encodeURIComponent(propertyId)}/tasks/${encodeURIComponent(taskId)}/passage`, { signal });
+  return res.data?.data;
 };
