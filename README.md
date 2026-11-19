@@ -80,8 +80,9 @@ HOST=127.0.0.1 PORT=3014 BROWSER=none \
 - The optional **Admin login · localhost only** shortcut needs
   `REACT_APP_LOCAL_ADMIN_LOGIN=true` and `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` pointing
   to a private local env file with `LOCAL_ADMIN_EMAIL` and `LOCAL_ADMIN_PASSWORD`.
-  The shortcut logs in through the normal API, allows one successful use
-  during the first 20 minutes, and opens `/admin/operations`.
+  At `/login?switch=1`, the shortcut uses the normal login API and opens
+  `/admin/operations`. You can use it again while the explicitly configured
+  loopback demo server is running.
 - For a separate frontend rehearsal, set both `PORT` and
   `REACT_APP_LOCAL_DEMO_PORT` to the same free loopback port. The API proxy
   defaults to 8005 for core, 8015 for Ask and 8014 for appliances. For a single

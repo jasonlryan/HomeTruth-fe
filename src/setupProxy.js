@@ -55,17 +55,12 @@ module.exports = app => {
   app.use(createProxyMiddleware("/api", { target: process.env.HOMETRUTH_PREVIEW_API_TARGET || "http://localhost:8005", changeOrigin: true }));
 };
 
-// One successful sign-in per explicitly enabled loopback server, for 20 minutes.
+// Use the normal admin login for explicitly enabled loopback demos.
 function serveLocalAdminLogin(app, parseEnv, { core, port }) {
-  const expiresAt = Date.now() + 20 * 60_000;
-  let used = false;
   let pending = false;
   app.post("/_local/admin-login", async (req, res) => {
     res.set("Cache-Control", "no-store");
     if (!sameOriginDemoRequest(req, port, "x-hometruth-local-admin")) return res.sendStatus(403);
-    if (used || Date.now() >= expiresAt) {
-      return res.status(410).json({ message: "This temporary admin login is no longer active." });
-    }
     if (pending) return res.status(409).json({ message: "An admin login is already in progress." });
 
     pending = true;
@@ -85,10 +80,9 @@ function serveLocalAdminLogin(app, parseEnv, { core, port }) {
       if (!response.ok || typeof result.data?.token !== "string" || result.data?.user?.role !== "admin") {
         return res.status(403).json({ message: "The local credentials did not pass HomeTruth’s admin login check." });
       }
-      used = true;
       return res.json({ data: { token: result.data.token, user: result.data.user } });
     } catch {
-      return res.status(503).json({ message: "The temporary admin login is unavailable." });
+      return res.status(503).json({ message: "The local admin login is unavailable." });
     } finally {
       pending = false;
     }
