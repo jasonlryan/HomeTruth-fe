@@ -1,18 +1,30 @@
+export function localMayaEntry() {
+  return process.env.NODE_ENV === 'development' &&
+    process.env.REACT_APP_HOMEOWNER_DEMO === 'true' &&
+    process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === 'true' &&
+    window.location.port === '3014' &&
+    ['localhost', '127.0.0.1'].includes(window.location.hostname);
+}
+
 export function demoEntryEnabled(hostname = window.location.hostname) {
-  return process.env.REACT_APP_HOMEOWNER_DEMO === 'true' &&
+  return localMayaEntry() || (process.env.REACT_APP_HOMEOWNER_DEMO === 'true' &&
     ['localhost', '127.0.0.1', '[::1]'].includes(hostname) &&
-    Boolean(process.env.REACT_APP_DEMO_PASSWORD);
+    Boolean(process.env.REACT_APP_DEMO_PASSWORD));
 }
 
 export async function startDemoSession() {
   if (!demoEntryEnabled()) throw new Error('Demo entry is unavailable here.');
-  const api = new URL(process.env.REACT_APP_API_BASE_URL);
+  const local = localMayaEntry();
+  const api = new URL(local ? window.location.origin : process.env.REACT_APP_API_BASE_URL);
   if (!['localhost', '127.0.0.1', '[::1]'].includes(api.hostname)) {
     throw new Error('Demo entry requires the local API.');
   }
-  const response = await fetch(new URL('/api/auth/login', api), {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+  const options = local ? { headers: { 'x-hometruth-local-maya': '1' } } : {
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'maya.demo@example.invalid', password: process.env.REACT_APP_DEMO_PASSWORD }),
+  };
+  const response = await fetch(new URL(local ? '/_local/maya-login' : '/api/auth/login', api), {
+    method: 'POST', ...options,
   });
   const body = await response.json();
   const data = body.data?.data || body.data || body;

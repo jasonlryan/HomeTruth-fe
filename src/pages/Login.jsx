@@ -4,6 +4,7 @@ import { loginUser, claimGuestSession } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import { Button, Field } from "../components/homepage/HomeTruth";
 import AccountPage, { AccountPasswordField } from "../components/homepage/AccountPage";
+import { localMayaEntry } from "../utils/demoEntry";
 import { getEntryPartnerInvite, HOME_RECORD_PATH, HOME_RECORD_REDIRECT } from "../utils/homeRecordEntry";
 
 function comingSoonDestination(user) {
@@ -31,17 +32,21 @@ export default function Login({ comingSoon = false }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    await signIn(false);
+  };
+
+  const signIn = async localAdmin => {
     if (pending) return;
     setError("");
     setEmailError("");
     setPasswordError("");
 
     let valid = true;
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!localAdmin && !/\S+@\S+\.\S+/.test(email)) {
       setEmailError("Please enter a valid email address.");
       valid = false;
     }
-    if (password.length < 6) {
+    if (!localAdmin && password.length < 6) {
       setPasswordError("Password must be at least 6 characters.");
       valid = false;
     }
@@ -49,8 +54,17 @@ export default function Login({ comingSoon = false }) {
 
     setPending(true);
     try {
-      // Regular user login
-      const res = await loginUser({ email, password });
+      let res;
+      if (localAdmin) {
+        const response = await fetch("/_local/admin-login", {
+          method: "POST",
+          headers: { "X-HomeTruth-Local-Admin": "1" },
+        });
+        res = await response.json();
+        if (!response.ok) throw new Error(res.message || "Temporary admin login failed.");
+      } else {
+        res = await loginUser({ email, password });
+      }
 
       const token = res.data?.token || res.data?.data?.token;
       const user = res.data?.user || res.data?.data?.user;
@@ -72,14 +86,14 @@ export default function Login({ comingSoon = false }) {
       } else {
         localStorage.setItem("require_profile", "true");
       }
-      localStorage.setItem("user_email", email);
+      localStorage.setItem("user_email", localAdmin ? user.email : email);
 
       // Handle extension redirect if present
       const redirectUri = new URLSearchParams(window.location.search).get(
         "redirect_uri"
       );
 
-      if (redirectUri?.startsWith("chrome-extension://")) {
+      if (!localAdmin && redirectUri?.startsWith("chrome-extension://")) {
         window.location.href = `${redirectUri}#access_token=${token}`;
         return;
       }
@@ -89,7 +103,7 @@ export default function Login({ comingSoon = false }) {
         return;
       }
 
-      if (partnerInvite) {
+      if (!localAdmin && partnerInvite) {
         localStorage.setItem("partner_invite_code", partnerInvite);
         const partnerRedirect =
           redirectTo?.startsWith("/partner/")
@@ -122,10 +136,10 @@ export default function Login({ comingSoon = false }) {
       // Check if this is a new user
       const isNewUser = localStorage.getItem("new_user") === "true";
       
-      if (isNewUser) {
+      if (isNewUser && !localAdmin) {
         // Redirect new users to welcome page
         navigate("/welcome", { replace: true, state: { startHomeRecord: startingRecord } });
-      } else if (redirectTo?.startsWith("/")) {
+      } else if (localAdmin ? startingRecord : redirectTo?.startsWith("/")) {
         navigate(redirectTo, { replace: true, state: { claimHomepageAnswer: startingRecord } });
       } else {
         // Default behavior (normal login) - Dashboard will check for quiz completion
@@ -154,12 +168,18 @@ export default function Login({ comingSoon = false }) {
     }
   };
 
+  const showLocalMaya = localMayaEntry();
+  const switchingLocalAccount = showLocalMaya && searchParams.get("switch") === "1";
   if (checkingSession) return null;
-  if (signedInUser && !loginSucceeded.current) {
+  if (signedInUser && !loginSucceeded.current && !switchingLocalAccount) {
     if (comingSoon) return <Navigate to={comingSoonDestination(signedInUser)} replace />;
     if (startingRecord) return <Navigate to={HOME_RECORD_PATH} replace state={{ claimHomepageAnswer: true }} />;
     return <Navigate to="/dashboard" replace />;
   }
+
+  const showLocalAdmin = process.env.NODE_ENV === "development" &&
+    process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" &&
+    ["localhost:3014", "127.0.0.1:3014"].includes(window.location.host);
 
   const registrationHref = partnerInvite
     ? `/register?partner_invite=${encodeURIComponent(partnerInvite)}&redirect=/partner/${encodeURIComponent(partnerInvite)}`
@@ -177,6 +197,12 @@ export default function Login({ comingSoon = false }) {
         {error && <p className="ht-error" role="alert">{error}</p>}
         <Button variant="cyan" type="submit" pending={pending}>{pending ? "Logging in…" : "Log in"}</Button>
       </form>
+      {(showLocalAdmin || showLocalMaya) && (
+        <div className="ht-journey-actions" aria-label="Local demo sign-in">
+          {showLocalMaya && <Button variant="secondary" disabled={pending} onClick={() => navigate("/demo?to=appliances")}>Log in as Maya</Button>}
+          {showLocalAdmin && <Button variant="secondary" disabled={pending} onClick={() => signIn(true)}>Admin login · localhost only</Button>}
+        </div>
+      )}
       {!comingSoon && <p>New to HomeTruth? <a href={registrationHref}>Create an account</a></p>}
     </AccountPage>
   );

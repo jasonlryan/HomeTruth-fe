@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button, HTIcon, Panel, RouteChoice, routes } from "./HomeTruth";
@@ -149,6 +150,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
   const [route, setRoute] = useState(routes[0]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [answerOffersManual, setAnswerOffersManual] = useState(false);
   const [phase, setPhase] = useState("idle");
   const [limited, setLimited] = useState(false);
   const [recordOpen, setRecordOpen] = useState(false);
@@ -200,6 +202,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
     setRequestId(id => id + 1);
     setRecordOpen(false);
     setPhase("waiting");
+    setAnswerOffersManual(false);
 
     try {
       const result = await ask(prompt);
@@ -210,6 +213,7 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
         return;
       }
       setAnswer(result.text);
+      setAnswerOffersManual(Boolean(result.action));
       setPhase("delivering");
     } catch {
       setPhase("error");
@@ -228,6 +232,9 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
   const showRecord = phase === "complete" || phase === "limited";
   const recordAction = showRecord && (
     <div className="ht-journey-actions">
+      {answerOffersManual && manualPreviewHref && (
+        <Link className="ht-button" data-variant="cyan" to={manualPreviewHref} onClick={onAccountHandoff}>Find my manual</Link>
+      )}
       {RecordLink ? (
         <RecordLink homeHref={homeHref} fromAnswer={phase === "complete"} onClick={onAccountHandoff}>
           <HTIcon name="home" assetBase={assetBase + "icons/"} /> Start a home record

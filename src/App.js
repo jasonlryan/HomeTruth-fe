@@ -64,6 +64,8 @@ const hasHomepagePreview = process.env.NODE_ENV === "development" || isVisualRev
 const openHomepagePreviewByDefault = hasHomepagePreview && process.env.REACT_APP_HOMEPAGE_PREVIEW_DEFAULT === "true";
 const showHomepageQuestions = process.env.REACT_APP_HOMEPAGE_QUESTIONS === "true";
 const Homepage = lazy(() => import("./pages/Homepage"));
+const localApplianceFlow = process.env.NODE_ENV === "development" && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true";
+const LocalApplianceWorkspace = lazy(() => import("./pages/LocalApplianceWorkspace"));
 const FindMyManualPreview = lazy(() => import("./pages/FindMyManualPreview"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
@@ -218,6 +220,7 @@ function App() {
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="documents" element={<Documents />} />
             <Route path="property-profile" element={<PropertyProfile />} />
+            {localApplianceFlow && <Route path="appliances" element={<Suspense fallback={null}><LocalApplianceWorkspace /></Suspense>} />}
             <Route path="operations" element={<OperationsDemo />} />
             <Route path="home" element={<Home />} />
             <Route path="quiz" element={<QuizPage />} />

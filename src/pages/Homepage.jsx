@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useOutlet } from "react-router-dom";
 import { askAnonymousAI } from "../api/api";
 import Journey from "../components/homepage/Journey";
 import QuestionOptions from "../components/homepage/QuestionOptions";
+import { isManualAction, localManualAskEnabled } from "../features/items/manualAskContext";
 import { useAuth } from "../context/AuthContext";
 import { clearHomeRecordTask, getHomeRecordGuestSession, HOME_RECORD_REDIRECT, setHomeRecordGuestSession } from "../utils/homeRecordEntry";
 
@@ -32,7 +33,7 @@ export default function Homepage({ questionHome }) {
       if (onPublicHomepage && data.reply?.trim()) {
         setHomeRecordGuestSession(sessionId.current);
       }
-      return { text: data.reply, limited: data.conversationEnded || data.remainingQuestions === 0 };
+      return { text: data.reply, action: localManualAskEnabled && isManualAction(data.actions), limited: data.conversationEnded || data.remainingQuestions === 0 };
     } catch (error) {
       const response = error?.response;
       if (response?.status === 429 || response?.data?.conversationEnded) return { limited: true };

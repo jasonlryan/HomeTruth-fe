@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { demoEntryEnabled, startDemoSession } from '../utils/demoEntry';
+import { demoEntryEnabled, localMayaEntry, startDemoSession } from '../utils/demoEntry';
 import '../components/workspace.css';
 
 export default function DemoEntry() {
@@ -13,7 +13,9 @@ export default function DemoEntry() {
     if (started.current) return;
     started.current = true;
     if (!demoEntryEnabled()) { navigate('/login', { replace: true }); return; }
-    const destination = new URLSearchParams(window.location.search).get('to') === 'operations' ? '/operations' : '/property-profile';
+    const target = new URLSearchParams(window.location.search).get('to');
+    const destination = target === 'appliances' && localMayaEntry() ? '/appliances'
+      : target === 'operations' ? '/operations' : '/property-profile';
     startDemoSession().then(({ token, user }) => {
       login(token, user);
       navigate(destination, { replace: true });
