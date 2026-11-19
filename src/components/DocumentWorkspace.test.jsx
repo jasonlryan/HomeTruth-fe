@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import DocumentWorkspace from "./DocumentWorkspace";
 import {
   getDocumentChats,
@@ -159,4 +159,37 @@ test("focus wraps only through active-tab controls, never the inactive tab or ba
   );
   expect(close).toHaveFocus();
   geometry.mockRestore();
+});
+
+test("loads older questions without hiding current history or duplicating rows", async () => {
+  getDocumentChats
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Recent question" }], pagination: { has_next_page: true } } })
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Recent question" }, { id: 1, user_message: "Older question" }], pagination: { has_next_page: false } } });
+  render(<DocumentWorkspace document={{ id: 21, name: "survey.pdf" }} initialTab="chat" onClose={() => {}} />);
+  fireEvent.click(screen.getByRole("tab", { name: "Chat with Document" }));
+  const more = await screen.findByRole("button", { name: "Load older questions" });
+  fireEvent.click(more);
+  expect(await screen.findByText("Older question")).toBeVisible();
+  expect(screen.getAllByText("Recent question")).toHaveLength(1);
+  expect(getDocumentChats).toHaveBeenLastCalledWith(21, { page: 2, limit: 100 });
+  expect(screen.queryByRole("button", { name: "Load older questions" })).not.toBeInTheDocument();
+});
+
+
+test("a pending older page cannot populate a different document", async () => {
+  let resolveOlder;
+  getDocumentChats
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Home A question" }], pagination: { has_next_page: true } } })
+    .mockImplementationOnce(() => new Promise(resolve => { resolveOlder = resolve; }))
+    .mockResolvedValueOnce({ data: { chats: [{ id: 3, user_message: "Home B question" }], pagination: { has_next_page: false } } });
+  const { rerender } = render(<DocumentWorkspace document={{ id: 21, name: "A.pdf" }} initialTab="chat" onClose={() => {}} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Load older questions" }));
+  rerender(<DocumentWorkspace document={{ id: 22, name: "B.pdf" }} initialTab="chat" onClose={() => {}} />);
+  expect(await screen.findByText("Home B question")).toBeVisible();
+  await act(async () => {
+    resolveOlder({ data: { chats: [{ id: 1, user_message: "Older Home A question" }], pagination: { has_next_page: true } } });
+  });
+  expect(screen.queryByText("Older Home A question")).not.toBeInTheDocument();
+  expect(screen.queryByText("Home A question")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Load older questions" })).not.toBeInTheDocument();
 });
