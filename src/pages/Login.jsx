@@ -65,7 +65,7 @@ export default function Login({ comingSoon = false }) {
           headers: { "X-HomeTruth-Local-Admin": "1" },
         });
         res = await response.json();
-        if (!response.ok) throw new Error(res.message || "Temporary admin login failed.");
+        if (!response.ok) throw new Error(res.message || "Local admin login failed.");
       } else {
         res = await loginUser({ email, password });
       }
@@ -175,7 +175,9 @@ export default function Login({ comingSoon = false }) {
   };
 
   const showLocalMaya = localMayaEntry();
-  const switchingLocalAccount = showLocalMaya && searchParams.get("switch") === "1";
+  const showLocalAdmin = process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" &&
+    process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true" && isLocalDemoOrigin();
+  const switchingLocalAccount = (showLocalMaya || showLocalAdmin) && searchParams.get("switch") === "1";
   if (checkingSession) return null;
   if (signedInUser && !loginSucceeded.current && !switchingLocalAccount) {
     if (comingSoon) return <Navigate to={comingSoonDestination(signedInUser)} replace />;
@@ -183,7 +185,6 @@ export default function Login({ comingSoon = false }) {
     return <Navigate to={openingControlCentre ? redirectTo : "/dashboard"} replace />;
   }
 
-  const showLocalAdmin = process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" && isLocalDemoOrigin();
   const demoReturn = demoReturnTo(redirectTo);
   const demoDestination = demoReturn ? `/demo?returnTo=${encodeURIComponent(demoReturn)}` : "/demo";
 
