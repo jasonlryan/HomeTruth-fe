@@ -11,7 +11,7 @@ import sellingUrl from "../user-flows/HT-FLOW-004.md";
 import "../components/homepage/HomeTruth";
 import "./admin-ux-specifications.css";
 
-const domainModel = "https://github.com/jasonlryan/hometruth/blob/744cba50804c9e2f249af2448636fd43ed78b314/docs/product/hometruth-domain-model.md";
+const domainModel = "https://github.com/jasonlryan/hometruth/blob/c1344029962099bb1829699d1129328d4a0c982a/docs/product/hometruth-domain-model.md";
 const designSystem = "/admin/design-system/reference";
 const blueprints = [
   { id: "HT-FLOW-001", label: "First answer to home record", url: blueprintUrl },
