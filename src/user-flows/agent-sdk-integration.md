@@ -6,6 +6,18 @@ A homeowner taps **Find my manual** on a confirmed appliance. HomeTruth gives a 
 
 HT-341 implements that journey on its feature branch. The shared registry, invocation interface, memory policy and messaging contracts below are proposed. The first release runs on demand inside the backend request. HT-337, HT-338 and HT-339 cover the separate owner-grant and MCP work for external personal-agent connections.
 
+## External connection and database planning
+
+Connect your agent remains roadmap-only and requires no database change for that messaging. Enabling a real connection requires authenticated external clients, the agreed OAuth discovery/PKCE flow, verified token claims and a revocable property-scoped grant under HT-337. The grant is the central missing authorisation record. It records the granting user, client, home, purpose, permitted operations and evidence, expiry and revocation. Every tool read, result read and evidence retrieval must satisfy both the grant and the user's current property and document permissions.
+
+Revocation denies subsequent HomeTruth reads and evidence-link requests, including requests using an otherwise valid token. Consent must explain that information already exported may remain with the recipient. External grant expiry and access-log retention require their own decisions. The proposed 30-day internal review window does not set either lifetime.
+
+Acceptance must exercise a successful read and citation for Home A, denial for Home B, and denial of the same read and evidence request after grant revocation. In a separate case, keep the token valid and the grant active and unexpired, remove the granting user's underlying property access, and repeat those requests. Both must fail. Also test loss of document access while property access remains. Cached authorisation must not preserve permission after it is removed.
+
+The local MySQL schema had 48 tables before HT-355. The verified local migration on 19 November 2026 removed four empty naming duplicates, leaving 44 tables while preserving every retained record. The appliance tables `appliance_agent_runs`, `home_items`, `home_item_evidence` and `home_item_answers` remain present. This is local schema evidence; production has not been verified.
+
+The first external pilot can read dated tasks, facts and permissioned evidence. Missing service evidence yields an unknown service date. An answer can cite several existing documents without creating a property fact. When persisting one reconciled fact supported by several sources, introduce a fact-to-evidence association that preserves each supporting source; the current `property_facts.evidence_source_id` stores one source.
+
 ## SDK boundary and agent management
 
 Keep the Agents SDK server-side in the isolated Node workspace used by HT-341. Start with its lockfile versions of `@openai/agents` (0.14.0) and Zod (4.6.7). The runtime adapter constructs the SDK `Agent`, binds authorised tools, invokes `Runner.run`, applies a deadline, and converts the provider response into a validated result and usage counts. Provider credentials, model choice and tool configuration come from the backend. Keep provider tracing disabled and Responses storage off, as in HT-341.
