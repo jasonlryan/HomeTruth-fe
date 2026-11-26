@@ -5,3 +5,6 @@ export function isLocalDemoOrigin(location = window.location) {
 }
 
 export const controlCentreEnabled = () => process.env.REACT_APP_CONTROL_CENTRE_ENABLED === "true";
+
+export const investorDataRoomEnabled = () =>
+  process.env.REACT_APP_LOCAL_INVESTOR_DATA_ROOM === "true" && isLocalDemoOrigin();

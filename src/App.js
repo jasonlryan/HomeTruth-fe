@@ -1,3 +1,4 @@
+import { investorDataRoomEnabled } from "./utils/localDemo";
 import { mayaHomeDestination } from "./utils/demoEntry";
 import { localManualAskEnabled } from "./features/items/manualAskContext";
 import { controlCentreEnabled } from "./utils/localDemo";
@@ -72,6 +73,7 @@ const FindMyManualPreview = lazy(() => import("./pages/FindMyManualPreview"));
 const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentre = lazy(() => import("./pages/ControlCentre"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
+const InvestorDataRoom = lazy(() => import("./pages/InvestorDataRoom"));
 const AdminOntology = lazy(() => import("./pages/ontology/AdminOntology"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
 
@@ -80,6 +82,7 @@ const adminRoutes = (
     <Route element={<AdminWorkspace />}>
       <Route index element={<AdminOverview />} />
       <Route path="operations" element={<OperationsDemo />} />
+      {investorDataRoomEnabled() && <Route path="data-room" element={<Suspense fallback={<p role="status">Loading Data Room…</p>}><InvestorDataRoom /></Suspense>} />}
       <Route path="knowledge-base" element={<KnowledgeBaseAdmin />} />
       <Route path="dashboard" element={<AdminReportingDashboard />} />
       <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />

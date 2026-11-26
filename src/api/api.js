@@ -910,3 +910,15 @@ export const getFollowUpPassage = async (propertyId, taskId, signal) => {
   const res = await api.get(`/api/property-records/${encodeURIComponent(propertyId)}/tasks/${encodeURIComponent(taskId)}/passage`, { signal });
   return res.data?.data;
 };
+
+const investorPortfolioPath = "/api/admin/investor-demo/portfolio";
+
+export async function getInvestorPortfolio(params, signal) {
+  const response = await api.get(investorPortfolioPath, { baseURL: "", params, signal });
+  return response.data?.data;
+}
+
+export async function getInvestorProperty(id, signal) {
+  const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
+  return response.data?.data;
+}

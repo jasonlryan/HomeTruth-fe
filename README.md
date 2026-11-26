@@ -185,3 +185,29 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Isolated investor Data Room (HT-360)
+
+The Admin Data Room is available on the configured loopback development
+origin only. Start the investor demo API against the separately seeded
+Brighton demo database first. Set `REACT_APP_LOCAL_INVESTOR_DATA_ROOM=true`
+and `HOMETRUTH_LOCAL_INVESTOR_API_PORT` to that API's listening port alongside
+the local demo flags above. Keep `REACT_APP_API_BASE_URL` empty. In this mode,
+login and all API calls use the same investor API, including the admin login
+shortcut. Its server-side credentials must come from the investor demo seed.
+
+The pending backend contract is admin-authorised and must restrict both
+endpoints to the isolated demo database and Brighton dataset. Maya has no
+Brighton portfolio fact and must be excluded by the API:
+
+- `GET /api/admin/investor-demo/portfolio?plan=all|free|pro&q=&page=1&limit=25`
+  returns `{data:{totals:{all,free,pro},total,page,limit,records:[{id,ownerName,address,plan,propertyType,listedDocumentCount}]}}`.
+  The tier totals cover the whole Brighton dataset. The total reflects filters.
+- `GET /api/admin/investor-demo/portfolio/:id` returns
+  `{data:{id,ownerName,address,plan,propertyType,listedDocuments,ledgerEntries}}`.
+  Listed documents are names. Each ledger entry retains
+  `{date,category,description,vendor,amount,status}` from the seed.
+
+After signing in, open `/admin/data-room`. Check All homes (1,000), Free (557)
+and Pro (443). Select All homes, search for John Doe and open his record to
+see 13 ledger entries. A search for Maya should return zero results.
