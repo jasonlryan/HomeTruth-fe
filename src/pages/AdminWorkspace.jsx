@@ -36,7 +36,10 @@ export function AdminResources() {
           <h2>HomeTruth articles</h2><p>Write, edit and publish articles.</p>
         </Link>
         <Link className="ht-panel ht-admin-destination" to="/admin/user-flows">
-          <h2>Platform documentation</h2><p>Browse user flows, the design system and the ontology.</p>
+          <h2>Platform documentation</h2><p>Browse user flows and the design system.</p>
+        </Link>
+        <Link className="ht-panel ht-admin-destination" to="/admin/resources/ontology">
+          <h2>HomeTruth ontology</h2><p>Explore 23 domain concepts, their database mappings and the presenter’s discussion guide.</p>
         </Link>
       </div>
     </section>
