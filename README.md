@@ -194,7 +194,10 @@ Brighton demo database first. Set `REACT_APP_LOCAL_INVESTOR_DATA_ROOM=true`
 and `HOMETRUTH_LOCAL_INVESTOR_API_PORT` to that API's listening port alongside
 the local demo flags above. Keep `REACT_APP_API_BASE_URL` empty. In this mode,
 login and all API calls use the same investor API, including the admin login
-shortcut. Its server-side credentials must come from the investor demo seed.
+shortcut. Sign in as the seed's `admin.demo@example.invalid` account. For the
+optional shortcut, point `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` at a private local
+env file whose `LOCAL_ADMIN_EMAIL` is the seeded address and whose
+`LOCAL_ADMIN_PASSWORD` is the seed's `ADMIN_PASSWORD`.
 
 The pending backend contract is admin-authorised and must restrict both
 endpoints to the isolated demo database and Brighton dataset. Maya has no
@@ -210,4 +213,4 @@ Brighton portfolio fact and must be excluded by the API:
 
 After signing in, open `/admin/data-room`. Check All homes (1,000), Free (557)
 and Pro (443). Select All homes, search for John Doe and open his record to
-see 13 ledger entries. A search for Maya should return zero results.
+see 13 ledger entries. A search for Maya Demo should return zero results.
