@@ -18,6 +18,7 @@ const blueprints = [
   { id: "HT-FLOW-002", label: "Buying", url: buyingUrl },
   { id: "HT-FLOW-003", label: "Improving", url: improvingUrl },
   { id: "HT-FLOW-004", label: "Selling", url: sellingUrl },
+  { id: "agent-sdk", label: "Agent SDK integration", url: agentSdkUrl },
   { id: "HT-FLOW-005", label: "Personal agent (roadmap)", url: agentUrl },
 ];
 

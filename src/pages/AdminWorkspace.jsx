@@ -5,13 +5,13 @@ import { explainers } from "./admin-explainers/catalogue";
 import { investorDataRoomEnabled } from "../utils/localDemo";
 
 const destinations = () => [
-  ["knowledge-base", "RAG", "knowledge", "Inspect records ingested into the shared Qdrant index."],
-  ["operations", "Operations", "activity", "Explore the sample home record and programme workflows."],
-  ...(investorDataRoomEnabled() ? [["data-room", "Data Room", "home", "Explore the demo Brighton portfolio and property ledger."]] : []),
+  ["knowledge-base", "Knowledge index", "knowledge", "Inspect records ingested into the shared Qdrant index."],
+  ["operations", "Operations walkthrough", "activity", "Explore the sample home record and programme workflows."],
+  ...(investorDataRoomEnabled() ? [["data-room", "Investor Data Room", "home", "Explore the demo Brighton portfolio and property ledger."]] : []),
   ["dashboard", "Reporting", "analytics", "Review product usage and programme activity."],
   ["partner-programmes", "Partner programmes", "programme", "Manage programmes, invitations and partner access."],
-  ["resources", "Resources", "list", "Manage HomeTruth articles and browse platform documentation."],
-  ["data-access", "Data access", "lock", "View authorised user data and export records when needed."],
+  ["resources", "Resources", "list", "Browse demos, explainers, design references and publishing tools."],
+  ["data-access", "User data access", "lock", "View authorised user data and export records when needed."],
 ];
 
 export default function AdminWorkspace() {
@@ -31,33 +31,49 @@ export default function AdminWorkspace() {
 }
 
 export function AdminResources() {
+  const groups = [
+    ...(investorDataRoomEnabled() ? [{
+      title: "Demo library",
+      links: [
+        ["/admin/data-room", "Investor Data Room", "Explore the Brighton portfolio, John’s ledger and the investor exports."],
+        ["/login?switch=1&redirect=%2Fpartner-programmes", "Partner demo sign-in", "Sign in as the demo analyst to view campaign evidence and download the partner review pack."],
+        ["/admin/resources/sample-documents", "Sample documents", "Browse the nine sample records and open the available deed and survey previews."],
+        ["/admin/resources/knowledge", "Demo knowledge library", "Search the reference documents imported from the Styleguide."],
+      ],
+    }] : []),
+    {
+      title: "Product and partner explainers",
+      links: explainers.map(({id, title, description}) => [`/admin/resources/explainers/${id}`, title, description]),
+    },
+    {
+      title: "Design and development",
+      links: [
+        ["/admin/user-flows", "User-flow blueprints", "Follow the homeowner journeys and their acceptance criteria."],
+        ["/admin/design-system", "Design system", "Find components, interaction states and HomeTruth icons."],
+        ["/admin/resources/ontology", "HomeTruth ontology", "Explore the domain concepts and their database mappings."],
+        ["/admin/user-flows?flow=agent-sdk", "Agent SDK reference", "Read the agent integration contract and execution limits."],
+      ],
+    },
+    {
+      title: "Publishing",
+      links: [["/admin/articles", "Manage articles", "Write, edit and publish HomeTruth articles."]],
+    },
+  ];
   return (
     <section className="ht-ui ht-admin-overview">
       <h1>Resources</h1>
-      <div className="ht-admin-destinations">
-        <Link className="ht-panel ht-admin-destination" to="/admin/articles">
-          <h2>HomeTruth articles</h2><p>Write, edit and publish articles.</p>
-        </Link>
-        <Link className="ht-panel ht-admin-destination" to="/admin/user-flows">
-          <h2>Platform documentation</h2><p>Browse user flows and the design system.</p>
-        </Link>
-        <Link className="ht-panel ht-admin-destination" to="/admin/resources/ontology">
-          <h2>HomeTruth ontology</h2><p>Explore 23 domain concepts, their database mappings and the presenter’s discussion guide.</p>
-        </Link>
-        {investorDataRoomEnabled() && <>
-          <Link className="ht-panel ht-admin-destination" to="/admin/resources/sample-documents">
-            <h2><HTGlyph name="document" /> Sample documents</h2><p>Browse nine Styleguide samples and open the available deed and survey previews.</p>
-          </Link>
-          <Link className="ht-panel ht-admin-destination" to="/admin/resources/knowledge">
-            <h2><HTGlyph name="knowledge" /> Demo knowledge</h2><p>Search and read the Styleguide knowledge snapshot.</p>
-          </Link>
-        </>}
-        {explainers.map(({ id, title, description }) => (
-          <Link className="ht-panel ht-admin-destination" key={id} to={`/admin/resources/explainers/${id}`}>
-            <h2>{title}</h2><p>{description}</p>
-          </Link>
-        ))}
-      </div>
+      {groups.map(({ title, links }) => (
+        <section key={title} aria-label={title} className="ht-admin-resource-group">
+          <h2>{title}</h2>
+          <div className="ht-admin-destinations">
+            {links.map(([to, label, description]) => (
+              <Link key={to} className="ht-panel ht-admin-destination" to={to}>
+                <h3>{label}</h3><p>{description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
     </section>
   );
 }

@@ -969,7 +969,7 @@ export default function KnowledgeBaseAdmin() {
             <HTGlyph name="database" size={20} className="text-white " />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">RAG</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Knowledge index</h1>
             <p className="text-gray-500 text-sm mt-0.5">
               Inspect the shared Qdrant index used by Ask HomeTruth.
             </p>

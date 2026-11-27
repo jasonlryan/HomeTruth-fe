@@ -75,7 +75,7 @@ export default function OperationsDemo() {
           <p className="text-sm text-[var(--color-secondary)]">
             HomeTruth workspace
           </p>
-          <PageTitle className="mt-2">Operations</PageTitle>
+          <PageTitle className="mt-2">Operations walkthrough</PageTitle>
           <p className="mt-3 max-w-2xl ht-workspace-muted">
             Support a useful home record, trusted guidance and programmes that
             put homeowners in control.
@@ -100,7 +100,7 @@ export default function OperationsDemo() {
             {value}
           </button>
         ))}
-        <Link className={button} to="/admin/knowledge-base">RAG</Link>
+        <Link className={button} to="/admin/knowledge-base">Knowledge index</Link>
         <Link className={button} to="/admin/resources">Resources</Link>
       </nav>
       {message && (
