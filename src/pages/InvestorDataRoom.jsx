@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getInvestorPortfolio, getInvestorProperty } from "../api/api";
+import { downloadInvestorLedger, downloadInvestorPortfolio, getInvestorPortfolio, getInvestorProperty } from "../api/api";
 import HTGlyph from "../components/HTGlyph";
 import { Badge, Button, Field, Panel } from "../components/homepage/HomeTruth";
 import "./investor-data-room.css";
@@ -14,6 +14,54 @@ const planLabel = plan => plans.find(([id]) => id === plan)?.[1];
 function LoadError({ onRetry, children }) {
   return <p role="alert">{children} <Button variant="secondary" onClick={onRetry}>Retry</Button></p>;
 }
+
+function ExportButtons({ downloads }) {
+  const [pending, setPending] = useState(null);
+  const [error, setError] = useState("");
+
+  async function save({ file, load, type }) {
+    setPending(file);
+    setError("");
+    try {
+      const blob = await load();
+      if (!blob?.size || !type.test(blob.type)) throw Error("Unexpected demo export format");
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(URL.revokeObjectURL.bind(URL, url), 1000);
+    } catch (error) {
+      setError(error.response?.status === 404
+        ? "The demo API hasn’t enabled this download."
+        : "Couldn’t download this file. Try again.");
+    } finally {
+      setPending(null);
+    }
+  }
+
+  return (
+    <div className="ht-investor-exports">
+      <div className="ht-investor-export-actions">
+        {downloads.map(download => (
+          <Button key={download.file} variant="secondary" disabled={Boolean(pending)}
+            pending={pending === download.file} onClick={() => save(download)}>
+            <HTGlyph name="download" size={18} /> {download.label}
+          </Button>
+        ))}
+      </div>
+      {error && <p role="alert">{error}</p>}
+    </div>
+  );
+}
+
+const csvType = /^(?:text|application)\/csv(?:;|$)/i;
+const portfolioDownloads = [
+  { file: "brighton-addresses.csv", label: "Portfolio CSV", type: csvType, load: () => downloadInvestorPortfolio("csv") },
+  { file: "brighton-addresses.json", label: "Portfolio JSON", type: /^application\/json(?:;|$)/i, load: () => downloadInvestorPortfolio("json") },
+];
 
 function PropertyLedger({ record, onClose }) {
   const [result, setResult] = useState(null);
@@ -44,6 +92,10 @@ function PropertyLedger({ record, onClose }) {
     {result?.failed && <LoadError onRetry={() => { setResult(null); setAttempt(n => n + 1); }}>Couldn’t load this demo record.</LoadError>}
     {property && <>
       <h3>Ledger <Badge>{count.format(property.ledgerEntries.length)} entries</Badge></h3>
+      {property.ledgerEntries.length > 0 && <ExportButtons downloads={[{
+        file: `${record.ownerName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `home-${record.id}`}-ledger.csv`,
+        label: "Ledger CSV", type: csvType, load: () => downloadInvestorLedger(record.id),
+      }]} />}
       {property.ledgerEntries.length === 0 ? <p>No ledger entries for this home.</p> :
         <div className="ht-investor-table" tabIndex={0} role="region" aria-label={`${record.ownerName} ledger`}>
           <table>
@@ -98,6 +150,7 @@ export default function InvestorDataRoom() {
         <h1>Investor Data Room</h1>
         <p>Brighton demo portfolio <Badge>Synthetic data</Badge></p>
       </div>
+      <ExportButtons downloads={portfolioDownloads} />
     </header>
 
     <Panel className="ht-panel">

@@ -1,8 +1,10 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
-import { getInvestorPortfolio, getInvestorProperty } from "../api/api";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { downloadInvestorLedger, downloadInvestorPortfolio, getInvestorPortfolio, getInvestorProperty } from "../api/api";
 import InvestorDataRoom from "./InvestorDataRoom";
 
 jest.mock("../api/api", () => ({
+  downloadInvestorLedger: jest.fn(),
+  downloadInvestorPortfolio: jest.fn(),
   getInvestorPortfolio: jest.fn(),
   getInvestorProperty: jest.fn()
 }));
@@ -50,4 +52,49 @@ test("shows a retry affordance instead of displaying fabricated counts when the 
   expect(screen.queryByRole("button", { name: "All homes 1,000" })).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Retry" }));
   expect(await screen.findByText("1,000 homes", { exact: true })).toBeVisible();
+});
+
+
+test("downloads the original authorised payloads and keeps the portfolio export independent of the list filter", async () => {
+  const csv = new Blob(["id,dataset_id,demo_only\n1,brighton-demo,true"], { type: "text/csv" });
+  const json = new Blob(['[{"id":1,"dataset_id":"brighton-demo","demo_only":true}]'], { type: "application/json" });
+  const ledger = new Blob(["date,dataset_id,demo_only\n2023-10-12,brighton-demo,true"], { type: "text/csv" });
+  downloadInvestorPortfolio.mockResolvedValueOnce(csv).mockResolvedValueOnce(json);
+  downloadInvestorLedger.mockResolvedValue(ledger);
+  const savedCreate = URL.createObjectURL;
+  const savedRevoke = URL.revokeObjectURL;
+  URL.createObjectURL = jest.fn(() => "blob:export");
+  URL.revokeObjectURL = jest.fn();
+  const names = [];
+  const click = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function () {
+    names.push(this.download);
+  });
+  try {
+    render(<InvestorDataRoom />);
+    fireEvent.click(await screen.findByRole("button", { name: "Pro 443" }));
+    await screen.findByText("443 homes");
+    fireEvent.click(screen.getByRole("button", { name: "Portfolio CSV" }));
+    await waitFor(() => expect(names).toContain("brighton-addresses.csv"));
+    fireEvent.click(screen.getByRole("button", { name: "Portfolio JSON" }));
+    await waitFor(() => expect(names).toContain("brighton-addresses.json"));
+    fireEvent.click(screen.getByRole("button", { name: "John Doe" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Ledger CSV" }));
+    await waitFor(() => expect(names).toContain("john-doe-ledger.csv"));
+    expect(downloadInvestorPortfolio.mock.calls).toEqual([["csv"], ["json"]]);
+    expect(downloadInvestorLedger).toHaveBeenCalledWith("1");
+    expect(URL.createObjectURL.mock.calls).toEqual([[csv], [json], [ledger]]);
+  } finally {
+    click.mockRestore();
+    URL.createObjectURL = savedCreate;
+    URL.revokeObjectURL = savedRevoke;
+  }
+});
+
+test("keeps the Data Room usable when the backend export route is not available", async () => {
+  downloadInvestorPortfolio.mockRejectedValue({ response: { status: 404 } });
+  render(<InvestorDataRoom />);
+  await screen.findByText("1,000 homes", { exact: true });
+  fireEvent.click(screen.getByRole("button", { name: "Portfolio CSV" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("The demo API hasn’t enabled this download.");
+  expect(screen.getByText("1,000 homes", { exact: true })).toBeVisible();
 });

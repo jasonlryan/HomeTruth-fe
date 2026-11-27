@@ -199,7 +199,7 @@ optional shortcut, point `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` at a private local
 env file whose `LOCAL_ADMIN_EMAIL` is the seeded address and whose
 `LOCAL_ADMIN_PASSWORD` is the seed's `ADMIN_PASSWORD`.
 
-The pending backend contract is admin-authorised and must restrict both
+The backend contract is admin-authorised and restricts both
 endpoints to the isolated demo database and Brighton dataset. Maya has no
 Brighton portfolio fact and must be excluded by the API:
 
@@ -214,3 +214,28 @@ Brighton portfolio fact and must be excluded by the API:
 After signing in, open `/admin/data-room`. Check All homes (1,000), Free (557)
 and Pro (443). Select All homes, search for John Doe and open his record to
 see 13 ledger entries. A search for Maya Demo should return zero results.
+
+#### Data Room downloads and Admin Resources
+
+The full Brighton portfolio and the selected home's ledger are downloaded
+from the authenticated, isolated demo API:
+
+- `GET /api/admin/investor-demo/portfolio/export?format=csv|json` returns
+  `text/csv` or `application/json`. Use the source fields
+  `id,name,email,address,postcode,propertyType,plan,documents`, followed by
+  `dataset_id,demo_only`. JSON retains its array of rows and array of
+  document names. The CSV documents field is a JSON array. The full export
+  stays independent of the current list filters and excludes Maya Demo.
+- `GET /api/admin/investor-demo/portfolio/:id/ledger/export` returns
+  `text/csv`. Use `date,category,description,vendor,amount,status,dataset_id,demo_only`
+  in source order. John Doe's ledger contains 13 rows.
+- Both exports require explicit Brighton provenance on every row, use the
+  demo API's existing database and admin guards, and reject non-portfolio
+  records. The list/detail responses concatenate the address and omit
+  the source email, separate postcode, source ID and provenance fields
+  required for full exports.
+
+Admin Resources links to the original Styleguide HTML explainers for
+document ingestion, profiling, the HomeTruth Report for partners, and
+blockchain and ledger strategy. Only their logo and app navigation links
+were adapted.

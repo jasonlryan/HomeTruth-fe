@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import HTGlyph from "../components/HTGlyph";
 import "./admin-workspace.css";
+import { explainers } from "./admin-explainers/catalogue";
 import { investorDataRoomEnabled } from "../utils/localDemo";
 
 const destinations = () => [
@@ -43,6 +44,11 @@ export function AdminResources() {
         <Link className="ht-panel ht-admin-destination" to="/admin/resources/ontology">
           <h2>HomeTruth ontology</h2><p>Explore 23 domain concepts, their database mappings and the presenter’s discussion guide.</p>
         </Link>
+        {explainers.map(({ id, title, description }) => (
+          <Link className="ht-panel ht-admin-destination" key={id} to={`/admin/resources/explainers/${id}`}>
+            <h2>{title}</h2><p>{description}</p>
+          </Link>
+        ))}
       </div>
     </section>
   );

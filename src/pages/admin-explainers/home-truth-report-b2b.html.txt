@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The HomeTruth Report | B2B Proposition</title>
+  <meta name="description" content="See how the HomeTruth Report becomes a tamper-proof, pay-per-pull business product for banks, insurers, agents, and contractors." />
+  <style>
+    :root {
+      --ht-ink: #0f172a;
+      --ht-bg: #f7f8fb;
+      --ht-card: #ffffff;
+      --ht-orange: #ff6b35;
+      --ht-teal: #0fb9b1;
+      --ht-blue: #00bfff;
+      --ht-muted: #657284;
+      --ht-accent: #fff3ec;
+      --shadow: 0 18px 50px rgba(11, 36, 75, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+      background: var(--ht-bg);
+      color: var(--ht-ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 1180px; margin: 0 auto 64px; padding: 48px 24px 72px; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(15,185,177,0.14), rgba(255,107,53,0.14));
+      box-shadow: var(--shadow); position: sticky; top: 16px; z-index: 10;
+      backdrop-filter: blur(10px); margin-bottom: 32px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--ht-ink); letter-spacing: 0.2px; }
+    .brand-mark {
+      height: 42px; width: 42px; border-radius: 12px;
+      background: #fff;
+      display: grid; place-items: center;
+      box-shadow: 0 10px 20px rgba(15,185,177,0.20);
+    }
+    .pill { padding: 8px 14px; border-radius: 999px; background: #fff; color: var(--ht-muted); font-size: 13px; border: 1px solid #e0e7ef; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.5px; line-height: 1.1; }
+    p.lead { margin: 0; font-size: 17px; color: var(--ht-muted); max-width: 880px; }
+    .hero {
+      background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(15,185,177,0.12));
+      border-radius: var(--radius); padding: 32px;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 32px;
+      box-shadow: var(--shadow); border: 1px solid rgba(255,107,53,0.14); margin-bottom: 32px;
+    }
+    .hero-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: var(--radius); padding: 20px;
+      box-shadow: 0 12px 30px rgba(12,74,110,0.10);
+      border: 1px solid rgba(255,255,255,0.85);
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 12px;
+      background: var(--ht-accent); border: 1px solid rgba(255,107,53,0.3);
+      color: #a54721; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .section {
+      background: var(--ht-card); border-radius: var(--radius);
+      padding: 28px; margin-bottom: 22px; box-shadow: var(--shadow); border: 1px solid #e7eef6;
+    }
+    .section h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: -0.2px; }
+    .section p { margin: 0 0 10px; color: var(--ht-muted); font-size: 15px; }
+    .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 14px; }
+    .card {
+      background: #fff; padding: 18px; border-radius: 16px;
+      border: 1px solid #e6edf4; box-shadow: 0 10px 24px rgba(12,74,110,0.08);
+      height: 100%;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.15px; }
+    .card p { margin: 0; color: var(--ht-muted); font-size: 14px; }
+    .badge { display: inline-block; padding: 6px 10px; background: rgba(15,185,177,0.14); border-radius: 10px; color: #0b6f69; font-size: 12px; font-weight: 700; border: 1px solid rgba(15,185,177,0.25); margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { padding: 10px 12px; text-align: left; font-size: 14px; }
+    th { background: #f0f4f9; color: #1f2937; }
+    tr:nth-child(even) td { background: #f9fbff; }
+    .cta { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn {
+      padding: 10px 16px; border-radius: 12px; border: 1px solid #d7e2ee;
+      background: #fff; color: #0f4370; font-weight: 600; font-size: 13px;
+      text-decoration: none; box-shadow: 0 8px 18px rgba(15,67,112,0.08);
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #ff6b35, #0fb9b1);
+      color: #fff; border: none; box-shadow: 0 10px 22px rgba(255,107,53,0.35);
+    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 16px; }
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      header { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="/assets/brand/hometruth-icon.svg" alt="HomeTruth" style="height: 32px; width: 32px;" />
+        </div>
+        <div>
+          <div style="font-size: 15px; color: var(--ht-muted); letter-spacing: 0.5px;">Resources</div>
+          <div style="font-size: 17px;">The HomeTruth Report</div>
+        </div>
+      </div>
+      <span class="pill">Pay-per-pull · Blockchain sealed</span>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="chip">Carfax for homes</div>
+        <h1>The tamper-proof property report that turns household data into revenue.</h1>
+        <p class="lead">The HomeTruth Report is the core transactional product— a certified, blockchain-sealed service log that becomes a sellable underwriting asset for lenders, insurers, agents, and contractors.</p>
+        <div class="columns" style="margin-top: 18px;">
+          <div class="card">
+            <div class="badge">Integrity</div>
+            <h3>Nightly hash to public ledger</h3>
+            <p>Only a single fingerprint (hash) is written, keeping data private but provably intact.</p>
+          </div>
+          <div class="card">
+            <div class="badge">Automation</div>
+            <h3>Ingests real-world proof</h3>
+            <p>Emails, IoT signals, and contractor QR submissions add signed events to the log.</p>
+          </div>
+          <div class="card">
+            <div class="badge">B2B Value</div>
+            <h3>Pay-per-pull (£29 target)</h3>
+            <p>Certified history sold to enterprises as a verified underwriting feed.</p>
+          </div>
+          <div class="card">
+            <div class="badge">Marketplace</div>
+            <h3>Vetted ecosystem</h3>
+            <p>Contractors, insurers, and lenders plug in to monetize high-intent, qualified leads.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="badge">Product Snapshot</div>
+        <div class="grid-2">
+          <div>
+            <h3>What it is</h3>
+            <p>A digital twin and service logbook with cryptographic proof of non-tampering.</p>
+          </div>
+          <div>
+            <h3>How it earns</h3>
+            <p>Enterprises pay per certified pull; homeowners subscribe for ongoing capture.</p>
+          </div>
+          <div>
+            <h3>Proof chain</h3>
+            <p>Invoices parsed, IoT telemetry, contractor VC signatures, nightly hash to chain.</p>
+          </div>
+          <div>
+            <h3>Who benefits</h3>
+            <p>Lenders reduce risk, insurers cut fraud, agents get qualified listings, vendors reach intent-rich customers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Monetization: Pay-per-pull core</h2>
+      <p>The report is a transactional product sold to B2B partners. Target: ~£29 per certified pull, primarily enterprise funded.</p>
+      <div class="columns">
+        <div class="card">
+          <h3>Why they pay</h3>
+          <p>Certified provenance reduces underwriting risk and accelerates approvals.</p>
+        </div>
+        <div class="card">
+          <h3>How we protect</h3>
+          <p>Only a hash hits the chain; content stays private while remaining provably untampered.</p>
+        </div>
+        <div class="card">
+          <h3>Who submits</h3>
+          <p>Homeowner inbox parsing, IoT sensors, and contractor QR flows create digitally-signed entries.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Value across the ecosystem</h2>
+      <p>Certified history translates into revenue and efficiency for each buyer type.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>B2B Buyer</th>
+            <th>Core Problem Solved</th>
+            <th>Value Proposition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Banks &amp; Lenders</strong></td>
+            <td>Slow approvals, high default risk.</td>
+            <td><strong>Faster approvals:</strong> AVMs ingest the certified logbook to sign off in hours, not days. <br /><strong>Reduced risk:</strong> Proven maintenance shrinks default risk.</td>
+          </tr>
+          <tr>
+            <td><strong>Insurers</strong></td>
+            <td>Fraud and inaccurate risk data.</td>
+            <td><strong>Reduced fraud:</strong> Trusted maintenance proof lowers inflated claims. <br /><strong>Lower premiums:</strong> Evidence of upkeep supports better pricing.</td>
+          </tr>
+          <tr>
+            <td><strong>Estate Agents &amp; Portals</strong></td>
+            <td>Unqualified leads waste time.</td>
+            <td><strong>Qualified leads:</strong> Reports set expectations; service providers pay to be plugged in.</td>
+          </tr>
+          <tr>
+            <td><strong>Vendors &amp; Contractors</strong></td>
+            <td>Hard to reach intent-rich clients.</td>
+            <td><strong>Marketplace fees:</strong> Pay to access behaviorally-qualified homeowners.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Essential data/API resources</h2>
+      <p>External data enriches the report, improves underwriting, and powers the marketplace.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Official property data &amp; registries</h3>
+          <p>Land Registry (ownership, transactions), Zoopla listings, Planning Portal, local councils.</p>
+        </div>
+        <div class="card">
+          <h3>Compliance &amp; green data</h3>
+          <p>EPC registry, Met Office (flood/storm), EST (retrofit costs, grants), HMRC Brexit tax.</p>
+        </div>
+        <div class="card">
+          <h3>Contractor &amp; services ecosystem</h3>
+          <p>Checkatrade (vetted trades), NHBC HUG (warranties), Open Banking (income verification).</p>
+        </div>
+        <div class="card">
+          <h3>Financial &amp; utilities data</h3>
+          <p>Utility comparison platforms, insurance comparison sites, legal services APIs.</p>
+        </div>
+        <div className="card">
+          <h3>Geospatial &amp; locality</h3>
+          <p>Google Maps safety, Trainline commute times, university enrollment for rentals.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Why the hash matters</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Privacy-preserving</h3>
+          <p>Only the fingerprint is public; the content stays in our vault but is provably unchanged.</p>
+        </div>
+        <div class="card">
+          <h3>Low-cost sealing</h3>
+          <p>Nightly batch seal keeps fees tiny while maintaining forensic-grade integrity.</p>
+        </div>
+        <div class="card">
+          <h3>Credentialed inputs</h3>
+          <p>Contractors add verifiable credentials via QR, ensuring only bona-fide events enter the log.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Dual-sided economics</h2>
+      <p>The model monetizes both sides: homeowners subscribe for continuous capture; enterprises pay per certified pull and for marketplace access.</p>
+      <div class="columns">
+        <div class="card">
+          <div class="badge">Homeowner</div>
+          <h3>Subscription</h3>
+          <p>Ongoing ingestion of emails, IoT, and contractor events keeps the report current.</p>
+        </div>
+        <div class="card">
+          <div class="badge">Enterprise</div>
+          <h3>Pay-per-pull</h3>
+          <p>£29 target per report; also supports licensing feeds for lenders/insurers at scale.</p>
+        </div>
+        <div class="card">
+          <div class="badge">Marketplace</div>
+          <h3>Qualified leads</h3>
+          <p>Vendors pay to be plugged into high-intent journeys informed by verified property history.</p>
+        </div>
+      </div>
+      <div class="cta">
+        <a class="btn" href="/admin/resources/explainers/hometruth-profiling-system">See profiling explainer</a>
+        <a class="btn primary" href="/admin/resources">Return to Resources Index</a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

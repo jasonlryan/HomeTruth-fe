@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeTruth Blockchain &amp; Ledger Strategy | Resources</title>
+  <meta name="description" content="How HomeTruth anchors transactional evidence on-chain with Polygon, optional Ethereum anchoring, and Merkle batching while keeping documents and PII off-chain." />
+  <style>
+    :root {
+      --ht-ink: #0f172a;
+      --ht-bg: #f5f7fb;
+      --ht-card: #ffffff;
+      --ht-primary: #0f9ed5;
+      --ht-secondary: #6c5ce7;
+      --ht-accent: #e7f7ff;
+      --ht-muted: #5f6c7a;
+      --ht-sand: #fdfdfd;
+      --ht-shadow: 0 18px 50px rgba(11, 36, 75, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(15, 158, 213, 0.12), transparent 35%), radial-gradient(circle at 80% 0%, rgba(108, 92, 231, 0.12), transparent 30%), var(--ht-bg);
+      color: var(--ht-ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page { max-width: 1180px; margin: 0 auto 64px; padding: 48px 24px 72px; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(15,158,213,0.14), rgba(108,92,231,0.14));
+      box-shadow: var(--ht-shadow);
+      position: sticky;
+      top: 16px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: var(--ht-ink);
+    }
+
+    .brand-logo {
+      height: 42px;
+      width: 42px;
+      border-radius: 12px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 20px rgba(15, 158, 213, 0.18);
+      overflow: hidden;
+    }
+
+    .brand-logo img {
+      height: 32px;
+      width: 32px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--ht-muted);
+      font-size: 13px;
+      border: 1px solid #e0e7ef;
+    }
+
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.5px; }
+    p.lead { margin: 0; font-size: 17px; color: var(--ht-muted); max-width: 900px; }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(15, 158, 213, 0.10), rgba(108, 92, 231, 0.12) 55%, rgba(15, 158, 213, 0.08));
+      border-radius: var(--radius);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      box-shadow: var(--ht-shadow);
+      border: 1px solid rgba(15, 158, 213, 0.12);
+      margin-bottom: 28px;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .chip { padding: 8px 12px; border-radius: 12px; background: var(--ht-accent); border: 1px solid rgba(15,158,213,0.25); color: #0f4370; font-size: 13px; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.9);
+      border-radius: var(--radius);
+      padding: 18px;
+      border: 1px solid #e6edf4;
+      box-shadow: 0 10px 24px rgba(12, 74, 110, 0.08);
+    }
+
+    .stat-card h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.2px; }
+    .stat-card p { margin: 0; color: var(--ht-muted); font-size: 14px; }
+
+    .section {
+      background: var(--ht-card);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 18px;
+      box-shadow: var(--ht-shadow);
+      border: 1px solid #e7eef6;
+    }
+
+    .section h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: -0.2px; }
+    .section p { margin: 0 0 12px; color: var(--ht-muted); font-size: 15px; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #e6edf4;
+      box-shadow: 0 10px 24px rgba(12, 74, 110, 0.08);
+      height: 100%;
+    }
+
+    .card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.15px; }
+    .card p { margin: 0 0 10px; color: var(--ht-muted); font-size: 14px; }
+    .card ul { margin: 0; padding-left: 18px; color: var(--ht-muted); font-size: 14px; }
+    .card ul li { margin-bottom: 6px; }
+
+    .grid-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .step {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #e6edf4;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(12, 74, 110, 0.07);
+      position: relative;
+    }
+
+    .step .badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--ht-accent);
+      color: #0f4370;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,158,213,0.25);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .code-block {
+      background: #0b1021;
+      color: #e3f2fd;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-x: auto;
+      border: 1px solid #1f2937;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    .tagline {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #e0e7ef;
+      color: var(--ht-muted);
+      font-size: 13px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .mini {
+      background: #fff;
+      border: 1px solid #e6edf4;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--ht-muted);
+      box-shadow: 0 8px 20px rgba(12, 74, 110, 0.06);
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+      <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">
+          <img src="/assets/brand/hometruth-icon.svg" alt="HomeTruth logo" />
+        </div>
+        <div>
+          <div style="font-size:14px; color: var(--ht-muted);">Explainer</div>
+          <div style="font-size:16px;">HomeTruth Resources</div>
+        </div>
+      </div>
+      <div class="pill">Trust, audit, and cost control for transactional data</div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="tagline">Blockchain, but practical</p>
+        <h1>HomeTruth Blockchain &amp; Ledger Strategy</h1>
+        <p class="lead">
+          Only transactional evidence is anchored on-chain. We batch events into Merkle roots on Polygon for low cost,
+          optionally anchor to Ethereum for finality, and keep documents plus PII off-chain but cryptographically bound.
+        </p>
+        <div class="chips">
+          <span class="chip">On-chain: Merkle roots, tx hashes, minimal metadata</span>
+          <span class="chip">Off-chain: documents, PII, full ledger rows</span>
+          <span class="chip">Polygon first; optional Ethereum anchoring</span>
+          <span class="chip">Built with Foundry/Hardhat toolchain</span>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <h3>Cost control</h3>
+          <p>One Polygon tx stores the Merkle root for hundreds of ledger updates; anchor to Ethereum only weekly or on demand.</p>
+        </div>
+        <div class="stat-card">
+          <h3>Privacy by design</h3>
+          <p>Full docs and personal data stay in the database/object store; hashes and proofs provide verifiability without exposure.</p>
+        </div>
+        <div class="stat-card">
+          <h3>Verification UX</h3>
+          <p>Every ledger item keeps its Merkle proof, with a “Verify on chain” check against the stored root and tx link.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>What goes on-chain vs stays off-chain</h2>
+      <p>Attest to integrity, not content. Keep sensitive data under HomeTruth control while making tamper evidence public.</p>
+      <div class="columns">
+        <div class="card">
+          <h3>On-chain (Polygon, optional Ethereum)</h3>
+          <ul>
+            <li>Merkle root per batch (daily/hourly) of ledger rows.</li>
+            <li>Batch ID, source chain ID, and optional content URI to public summary.</li>
+            <li>Tx hash and block number (available from chain for linking).</li>
+            <li>Event emission for easy indexing and UI links.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Off-chain (DB, object store)</h3>
+          <ul>
+            <li>Full ledger records (home improvements, inspections, boiler checks, repairs).</li>
+            <li>Documents and media; encrypted at rest with stable hashes.</li>
+            <li>Merkle proofs per item + batch metadata (root, tx hash, block).</li>
+            <li>PII and business data; normalized before hashing to avoid collisions.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Batching with Merkle trees</h2>
+      <p>Reduce gas by committing one root for many updates while keeping per-item proofs for verification.</p>
+      <div class="grid-steps">
+        <div class="step">
+          <div class="badge">1</div>
+          <h3>Build tree off-chain</h3>
+          <p>Normalize each ledger item (stable order of fields) and hash it; assemble into a Merkle tree.</p>
+        </div>
+        <div class="step">
+          <div class="badge">2</div>
+          <h3>Submit root to Polygon</h3>
+          <p>Call the registry contract with <em>root</em>, <em>batchId</em>, <em>period</em>, <em>chainId</em>, and optional URI.</p>
+        </div>
+        <div class="step">
+          <div class="badge">3</div>
+          <h3>Persist proofs</h3>
+          <p>Store each item’s Merkle proof, the on-chain tx hash, and block number alongside the ledger row.</p>
+        </div>
+        <div class="step">
+          <div class="badge">4</div>
+          <h3>Optional anchoring</h3>
+          <p>Batch Polygon roots into a higher-level tree and anchor that root to Ethereum weekly for stronger immutability.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Data flow for a HomeTruth ledger event</h2>
+      <div class="grid-steps">
+        <div class="step">
+          <div class="badge">Capture</div>
+          <p>Ledger entry created (e.g., “Boiler service”, £180, timestamp, property/user IDs, doc hash).</p>
+        </div>
+        <div class="step">
+          <div class="badge">Hash</div>
+          <p>Normalize record → hash; add to batch queue; upload doc to storage and store doc hash.</p>
+        </div>
+        <div class="step">
+          <div class="badge">Commit</div>
+          <p>Batcher builds Merkle tree, submits root to Polygon; receives tx hash and block number.</p>
+        </div>
+        <div class="step">
+          <div class="badge">Persist</div>
+          <p>DB stores ledger row, proof, root, tx hash, block; doc stays off-chain.</p>
+        </div>
+        <div class="step">
+          <div class="badge">Verify</div>
+          <p>UI shows “Verify on chain”: recompute root from proof, compare to on-chain value, link to block explorer.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Contract shape (Polygon-first, Ethereum optional)</h2>
+      <p>Minimal surface area: store roots, emit events, keep roles tight.</p>
+      <div class="code-block">
+        <pre>pragma solidity ^0.8.20;
+
+contract LedgerRootRegistry {
+  event BatchStored(bytes32 indexed batchId, bytes32 indexed root, uint64 chainId, string period, string uri);
+  mapping(bytes32 =&gt; bytes32) public roots;
+
+  address public admin;
+  modifier onlyAdmin() { require(msg.sender == admin, "auth"); _; }
+
+  constructor(address _admin) { admin = _admin; }
+
+  function submitBatch(bytes32 batchId, bytes32 root, uint64 chainId, string calldata period, string calldata uri) external onlyAdmin {
+    roots[batchId] = root;
+    emit BatchStored(batchId, root, chainId, period, uri);
+  }
+}</pre>
+      </div>
+      <div class="mini-grid" style="margin-top:12px;">
+        <div class="mini"><strong>Access control:</strong> Use simple admin for PoC; swap to OpenZeppelin AccessControl in prod.</div>
+        <div class="mini"><strong>Explorer links:</strong> Expose tx hash + block in UI for jump-out verification.</div>
+        <div class="mini"><strong>Events:</strong> Primary source for indexers; avoid heavy on-chain storage.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Environment plan</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Dev / PoC</h3>
+          <p>Local anvil (Foundry) or Hardhat node; instant resets; no cost.</p>
+          <ul>
+            <li>Deploy registry; seed sample ledger + proofs.</li>
+            <li>Use John Doe dataset to demo verification UI.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Test</h3>
+          <p>Polygon Amoy; optional Sepolia if trialing L1 anchoring.</p>
+          <ul>
+            <li>Run batcher via CI or cron; monitor confirmations.</li>
+            <li>Store explorer links in DB for every batch.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Prod</h3>
+          <p>Polygon PoS for daily batches; weekly Ethereum anchor if required by partners.</p>
+          <ul>
+            <li>Use stable gas oracles; alert on failed submissions.</li>
+            <li>Keep the ability to pause anchoring if gas spikes.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Cost, privacy, and UX notes</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Cost envelope</h3>
+          <p>Polygon: fractions of a cent per root. Ethereum anchoring: a few dollars depending on gas; do it weekly/when needed.</p>
+          <ul>
+            <li>Batch hundreds of items per root to amortize gas.</li>
+            <li>Use calldata-efficient structs; avoid per-item writes.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Privacy</h3>
+          <p>Hash normalized data; never upload PII or docs on-chain. Encrypt storage; keep salts/keys off-chain.</p>
+          <ul>
+            <li>Hash(doc bytes + stable metadata) to bind content to ledger.</li>
+            <li>Document deletions remove storage objects; hashes remain as evidence only.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Verification UX</h3>
+          <p>Show tx hash, batch ID, root, and a “Verify proof” button on the ledger row (e.g., John Doe’s property view).</p>
+          <ul>
+            <li>Client recomputes root from stored proof; compares to chain value.</li>
+            <li>Link to PolygonScan/Etherscan for human-friendly confirmation.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Demo script (use John Doe ledger)</h2>
+      <div class="mini-grid">
+        <div class="mini"><strong>1) Show ledger table:</strong> John Doe’s last 18 months (repairs, boiler checks, electrical tests) with doc links.</div>
+        <div class="mini"><strong>2) Highlight blockchain fields:</strong> Batch ID, Merkle root, tx hash, block number, and “Verify on chain”.</div>
+        <div class="mini"><strong>3) Click verify:</strong> UI recomputes the proof client-side and compares to on-chain root; open explorer link.</div>
+        <div class="mini"><strong>4) Explain scope:</strong> Only transactional evidence is on-chain; documents and PII stay private but cryptographically bound.</div>
+        <div class="mini"><strong>5) Cost story:</strong> One Polygon tx covered hundreds of events; optional weekly Ethereum anchor for partner-grade finality.</div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

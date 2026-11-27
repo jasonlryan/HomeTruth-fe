@@ -922,3 +922,17 @@ export async function getInvestorProperty(id, signal) {
   const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
   return response.data?.data;
 }
+
+export async function downloadInvestorPortfolio(format) {
+  const response = await api.get(`${investorPortfolioPath}/export`, {
+    baseURL: "", params: { format }, responseType: "blob",
+  });
+  return response.data;
+}
+
+export async function downloadInvestorLedger(id) {
+  const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}/ledger/export`, {
+    baseURL: "", responseType: "blob",
+  });
+  return response.data;
+}

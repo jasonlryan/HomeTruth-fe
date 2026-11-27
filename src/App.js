@@ -74,6 +74,7 @@ const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentre = lazy(() => import("./pages/ControlCentre"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 const InvestorDataRoom = lazy(() => import("./pages/InvestorDataRoom"));
+const AdminExplainer = lazy(() => import("./pages/admin-explainers/AdminExplainer"));
 const AdminOntology = lazy(() => import("./pages/ontology/AdminOntology"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
 
@@ -87,6 +88,7 @@ const adminRoutes = (
       <Route path="dashboard" element={<AdminReportingDashboard />} />
       <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />
       <Route path="resources" element={<AdminResources />} />
+      <Route path="resources/explainers/:id" element={<Suspense fallback={<p role="status">Loading explainer…</p>}><AdminExplainer /></Suspense>} />
       <Route path="resources/ontology" element={<Suspense fallback={<p>Loading ontology…</p>}><AdminOntology /></Suspense>} />
       <Route path="articles" element={<AdminArticleManager />} />
       <Route path="user-flows" element={<AdminUXSpecifications />} />
