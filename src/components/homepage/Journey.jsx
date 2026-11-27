@@ -251,7 +251,9 @@ export default function Journey({ assetBase, ask, getAccountLinks, onAccountChoi
     <div className="ht-ui ht-journey">
       <PublicHeader assetBase={assetBase} homeHref={homeHref} loginHref={(showRecord && answer && loginHrefWithAnswer) || loginHref || accountLinks.login} loginLabel={loginLabel} />
       <main ref={hero} className="ht-journey-hero">
-        <img className="ht-hero-photo" src={assetBase + "brand/hometruth-house-to-tower.jpg"} alt="" />
+        <div className="ht-hero-backdrop">
+          <img className="ht-hero-photo" src={assetBase + "brand/hometruth-house-to-tower.jpg"} alt="" />
+        </div>
         <div className="ht-public-width">
           <div ref={opening} className="ht-journey-opening">
             <div className="ht-hero-overlay">
