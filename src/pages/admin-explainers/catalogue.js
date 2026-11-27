@@ -11,7 +11,7 @@ export const explainers = [
   },
   {
     id: "home-truth-report-b2b",
-    title: "HomeTruth Report for partners",
+    title: "HomeTruth Report — partner proposition",
     description: "The supporting report and its partner use cases.",
   },
   {

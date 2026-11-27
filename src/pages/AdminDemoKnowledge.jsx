@@ -58,7 +58,7 @@ function KnowledgeList({ query, page, search, setParams }) {
 
   return <>
     <header>
-      <h1>Demo knowledge</h1>
+      <h1>Demo knowledge library</h1>
       <Link to="/admin/resources" className="ht-button" data-variant="secondary">Back to Resources</Link>
     </header>
     <p>Search and read excerpts from the Styleguide knowledge snapshot.</p>

@@ -26,7 +26,7 @@ test("Operations is visible only to administrators, including on direct entry", 
   expect(screen.getByText("Redirected to dashboard")).toBeVisible();
   mockUser = { email: "operator@example.invalid", role: "admin" };
   rerender(<OperationsDemo />);
-  expect(screen.getByRole("heading", { name: "Operations" })).toBeVisible();
+  expect(screen.getByRole("heading", { name: "Operations walkthrough" })).toBeVisible();
 });
 test("directory filters and shows sample records within the admin workspace", () => {
   render(<OperationsDemo />);
@@ -59,6 +59,6 @@ test("programme preview and sharing preference actions produce local results", (
 
 test("RAG ingestion records and editorial resources have separate destinations", () => {
   render(<OperationsDemo />);
-  expect(screen.getByRole("link", { name: "RAG" })).toHaveAttribute("href", "/admin/knowledge-base");
+  expect(screen.getByRole("link", { name: "Knowledge index" })).toHaveAttribute("href", "/admin/knowledge-base");
   expect(screen.getByRole("link", { name: "Resources" })).toHaveAttribute("href", "/admin/resources");
 });
