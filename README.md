@@ -199,8 +199,8 @@ optional shortcut, point `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` at a private local
 env file whose `LOCAL_ADMIN_EMAIL` is the seeded address and whose
 `LOCAL_ADMIN_PASSWORD` is the seed's `ADMIN_PASSWORD`.
 
-The backend contract is admin-authorised and restricts both
-endpoints to the isolated demo database and Brighton dataset. Maya has no
+The backend contract is admin-authorised and restricts both portfolio
+read endpoints to the isolated demo database and Brighton dataset. Maya has no
 Brighton portfolio fact and must be excluded by the API:
 
 - `GET /api/admin/investor-demo/portfolio?plan=all|free|pro&q=&page=1&limit=25`
@@ -239,3 +239,18 @@ Admin Resources links to the original Styleguide HTML explainers for
 document ingestion, profiling, the HomeTruth Report for partners, and
 blockchain and ledger strategy. Only their logo and app navigation links
 were adapted.
+
+On the isolated demo origin, Admin Resources also includes the nine Styleguide
+sample cards. The title deed and Brighton survey have original text previews.
+The separate Manchester survey Markdown is downloadable from the survey
+preview. The other seven cards contain catalogue details only.
+
+The read-only Demo knowledge page uses the isolated API's Styleguide snapshot.
+`GET /api/admin/investor-demo/knowledge?q=&page=1&limit=25` returns
+`{data:{total,page,limit,records:[{id,name,namespace,chunkCount}]}}`.
+`GET /api/admin/investor-demo/knowledge/:id` returns
+`{data:{id,name,namespace,chunkCount,chunks:[{text}]}}`. Search matches plain
+text in names and excerpts.
+
+The ledger sums recorded amounts by payment state. The anchoring control changes
+the display in the current browser only and sends no transaction.

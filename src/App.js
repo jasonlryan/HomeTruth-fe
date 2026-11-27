@@ -1,7 +1,6 @@
-import { investorDataRoomEnabled } from "./utils/localDemo";
 import { mayaHomeDestination } from "./utils/demoEntry";
 import { localManualAskEnabled } from "./features/items/manualAskContext";
-import { controlCentreEnabled } from "./utils/localDemo";
+import { controlCentreEnabled, investorDataRoomEnabled } from "./utils/localDemo";
 import DemoEntry from './pages/DemoEntry';
 import OperationsDemo from './pages/OperationsDemo';
 // src/App.jsx
@@ -74,6 +73,8 @@ const StartHomeRecord = lazy(() => import("./pages/StartHomeRecord"));
 const ControlCentre = lazy(() => import("./pages/ControlCentre"));
 const ControlCentrePreview = lazy(() => import("./pages/ControlCentrePreview"));
 const InvestorDataRoom = lazy(() => import("./pages/InvestorDataRoom"));
+const AdminSampleDocuments = lazy(() => import("./pages/admin-samples/AdminSampleDocuments"));
+const AdminDemoKnowledge = lazy(() => import("./pages/AdminDemoKnowledge"));
 const AdminExplainer = lazy(() => import("./pages/admin-explainers/AdminExplainer"));
 const AdminOntology = lazy(() => import("./pages/ontology/AdminOntology"));
 const AdminDesignSystem = lazy(() => import("./pages/AdminDesignSystem"));
@@ -88,6 +89,10 @@ const adminRoutes = (
       <Route path="dashboard" element={<AdminReportingDashboard />} />
       <Route path="partner-programmes" element={<PartnerProgrammeAdmin />} />
       <Route path="resources" element={<AdminResources />} />
+      {investorDataRoomEnabled() && <>
+        <Route path="resources/sample-documents/:id?" element={<Suspense fallback={<p role="status">Loading sample documents…</p>}><AdminSampleDocuments /></Suspense>} />
+        <Route path="resources/knowledge/:id?" element={<Suspense fallback={<p role="status">Loading demo knowledge…</p>}><AdminDemoKnowledge /></Suspense>} />
+      </>}
       <Route path="resources/explainers/:id" element={<Suspense fallback={<p role="status">Loading explainer…</p>}><AdminExplainer /></Suspense>} />
       <Route path="resources/ontology" element={<Suspense fallback={<p>Loading ontology…</p>}><AdminOntology /></Suspense>} />
       <Route path="articles" element={<AdminArticleManager />} />

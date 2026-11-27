@@ -7,7 +7,7 @@ import { investorDataRoomEnabled } from "../utils/localDemo";
 const destinations = () => [
   ["knowledge-base", "RAG", "knowledge", "Inspect records ingested into the shared Qdrant index."],
   ["operations", "Operations", "activity", "Explore the sample home record and programme workflows."],
-  ...(investorDataRoomEnabled() ? [["data-room", "Data Room", "home", "Explore the synthetic Brighton portfolio and property ledger."]] : []),
+  ...(investorDataRoomEnabled() ? [["data-room", "Data Room", "home", "Explore the demo Brighton portfolio and property ledger."]] : []),
   ["dashboard", "Reporting", "analytics", "Review product usage and programme activity."],
   ["partner-programmes", "Partner programmes", "programme", "Manage programmes, invitations and partner access."],
   ["resources", "Resources", "list", "Manage HomeTruth articles and browse platform documentation."],
@@ -44,6 +44,14 @@ export function AdminResources() {
         <Link className="ht-panel ht-admin-destination" to="/admin/resources/ontology">
           <h2>HomeTruth ontology</h2><p>Explore 23 domain concepts, their database mappings and the presenter’s discussion guide.</p>
         </Link>
+        {investorDataRoomEnabled() && <>
+          <Link className="ht-panel ht-admin-destination" to="/admin/resources/sample-documents">
+            <h2><HTGlyph name="document" /> Sample documents</h2><p>Browse nine Styleguide samples and open the available deed and survey previews.</p>
+          </Link>
+          <Link className="ht-panel ht-admin-destination" to="/admin/resources/knowledge">
+            <h2><HTGlyph name="knowledge" /> Demo knowledge</h2><p>Search and read the Styleguide knowledge snapshot.</p>
+          </Link>
+        </>}
         {explainers.map(({ id, title, description }) => (
           <Link className="ht-panel ht-admin-destination" key={id} to={`/admin/resources/explainers/${id}`}>
             <h2>{title}</h2><p>{description}</p>

@@ -936,3 +936,15 @@ export async function downloadInvestorLedger(id) {
   });
   return response.data;
 }
+
+const demoKnowledgePath = "/api/admin/investor-demo/knowledge";
+
+export async function getDemoKnowledge(params, signal) {
+  const response = await api.get(demoKnowledgePath, { baseURL: "", params, signal });
+  return response.data.data;
+}
+
+export async function getDemoKnowledgeDocument(id, signal) {
+  const response = await api.get(`${demoKnowledgePath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
+  return response.data.data;
+}

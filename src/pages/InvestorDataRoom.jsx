@@ -63,6 +63,35 @@ const portfolioDownloads = [
   { file: "brighton-addresses.json", label: "Portfolio JSON", type: /^application\/json(?:;|$)/i, load: () => downloadInvestorPortfolio("json") },
 ];
 
+function LedgerSimulation({ entries }) {
+  const [simulated, setSimulated] = useState(false);
+  let cleared = 0;
+  let pending = 0;
+  for (const entry of entries) {
+    if (!Number.isFinite(entry.amount)) continue;
+    const pence = Math.round(entry.amount * 100);
+    if (entry.status?.toLowerCase() === "cleared") cleared += pence;
+    else pending += pence;
+  }
+
+  return (
+    <div className="ht-investor-ledger-summary">
+      <dl className="ht-investor-spend">
+        <div><dt>Cleared spend</dt><dd>{money.format(cleared / 100)}</dd></div>
+        <div><dt>Pending or upcoming</dt><dd>{money.format(pending / 100)}</dd></div>
+      </dl>
+      <h4>Ledger anchoring simulation</h4>
+      <p>This browser-only simulation shows how ledger entries could be batched. Payment states come from the demo record. No transaction is sent.</p>
+      <p role="status">{simulated
+        ? `${entries.length} entries marked as anchored in the simulation.`
+        : `${entries.length} entries queued in the simulation.`}</p>
+      <Button variant="secondary" onClick={() => setSimulated(value => !value)}>
+        {simulated ? "Reset simulation" : "Simulate ledger anchor"}
+      </Button>
+    </div>
+  );
+}
+
 function PropertyLedger({ record, onClose }) {
   const [result, setResult] = useState(null);
   const heading = useRef(null);
@@ -92,6 +121,7 @@ function PropertyLedger({ record, onClose }) {
     {result?.failed && <LoadError onRetry={() => { setResult(null); setAttempt(n => n + 1); }}>Couldn’t load this demo record.</LoadError>}
     {property && <>
       <h3>Ledger <Badge>{count.format(property.ledgerEntries.length)} entries</Badge></h3>
+      {property.ledgerEntries.length > 0 && <LedgerSimulation entries={property.ledgerEntries} />}
       {property.ledgerEntries.length > 0 && <ExportButtons downloads={[{
         file: `${record.ownerName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `home-${record.id}`}-ledger.csv`,
         label: "Ledger CSV", type: csvType, load: () => downloadInvestorLedger(record.id),
@@ -148,7 +178,7 @@ export default function InvestorDataRoom() {
     <header>
       <div>
         <h1>Investor Data Room</h1>
-        <p>Brighton demo portfolio <Badge>Synthetic data</Badge></p>
+        <p>Demo property database (1,000 Brighton addresses)</p>
       </div>
       <ExportButtons downloads={portfolioDownloads} />
     </header>
