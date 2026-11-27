@@ -18,6 +18,7 @@
 .ht-public-header .ht-public-width {display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);min-height:76px;padding-block:var(--space-3)}
 .ht-public-header img {width:clamp(144px,22vw,210px);height:auto}
 .ht-journey-hero {position:relative;isolation:isolate;overflow-x:hidden;overflow-y:auto;background:var(--hero-backdrop)}
+.ht-hero-backdrop {position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .ht-journey .ht-hero-photo {position:absolute;z-index:-1;top:var(--photo-top,0);right:var(--photo-right,0);width:var(--photo-width,100%);max-width:none;height:auto;mask-image:linear-gradient(var(--ht-black) 94%,transparent)}
 .ht-journey-opening {padding-block:var(--space-16)}
 .ht-hero-overlay,.ht-journey-flow {width:min(640px,100%)}
