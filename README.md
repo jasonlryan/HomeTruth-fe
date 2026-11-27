@@ -185,3 +185,72 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Isolated investor Data Room (HT-360)
+
+The Admin Data Room is available on the configured loopback development
+origin only. Start the investor demo API against the separately seeded
+Brighton demo database first. Set `REACT_APP_LOCAL_INVESTOR_DATA_ROOM=true`
+and `HOMETRUTH_LOCAL_INVESTOR_API_PORT` to that API's listening port alongside
+the local demo flags above. Keep `REACT_APP_API_BASE_URL` empty. In this mode,
+login and all API calls use the same investor API, including the admin login
+shortcut. Sign in as the seed's `admin.demo@example.invalid` account. For the
+optional shortcut, point `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` at a private local
+env file whose `LOCAL_ADMIN_EMAIL` is the seeded address and whose
+`LOCAL_ADMIN_PASSWORD` is the seed's `ADMIN_PASSWORD`.
+
+The backend contract is admin-authorised and restricts both portfolio
+read endpoints to the isolated demo database and Brighton dataset. Maya has no
+Brighton portfolio fact and must be excluded by the API:
+
+- `GET /api/admin/investor-demo/portfolio?plan=all|free|pro&q=&page=1&limit=25`
+  returns `{data:{totals:{all,free,pro},total,page,limit,records:[{id,ownerName,address,plan,propertyType,listedDocumentCount}]}}`.
+  The tier totals cover the whole Brighton dataset. The total reflects filters.
+- `GET /api/admin/investor-demo/portfolio/:id` returns
+  `{data:{id,ownerName,address,plan,propertyType,listedDocuments,ledgerEntries}}`.
+  Listed documents are names. Each ledger entry retains
+  `{date,category,description,vendor,amount,status}` from the seed.
+
+After signing in, open `/admin/data-room`. Check All homes (1,000), Free (557)
+and Pro (443). Select All homes, search for John Doe and open his record to
+see 13 ledger entries. A search for Maya Demo should return zero results.
+
+#### Data Room downloads and Admin Resources
+
+The full Brighton portfolio and the selected home's ledger are downloaded
+from the authenticated, isolated demo API:
+
+- `GET /api/admin/investor-demo/portfolio/export?format=csv|json` returns
+  `text/csv` or `application/json`. Use the source fields
+  `id,name,email,address,postcode,propertyType,plan,documents`, followed by
+  `dataset_id,demo_only`. JSON retains its array of rows and array of
+  document names. The CSV documents field is a JSON array. The full export
+  stays independent of the current list filters and excludes Maya Demo.
+- `GET /api/admin/investor-demo/portfolio/:id/ledger/export` returns
+  `text/csv`. Use `date,category,description,vendor,amount,status,dataset_id,demo_only`
+  in source order. John Doe's ledger contains 13 rows.
+- Both exports require explicit Brighton provenance on every row, use the
+  demo API's existing database and admin guards, and reject non-portfolio
+  records. The list/detail responses concatenate the address and omit
+  the source email, separate postcode, source ID and provenance fields
+  required for full exports.
+
+Admin Resources links to the original Styleguide HTML explainers for
+document ingestion, profiling, the HomeTruth Report for partners, and
+blockchain and ledger strategy. Only their logo and app navigation links
+were adapted.
+
+On the isolated demo origin, Admin Resources also includes the nine Styleguide
+sample cards. The title deed and Brighton survey have original text previews.
+The separate Manchester survey Markdown is downloadable from the survey
+preview. The other seven cards contain catalogue details only.
+
+The read-only Demo knowledge page uses the isolated API's Styleguide snapshot.
+`GET /api/admin/investor-demo/knowledge?q=&page=1&limit=25` returns
+`{data:{total,page,limit,records:[{id,name,namespace,chunkCount}]}}`.
+`GET /api/admin/investor-demo/knowledge/:id` returns
+`{data:{id,name,namespace,chunkCount,chunks:[{text}]}}`. Search matches plain
+text in names and excerpts.
+
+The ledger sums recorded amounts by payment state. The anchoring control changes
+the display in the current browser only and sends no transaction.

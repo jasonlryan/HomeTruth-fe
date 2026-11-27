@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeTruth Document Ingestion | Smart Structuring</title>
+  <meta name="description" content="See how HomeTruth ingests uploaded documents, auto-detects type via AI + schema matching, and adds structured data into private and public knowledge stacks." />
+  <style>
+    :root {
+      --ht-ink: #0f172a;
+      --ht-bg: #f6f9f5;
+      --ht-card: #ffffff;
+      --ht-green: #10b981;
+      --ht-deep: #0f5e4f;
+      --ht-muted: #5f6c7a;
+      --ht-accent: #e8f7f0;
+      --ht-shadow: 0 18px 50px rgba(11, 36, 75, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+      background: var(--ht-bg);
+      color: var(--ht-ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 1180px; margin: 0 auto 64px; padding: 48px 24px 72px; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(16,185,129,0.14), rgba(15,94,79,0.14));
+      box-shadow: var(--ht-shadow); position: sticky; top: 16px; z-index: 10;
+      backdrop-filter: blur(10px); margin-bottom: 32px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--ht-ink); letter-spacing: 0.2px; }
+    .brand-mark {
+      height: 42px; width: 42px; border-radius: 12px;
+      background: #fff; display: grid; place-items: center;
+      box-shadow: 0 10px 20px rgba(16,185,129,0.2);
+    }
+    .pill { padding: 8px 14px; border-radius: 999px; background: #fff; color: var(--ht-muted); font-size: 13px; border: 1px solid #dbe7e1; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.5px; line-height: 1.1; }
+    p.lead { margin: 0; font-size: 17px; color: var(--ht-muted); max-width: 880px; }
+    .hero {
+      background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(15,94,79,0.12));
+      border-radius: var(--radius); padding: 32px;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 32px;
+      box-shadow: var(--ht-shadow); border: 1px solid rgba(16,185,129,0.14); margin-bottom: 32px;
+    }
+    .hero-card {
+      background: rgba(255,255,255,0.96);
+      border-radius: var(--radius); padding: 20px;
+      box-shadow: 0 12px 30px rgba(12,74,110,0.10);
+      border: 1px solid rgba(255,255,255,0.85);
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 12px;
+      background: var(--ht-accent); border: 1px solid rgba(16,185,129,0.3);
+      color: var(--ht-deep); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .section {
+      background: var(--ht-card); border-radius: var(--radius);
+      padding: 28px; margin-bottom: 22px; box-shadow: var(--ht-shadow); border: 1px solid #e0e9e5;
+    }
+    .section h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: -0.2px; }
+    .section p { margin: 0 0 10px; color: var(--ht-muted); font-size: 15px; }
+    .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 14px; }
+    .card {
+      background: #fff; padding: 18px; border-radius: 16px;
+      border: 1px solid #dfe8e4; box-shadow: 0 10px 24px rgba(12,74,110,0.08);
+      height: 100%;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.15px; }
+    .card p { margin: 0; color: var(--ht-muted); font-size: 14px; }
+    .badge { display: inline-block; padding: 6px 10px; background: rgba(16,185,129,0.14); border-radius: 10px; color: var(--ht-deep); font-size: 12px; font-weight: 700; border: 1px solid rgba(16,185,129,0.25); margin-bottom: 6px; }
+    .list { margin: 6px 0 0; padding-left: 18px; color: var(--ht-muted); font-size: 14px; }
+    .cta { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn { padding: 10px 16px; border-radius: 12px; border: 1px solid #d7e2ee; background: #fff; color: #0f4370; font-weight: 600; font-size: 13px; text-decoration: none; box-shadow: 0 8px 18px rgba(15,67,112,0.08); }
+    .btn.primary { background: linear-gradient(135deg, #10b981, #0f5e4f); color: #fff; border: none; box-shadow: 0 10px 22px rgba(16,185,129,0.32); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 16px; }
+    .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 12px; margin-top: 10px; }
+    .step-num { width: 32px; height: 32px; border-radius: 12px; background: linear-gradient(135deg, #10b981, #0f5e4f); color: #fff; font-weight: 700; display: grid; place-items: center; box-shadow: 0 10px 18px rgba(16,185,129,0.35); margin-bottom: 8px; }
+    pre {
+      background: #0f172a; color: #e2e8f0; padding: 14px; border-radius: 12px;
+      font-size: 12px; overflow-x: auto; margin: 0;
+    }
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      header { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="/assets/brand/hometruth-icon.svg" alt="HomeTruth" style="height: 32px; width: 32px;" />
+        </div>
+        <div>
+          <div style="font-size: 15px; color: var(--ht-muted); letter-spacing: 0.5px;">Resources</div>
+          <div style="font-size: 17px;">Document Ingestion & Structuring</div>
+        </div>
+      </div>
+      <span class="pill">Auto-typed · User-confirmed · Dual-stack</span>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="chip">Smart document intake</div>
+        <h1>Every upload becomes structured intelligence—fast.</h1>
+        <p class="lead">HomeTruth scans any upload, builds a JSON view, matches against known schemas, and asks you to confirm the type. Once confirmed, data is saved as semi-structured facts and pushed into both private and (anonymized) public knowledge stacks.</p>
+        <div class="columns" style="margin-top: 18px;">
+          <div class="card">
+            <div class="badge">Auto-detect</div>
+            <p>AI compares extracted JSON to known schemas to pick the right document class (e.g., EPC, insurance policy, electricity bill).</p>
+          </div>
+          <div class="card">
+            <div class="badge">User confirmation</div>
+            <p>You approve the detected type before it’s stored, preventing misfiled documents.</p>
+          </div>
+          <div class="card">
+            <div class="badge">Structured facts</div>
+            <p>Dates, parties, categories, and totals are captured as fields—ready for search, checklists, and alerts.</p>
+          </div>
+          <div class="card">
+            <div class="badge">Dual-stack</div>
+            <p>Data lands in your private namespace; anonymized learnings can enrich the public stack for market context.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="badge">Flow snapshot</div>
+        <div class="flow">
+          <div>
+            <div class="step-num">1</div>
+            <p><strong>Upload</strong>: Drag/drop any PDF or image.</p>
+          </div>
+          <div>
+            <div class="step-num">2</div>
+            <p><strong>Scan & JSON</strong>: AI extracts text, tables, and metadata into a draft JSON.</p>
+          </div>
+          <div>
+            <div class="step-num">3</div>
+            <p><strong>Schema match</strong>: JSON compared to doc schemas (EPC, bill, survey, policy, quote, invoice).</p>
+          </div>
+          <div>
+            <div class="step-num">4</div>
+            <p><strong>User confirm</strong>: “Is this your electricity bill?” You confirm or correct.</p>
+          </div>
+          <div>
+            <div class="step-num">5</div>
+            <p><strong>Structured save</strong>: Key fields normalized; file + JSON linked.</p>
+          </div>
+          <div>
+            <div class="step-num">6</div>
+            <p><strong>Knowledge stacks</strong>: Private namespace updated; anonymized signals may flow to public stack.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Why this matters</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Instant retrieval</h3>
+          <p>Search “EPC expiry” or “latest electrician invoice” and get answers from structured fields, not just full-text.</p>
+        </div>
+        <div class="card">
+          <h3>Compliance & valuation</h3>
+          <p>EPCs, warranties, and surveys roll into checklists and valuation signals automatically.</p>
+        </div>
+        <div class="card">
+          <h3>Contextual AI</h3>
+          <p>Chat responses reference your documents and the public market, side by side.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Example extraction (electricity bill)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Detected fields</h3>
+          <ul class="list">
+            <li>Document type: Electricity bill</li>
+            <li>Supplier: NorthGrid Energy</li>
+            <li>Service address: 14 Deacons Walk, Bristol</li>
+            <li>Billing period: 01 Feb 2025 – 28 Feb 2025</li>
+            <li>Amount due: £128.40</li>
+            <li>Due date: 12 Mar 2025</li>
+            <li>Tariff: FlexSaver 2025</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Stored JSON (private namespace)</h3>
+          <pre>{
+  "doc_id": "DOC-8821",
+  "doc_type": "utility_bill_electricity",
+  "source_file": "bill-feb-2025.pdf",
+  "billing_period": { "start": "2025-02-01", "end": "2025-02-28" },
+  "amount_due_gbp": 128.40,
+  "due_date": "2025-03-12",
+  "supplier": "NorthGrid Energy",
+  "address": "14 Deacons Walk, Bristol",
+  "tariff": "FlexSaver 2025",
+  "namespace": "user/lujain",
+  "ingested_at": "2025-03-01T10:18:00Z"
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Schema matching logic</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Compare JSON to known schemas</h3>
+          <p>Field presence, regex patterns, totals, and date ranges score against EPC, bill, survey, policy, quote, or invoice schemas.</p>
+        </div>
+        <div class="card">
+          <h3>User-in-the-loop</h3>
+          <p>If the top score is low, we prompt for confirmation or re-typing to avoid misclassification.</p>
+        </div>
+        <div class="card">
+          <h3>Linked assets</h3>
+          <p>Original file, parsed text, and structured JSON are bound for auditability.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Knowledge stacks</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Private stack (per user)</h3>
+          <p>Namespaced: <code>user/{id}</code>. Drives personal chat answers, tasks, renewals, and valuations.</p>
+        </div>
+        <div class="card">
+          <h3>Public stack (anonymized)</h3>
+          <p>Aggregated signals (e.g., tariff trends, survey issues) enrich market-level responses without exposing PII.</p>
+        </div>
+        <div class="card">
+          <h3>Cross-talk</h3>
+          <p>Users can ask about “my EPC vs market averages” because both stacks are queryable with guardrails.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>What the user sees</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Upload → detected type</h3>
+          <p>“We think this is an electricity bill — confirm?” with type options and a preview.</p>
+        </div>
+        <div class="card">
+          <h3>Structured summary</h3>
+          <p>Key fields rendered as chips; warnings if due dates are near or totals jump abnormally.</p>
+        </div>
+        <div class="card">
+          <h3>Search & chat</h3>
+          <p>Search filters by doc type/date; chat references both your docs and public context.</p>
+        </div>
+      </div>
+      <div class="cta">
+        <a class="btn" href="/admin/resources/explainers/hometruth-profiling-system">Profiling explainer</a>
+        <a class="btn" href="/admin/resources/explainers/home-truth-report-b2b">Report (B2B) explainer</a>
+        <a class="btn primary" href="/admin/resources">Return to Resources Index</a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

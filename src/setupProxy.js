@@ -18,17 +18,27 @@ const sameOriginDemoRequest = (req, port, header) => {
 };
 
 module.exports = app => {
-  if (process.env.HOMETRUTH_PREVIEW_API_PROXY !== "true") return;
+  const investorDemo = process.env.REACT_APP_LOCAL_INVESTOR_DATA_ROOM === "true";
+  if (process.env.HOMETRUTH_PREVIEW_API_PROXY !== "true") {
+    if (investorDemo) throw new Error("The investor Data Room requires the same-origin demo proxy.");
+    return;
+  }
   const requireFromCRA = createRequire(require.resolve("react-scripts/package.json"));
   const { createProxyMiddleware } = requireFromCRA("http-proxy-middleware");
   const port = process.env.REACT_APP_LOCAL_DEMO_PORT || "3014";
   const isLocalDemo = process.env.NODE_ENV === "development" && process.env.HOST === "127.0.0.1" &&
     process.env.PORT === port && process.env.REACT_APP_LOCAL_APPLIANCE_FLOW === "true";
 
+  const investorPort = process.env.HOMETRUTH_LOCAL_INVESTOR_API_PORT;
+  if (investorDemo && (!isLocalDemo || process.env.REACT_APP_API_BASE_URL ||
+      !investorPort || investorPort === "8005")) {
+    throw new Error("The investor Data Room requires a loopback demo server and a dedicated investor API port.");
+  }
+
   if (isLocalDemo) {
-    const core = loopback(process.env.HOMETRUTH_LOCAL_CORE_API_PORT, "8005");
-    const ask = loopback(process.env.HOMETRUTH_LOCAL_ASK_API_PORT, "8015");
-    const items = loopback(process.env.HOMETRUTH_LOCAL_ITEMS_API_PORT, "8014");
+    const core = investorDemo ? loopback(investorPort) : loopback(process.env.HOMETRUTH_LOCAL_CORE_API_PORT, "8005");
+    const ask = investorDemo ? core : loopback(process.env.HOMETRUTH_LOCAL_ASK_API_PORT, "8015");
+    const items = investorDemo ? core : loopback(process.env.HOMETRUTH_LOCAL_ITEMS_API_PORT, "8014");
     if (process.env.REACT_APP_LOCAL_ADMIN_LOGIN === "true" && process.env.HOMETRUTH_LOCAL_ADMIN_ENV_FILE) {
       serveLocalAdminLogin(app, requireFromCRA("dotenv").parse, { core, port });
     }
@@ -44,7 +54,7 @@ module.exports = app => {
     app.use(createProxyMiddleware("/api/ai_chat", { target: ask, changeOrigin: true }));
     app.use(createProxyMiddleware(path => /^\/api\/property-records\/[1-9]\d*\/items(?:\/|$)/.test(path), { target: items, changeOrigin: true }));
     const surveyPort = process.env.HOMETRUTH_LOCAL_SURVEY_API_PORT;
-    if (surveyPort) {
+    if (surveyPort && !investorDemo) {
       const survey = loopback(surveyPort);
       app.use(createProxyMiddleware(path => /^\/api\/(?:user-documents\/[1-9]\d*\/pdf-page|property-records\/[1-9]\d*\/tasks(?:\/|$))/.test(path), { target: survey, changeOrigin: true }));
     }

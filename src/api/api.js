@@ -910,3 +910,41 @@ export const getFollowUpPassage = async (propertyId, taskId, signal) => {
   const res = await api.get(`/api/property-records/${encodeURIComponent(propertyId)}/tasks/${encodeURIComponent(taskId)}/passage`, { signal });
   return res.data?.data;
 };
+
+const investorPortfolioPath = "/api/admin/investor-demo/portfolio";
+
+export async function getInvestorPortfolio(params, signal) {
+  const response = await api.get(investorPortfolioPath, { baseURL: "", params, signal });
+  return response.data?.data;
+}
+
+export async function getInvestorProperty(id, signal) {
+  const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
+  return response.data?.data;
+}
+
+export async function downloadInvestorPortfolio(format) {
+  const response = await api.get(`${investorPortfolioPath}/export`, {
+    baseURL: "", params: { format }, responseType: "blob",
+  });
+  return response.data;
+}
+
+export async function downloadInvestorLedger(id) {
+  const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}/ledger/export`, {
+    baseURL: "", responseType: "blob",
+  });
+  return response.data;
+}
+
+const demoKnowledgePath = "/api/admin/investor-demo/knowledge";
+
+export async function getDemoKnowledge(params, signal) {
+  const response = await api.get(demoKnowledgePath, { baseURL: "", params, signal });
+  return response.data.data;
+}
+
+export async function getDemoKnowledgeDocument(id, signal) {
+  const response = await api.get(`${demoKnowledgePath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
+  return response.data.data;
+}

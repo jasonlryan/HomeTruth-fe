@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeTruth Profiling System | Resources</title>
+  <meta name="description" content="See how the HomeTruth profiling system onboards users, captures explicit and implicit signals, and translates them into proactive, personalized guidance." />
+  <style>
+    :root {
+      --ht-blue: #00bfff;
+      --ht-blue-dark: #0aa1d6;
+      --ht-purple: #b19cd9;
+      --ht-ink: #0f172a;
+      --ht-sand: #f7f8fb;
+      --ht-card: #ffffff;
+      --ht-muted: #657284;
+      --ht-accent: #eef7ff;
+      --radius: 18px;
+      --shadow: 0 18px 50px rgba(11, 36, 75, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+      background: var(--ht-sand);
+      color: var(--ht-ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto 64px;
+      padding: 48px 24px 72px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(0, 191, 255, 0.12), rgba(177, 156, 217, 0.10));
+      box-shadow: var(--shadow);
+      margin-bottom: 32px;
+      position: sticky;
+      top: 16px;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: var(--ht-ink);
+    }
+
+    .brand-mark {
+      height: 42px;
+      width: 42px;
+      border-radius: 12px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 20px rgba(0, 191, 255, 0.18);
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--ht-muted);
+      font-size: 13px;
+      border: 1px solid #e0e7ef;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+
+    p.lead {
+      margin: 0;
+      font-size: 17px;
+      color: var(--ht-muted);
+      max-width: 860px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(0, 191, 255, 0.10), rgba(13, 130, 191, 0.09) 50%, rgba(177, 156, 217, 0.16));
+      border-radius: var(--radius);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 191, 255, 0.08);
+      margin-bottom: 32px;
+    }
+
+    .hero-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 12px 30px rgba(12, 74, 110, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .subhead {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #0e7490;
+      font-size: 12px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .section {
+      background: var(--ht-card);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid #e7eef6;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+      letter-spacing: -0.2px;
+    }
+
+    .section p {
+      color: var(--ht-muted);
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--ht-accent);
+      border: 1px solid rgba(0, 191, 255, 0.22);
+      color: #0f4370;
+      font-size: 13px;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid #e6edf4;
+      box-shadow: 0 10px 24px rgba(12, 74, 110, 0.08);
+      height: 100%;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      letter-spacing: -0.15px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--ht-muted);
+      font-size: 14px;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .step {
+      position: relative;
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #00bfff, #0aa1d6);
+      color: #fff;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 22px rgba(0, 191, 255, 0.35);
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      background: rgba(0, 191, 255, 0.12);
+      border-radius: 10px;
+      color: #0f4370;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(0, 191, 255, 0.22);
+      margin-bottom: 6px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--ht-muted);
+      font-size: 14px;
+    }
+
+    .list li {
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      height: 6px;
+      border-radius: 999px;
+      background: #e5edf5;
+      overflow: hidden;
+      margin: 8px 0 12px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: var(--pct, 50%);
+      background: linear-gradient(135deg, #00bfff, #0a8ed0);
+    }
+
+    .cta {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid #c7d6e6;
+      background: #fff;
+      color: #0f4370;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: default;
+      text-decoration: none;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #00bfff, #0aa1d6);
+      color: #fff;
+      border: none;
+      box-shadow: 0 10px 22px rgba(0, 191, 255, 0.35);
+    }
+
+    .footer-note {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--ht-muted);
+    }
+
+    @media (max-width: 920px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      header {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="/assets/brand/hometruth-icon.svg" alt="HomeTruth" style="height: 32px; width: 32px;" />
+        </div>
+        <div>
+          <div style="font-size: 15px; color: var(--ht-muted); letter-spacing: 0.5px;">Resources</div>
+          <div style="font-size: 17px;">HomeTruth Profiling System</div>
+        </div>
+      </div>
+      <span class="pill">2–3 minute adaptive onboarding</span>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="subhead">Purpose</div>
+        <h1>We onboard to build a 3D Human Blueprint.</h1>
+        <p class="lead">The profiling system personalizes the entire property journey by understanding what you believe, why you act, and how you feel. It powers an AI-powered personal property assistant that anticipates needs, matches services, and keeps guidance aligned with your comfort zone.</p>
+        <div class="hero-grid" style="margin-top: 18px;">
+          <div class="hero-card">
+            <div class="badge">Attitudinal</div>
+            <p style="margin: 0; color: var(--ht-muted); font-size: 14px;">Risk tolerance, tech affinity, sustainability, and trust posture.</p>
+          </div>
+          <div class="hero-card">
+            <div class="badge">Motivational</div>
+            <p style="margin: 0; color: var(--ht-muted); font-size: 14px;">Security vs. status, legacy vs. liquidity, urgency, and intent signals.</p>
+          </div>
+          <div class="hero-card">
+            <div class="badge">Emotional</div>
+            <p style="margin: 0; color: var(--ht-muted); font-size: 14px;">Anxiety triggers, excitement catalysts, and decision-fatigue patterns.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="subhead">Outcomes we unlock</div>
+        <div class="columns">
+          <div class="card">
+            <h3>Proactive Guidance</h3>
+            <p>We nudge before questions arise—deadlines, budgets, documents, and next-best actions.</p>
+          </div>
+          <div class="card">
+            <h3>Hyper-Personalized Matching</h3>
+            <p>Properties, services, contractors, and finance offers filtered by your comfort zone.</p>
+          </div>
+          <div class="card">
+            <h3>Higher Stickiness</h3>
+            <p>An evolving profile makes the assistant feel tailored and familiar every time you return.</p>
+          </div>
+          <div class="card">
+            <h3>Data Monetization (Ethical)</h3>
+            <p>Anonymized insights help partners tailor value—not spam—around the moments you care about.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Onboarding flow (visualized)</h2>
+      <p>Eight quick steps combine explicit answers with light behavioral cues, mirroring the experience shown in the mockups.</p>
+      <div class="timeline">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="card">
+            <div class="badge">Lifestyle factors</div>
+            <p>What should we prioritize? Parks, gyms, public transit, pets, balcony, schools.</p>
+            <div class="progress" aria-label="25% complete"><span style="--pct: 12%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="card">
+            <div class="badge">Motivations</div>
+            <p>Independence, family, relocating, tired of renting, downsizing, school investing.</p>
+            <div class="progress" aria-label="25% complete"><span style="--pct: 25%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="card">
+            <div class="badge">Overwhelm points</div>
+            <p>Legal docs, too many listings, choosing location, prioritizing features.</p>
+            <div class="progress" aria-label="35% complete"><span style="--pct: 35%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="card">
+            <div class="badge">Open fears</div>
+            <p>Free text: biggest fear about homebuying (e.g., missing hidden costs).</p>
+            <div class="progress" aria-label="45% complete"><span style="--pct: 45%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="card">
+            <div class="badge">Learning style</div>
+            <p>Visuals, bullet summaries, narrative guides, or interactive Q&A.</p>
+            <div class="progress" aria-label="55% complete"><span style="--pct: 55%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="card">
+            <div class="badge">Timeline</div>
+            <p>Urgency to buy: not urgent to immediate. Feeds risk posture + follow-up cadence.</p>
+            <div class="progress" aria-label="70% complete"><span style="--pct: 70%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div class="card">
+            <div class="badge">Budget range</div>
+            <p>Slider for comfort + stretch budgets; flags affordability guardrails.</p>
+            <div class="progress" aria-label="85% complete"><span style="--pct: 85%;"></span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">8</div>
+          <div class="card">
+            <div class="badge">Lifestyle tone</div>
+            <p>Ideal environment: quiet, family-friendly, transit, eco-conscious, modern, walkable.</p>
+            <div class="progress" aria-label="100% complete"><span style="--pct: 100%;"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cta">
+        <span class="btn">Skip for now (soft opt-out)</span>
+        <span class="btn primary">Save & continue</span>
+      </div>
+      <div class="footer-note">Result: dashboard, chat tone, and recommendations are immediately tuned to the answers above.</div>
+    </section>
+
+    <section class="section">
+      <h2>Signals captured</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Explicit</h3>
+          <ul class="list">
+            <li>Questionnaire answers (needs, fears, motivations, timelines).</li>
+            <li>Preferences and blocks (eco offers, vendors to avoid).</li>
+            <li>Feedback on recommendations (approve, tweak, dismiss).</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Forms</span>
+            <span class="chip">Sliders</span>
+            <span class="chip">Toggles</span>
+            <span class="chip">Text</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Implicit</h3>
+          <ul class="list">
+            <li>Browse behavior (time on smart-home listings, hesitation on calculators).</li>
+            <li>Sentiment in chat language (uncertainty cues like “I guess”).</li>
+            <li>Engagement rhythm (when and how you interact; where you abandon flows).</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Dwell time</span>
+            <span class="chip">NL sentiment</span>
+            <span class="chip">Clickstreams</span>
+            <span class="chip">Completion drop-offs</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Why this matters</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Less noise, more clarity</h3>
+          <p>We remove 60–80% of irrelevant results and surface only what fits your risk, style, and timeline.</p>
+        </div>
+        <div class="card">
+          <h3>Confidence over speed</h3>
+          <p>Guidance respects anxiety triggers and pacing, replacing pressure with step-by-step checklists.</p>
+        </div>
+        <div class="card">
+          <h3>Trustable recommendations</h3>
+          <p>Matches consider lifestyle, learning style, and emotional load—not just price and postcode.</p>
+        </div>
+        <div class="card">
+          <h3>Continuous learning loop</h3>
+          <p>Every interaction improves the profile; RAG injects the latest signals directly into AI answers.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>How data flows</h2>
+      <p>Each event lands in the profile and interaction log, which the AI can query in real time.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>User Profile (NoSQL)</h3>
+          <pre style="background: #0f172a; color: #e2e8f0; padding: 14px; border-radius: 12px; font-size: 12px; overflow-x: auto; margin: 0;">
+{
+  "user_id": "HT-123",
+  "psychographic": { "risk_tolerance": 0.22, "sustainability_priority": 0.91 },
+  "behavioral": { "session_avg_duration": "8m32s" },
+  "emotional_state": { "last_detected_sentiment": "excited" },
+  "preferences": { "blocked_vendors": ["VENDOR-456"] }
+}</pre>
+        </div>
+        <div class="card">
+          <h3>Interaction Log</h3>
+          <pre style="background: #0f172a; color: #e2e8f0; padding: 14px; border-radius: 12px; font-size: 12px; overflow-x: auto; margin: 0;">
+{
+  "event_id": "EVT-789",
+  "event_type": "mini-game_completed",
+  "metadata": { "game_name": "Renovation Roulette", "choices": { "allocated_to_safety": "70%" } },
+  "timestamp": "2024-03-20T14:22:18Z"
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Privacy & control</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Transparent opt-ins</h3>
+          <p>Every data source shows a clear toggle; you can pause implicit tracking without losing your account.</p>
+        </div>
+        <div class="card">
+          <h3>Use-bound sharing</h3>
+          <p>Insights shared with partners stay anonymized and purpose-bound; we never sell identifiable data.</p>
+        </div>
+        <div class="card">
+          <h3>Instant corrections</h3>
+          <p>Edit or delete profile attributes from settings; the AI immediately reflects your changes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>What the user feels</h2>
+      <p>“I told HomeTruth my anxieties and priorities once. Now every recommendation feels considered—no more generic property spam.”</p>
+      <div class="cta">
+        <a class="btn primary" href="/admin/resources">Return to Resources Index</a>
+        <span class="btn">Share with team</span>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
