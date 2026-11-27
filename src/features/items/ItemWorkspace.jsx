@@ -137,6 +137,7 @@ export default function ItemWorkspace({
     setAnswer(null);
     setSelectedEvidence([]);
     setMode('list');
+    if (itemId && localManualAskEnabled) rememberManualContext(owner, { homeId, itemId: null });
     const load = itemId ? getHomeItem(homeId, itemId) : getHomeItems(homeId);
     load.then(result => {
       if (!active) return;
