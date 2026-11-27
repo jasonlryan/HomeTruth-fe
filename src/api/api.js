@@ -870,6 +870,20 @@ export const unpublishArticle = async (id) => {
 
 export default api;
 
+export const getPartnerEvidence = async (programmeId, params = {}) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/evidence`, { params });
+  return res.data?.data;
+};
+
+export const getPartnerEvidenceDefinitions = async (programmeId) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/evidence/definitions`);
+  return res.data?.data;
+};
+
+export const exportPartnerEvidence = async (programmeId, params = {}) => {
+  const res = await api.get(`/api/partner/programmes/${programmeId}/evidence/export`, { params });
+  return res.data;
+};
 // Authenticated preview payload: JSON text/image or raw file bytes.
 export const getDocumentPreviewFile = async (documentId, signal) => {
   const res = await api.get(`/api/user-documents/${documentId}/preview`, { responseType: 'blob', signal });

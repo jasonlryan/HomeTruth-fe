@@ -1,3 +1,4 @@
+import PartnerEvidencePanel from "../components/PartnerEvidencePanel";
 import HTGlyph from "../components/HTGlyph";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -131,7 +132,7 @@ function ProgrammeAccessCard({ entry, selectedAudit, onAudit, onOpen, busy }) {
           <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
             <HTGlyph name="analytics" size={19} className="text-[var(--color-accent)]" />
             <h3 className="mt-3 font-bold text-[var(--color-text-default)]">Aggregate evidence</h3>
-            <p className="mt-2 text-sm leading-5 text-[var(--color-text-muted)]">Evidence and exports appear only when the governed dashboard, threshold and consent checks are enabled.</p>
+            <p className="mt-2 text-sm leading-5 text-[var(--color-text-muted)]">Review monthly campaign evidence below. Reporting requires programme approval, current consent and privacy thresholds.</p>
           </section>
           <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
             <HTGlyph name="document-locked" size={19} className="text-[var(--color-secondary)]" />
@@ -139,6 +140,7 @@ function ProgrammeAccessCard({ entry, selectedAudit, onAudit, onOpen, busy }) {
             <p className="mt-2 text-sm leading-5 text-[var(--color-text-muted)]">Individual homeowner, property, document, task, profile, chat and event records.</p>
           </section>
         </div>
+        {state.operational && <PartnerEvidencePanel key={`${entry.programme.id}:${entry.role}`} entry={entry} />}
         {selectedAudit && <AuditPanel entry={entry} onClose={() => onAudit(null)} />}
       </div>
     </article>

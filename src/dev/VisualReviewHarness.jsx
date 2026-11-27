@@ -430,7 +430,7 @@ const visualPartnerProgrammeEntry = () => {
     role,
     assignmentStatus: "active",
     capabilities: [
-      ...(operational ? ["programme:view"] : []),
+      ...(operational ? ["programme:view", ...(role === "privacy_auditor" ? ["report:definitions:view"] : ["report:view", "report:export"])] : []),
       ...(auditAllowed ? ["audit:view"] : []),
     ],
     programme: {
@@ -1210,6 +1210,23 @@ function installVisualReviewApiMock() {
       return toAxiosResponse(config, { success: true, data: assignment });
     }
 
+    if (method === "get" && path.match(/^\/api\/partner\/programmes\/\d+\/evidence(?:\/(?:definitions|export))?$/)) {
+      const params = new URLSearchParams(window.location.search);
+      const definitions = {
+        minimumParticipants: 10, minimumCell: 5,
+        denominator: "Distinct eligible participants with current processing, analytics and reporting consent.",
+        interpretation: "Recorded engagement only. No claims or financial outcomes are inferred.",
+        metrics: ["activation", "propertySetup", "documents", "taskGeneration", "taskEngagement", "propertyQuestions", "repeatUse", "feedback"].map((key) => ({ key, label: key.replace(/([A-Z])/g, " $1"), definition: "Distinct participants with recorded activity in this calendar month.", sources: ["fixture_activity"], coverage: "instrumented", unit: "participants" })),
+      };
+      if (path.endsWith("definitions")) return toAxiosResponse(config, { success: true, data: definitions });
+      if (params.get("denied") === "1") return toAxiosError(config, { success: false, message: "Partner programme access is not permitted" }, 403);
+      const state = params.get("evidenceState") || "available";
+      const report = {
+        state: state === "approval_required" ? state : "available", generatedAt: "2026-10-25T09:00:00Z", month: config.params?.month || "2026-09", definitions,
+        partitions: state === "approval_required" ? [] : [{ campaign: { id: 1, name: "Autumn homeowner programme" }, state, eligibleParticipants: state === "available" ? 40 : null, metrics: state === "available" ? definitions.metrics.map((metric, index) => ({ key: metric.key, state: index === 2 ? "suppressed" : "measured", count: index === 2 ? null : 20, rate: index === 2 ? null : 50 })) : [] }],
+      };
+      return toAxiosResponse(config, path.endsWith("export") ? report : { success: true, data: report });
+    }
     if (method === "get" && path === "/api/partner/programmes") {
       const params = new URLSearchParams(window.location.search);
       return toAxiosResponse(config, {
