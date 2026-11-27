@@ -888,6 +888,9 @@ export const createHomeItem = async (homeId, payload) => (await api.post(itemPat
 export const updateHomeItem = async (homeId, itemId, payload) => (await api.patch(`${itemPath(homeId)}/${itemId}`, payload)).data.data;
 export const identifyHomeItem = async (homeId, formData) => (await api.post(`${itemPath(homeId)}/identify`, formData)).data.data;
 export const keepVaultManual = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/vault-manual`, payload)).data.data;
+const manufacturerManualPath = (homeId, itemId) => `${itemPath(homeId)}/${itemId}/manufacturer-manual`;
+export const checkManufacturerManual = async (homeId, itemId) => (await api.get(manufacturerManualPath(homeId, itemId))).data.data;
+export const registerManufacturerManual = async (homeId, itemId, payload) => (await api.post(manufacturerManualPath(homeId, itemId), payload)).data.data;
 export const attachItemEvidence = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/evidence`, payload)).data.data;
 export const detachItemEvidence = async (homeId, itemId, evidenceId) => (await api.delete(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}`)).data.data;
 export const findItemManual = async (homeId, itemId, requestKey) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`, {requestKey}, {timeout:110000})).data.data;

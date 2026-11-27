@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getHomeItem, getPropertyRecords, keepVaultManual } from "../../api/api";
-import ApplianceAgent from "./ApplianceAgent";
+import ManufacturerManualLink from "./ManufacturerManualLink";
 import { appliancePath, savedExactManual } from "./manualAskContext";
 import "./ItemJourney.css";
 
-export default function ManualAskAction({ scope, userId }) {
+export default function ManualAskAction({ scope }) {
   const homeId = scope?.homeId;
   const itemId = scope?.itemId;
   const [state, setState] = useState(null);
@@ -32,6 +32,7 @@ export default function ManualAskAction({ scope, userId }) {
 
   const { item, canManage } = state;
   const { brand, model } = item.record.identity;
+  const hasBoschModel = brand?.trim().toLowerCase() === "bosch" && /^[a-z0-9]{3,32}$/i.test(model?.trim() || "");
   const attached = savedExactManual(item);
   const inVault = attached || item.vaultManual;
   async function keepManual() {
@@ -60,8 +61,9 @@ export default function ManualAskAction({ scope, userId }) {
       </div>
     </> : <>
       {brand && model && <p>Vault has no manual for this exact model.</p>}
-      {canManage && <ApplianceAgent homeId={homeId} itemId={itemId} brand={brand} model={model}
-        owner={userId} onSaved={() => setRetry(n => n + 1)} />}
+      {hasBoschModel
+        ? <ManufacturerManualLink key={`${homeId}/${itemId}/${item.version}`} homeId={homeId} item={item} canManage={canManage} />
+        : <p>Open the appliance record to check its make and model or use the available manual options.</p>}
     </>}
     {saveError && <p role="alert">{saveError} <button className="journey-link" type="button" onClick={() => { setSaveError(""); setRetry(n => n + 1); }}>Reload Vault match</button></p>}
     <Link className="journey-link" to={appliancePath(homeId, itemId)}>Open appliance record</Link>

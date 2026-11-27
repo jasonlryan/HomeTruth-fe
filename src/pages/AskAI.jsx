@@ -1539,7 +1539,7 @@ export default function AskAI() {
                             onSave={() => toggleSaveQAPair(pair.id)}
                             isSaved={isQAPairSaved(pair)}
                             action={localManualAskEnabled && isManualAction(pair.answer.actions) &&
-                              <ManualAskAction key={pair.answer.id} userId={user?.id}
+                              <ManualAskAction key={pair.answer.id}
                                 scope={pair.answer.manualScope ?? readManualContext(user?.id, pair.answer.chatHistoryId)} />}
                             isStreaming={streamingMessageId === pair.answer.id}
                             streamingText={streamingMessageId === pair.answer.id ? streamingText : ""}
