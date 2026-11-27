@@ -1,4 +1,8 @@
 .ht-journey {
+  display:grid;
+  height:100vh;
+  height:100dvh;
+  grid-template-rows:auto minmax(0,1fr) auto;
   --hero-backdrop:#283b49;
   --footer-surface:#000;
   --footer-link:#cbd5e1;
@@ -13,7 +17,7 @@
 .ht-public-header {background:var(--color-surface-default);border-bottom:1px solid var(--control-border)}
 .ht-public-header .ht-public-width {display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);min-height:76px;padding-block:var(--space-3)}
 .ht-public-header img {width:clamp(144px,22vw,210px);height:auto}
-.ht-journey-hero {position:relative;isolation:isolate;overflow:hidden;background:var(--hero-backdrop)}
+.ht-journey-hero {position:relative;isolation:isolate;overflow-x:hidden;overflow-y:auto;background:var(--hero-backdrop)}
 .ht-journey .ht-hero-photo {position:absolute;z-index:-1;top:var(--photo-top,0);right:var(--photo-right,0);width:var(--photo-width,100%);max-width:none;height:auto;mask-image:linear-gradient(var(--ht-black) 94%,transparent)}
 .ht-journey-opening {padding-block:var(--space-16)}
 .ht-hero-overlay,.ht-journey-flow {width:min(640px,100%)}
@@ -45,6 +49,7 @@
 .ht-journey-actions {display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-4)}
 .ht-journey-actions .ht-button[data-variant=record] {background:var(--color-secondary);color:var(--color-text-on-dark)}
 .ht-journey-actions .ht-button[data-variant=record]:hover {background:color-mix(in srgb,var(--color-secondary) 88%,var(--ht-black))}
+.ht-journey > .ht-public-footer {max-height:35vh;max-height:35dvh;overflow-y:auto}
 .ht-public-footer {padding-block:var(--space-6) var(--space-3);background:var(--footer-surface);color:var(--color-text-on-dark)}
 .ht-footer-grid {display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:var(--space-4)}
 .ht-footer-grid img {width:min(166px,100%);height:auto}
