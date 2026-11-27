@@ -1,8 +1,8 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { askAnonymousAI, askAIChat, saveNote } from "../api/api";
 import { useAuth } from "../context/AuthContext";
-import { MessageCircle, Save } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -190,15 +190,13 @@ export default function GuestChat() {
       <div className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
+            <button aria-label="Back"
               onClick={() => navigate("/")}
               className="text-gray-500 hover:text-gray-700"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <HTGlyph name="chevron-left" size={24} />
             </button>
-            <MessageCircle className="w-8 h-8 text-ht-cyan" />
+            <HTGlyph name="assistant" className="w-8 h-8 text-ht-cyan" />
             <h1 className="text-xl font-semibold text-gray-800">
               HomeTruth Assistant
             </h1>
@@ -226,7 +224,7 @@ export default function GuestChat() {
           <div className="h-[500px] overflow-y-auto p-6 space-y-4">
             {chatHistory.length === 0 ? (
               <div className="text-center py-12">
-                <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <HTGlyph name="assistant" className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-600 mb-2">Start a conversation</h3>
                 <p className="text-gray-500 mb-6">Ask me anything about property, buying, selling, or managing your home.</p>
                 
@@ -279,11 +277,7 @@ export default function GuestChat() {
                           }
                           disabled={savedMessageIds.has(index)}
                         >
-                          <span className="material-symbols-outlined">
-                            {savedMessageIds.has(index)
-                              ? "check_circle"
-                              : "assignment"}
-                          </span>
+                          <HTGlyph name={savedMessageIds.has(index) ? "success" : "note"} size={20} />
                         </button>
                       </div>
                       <div className="text-xs text-gray-400 mt-1 ml-1">
@@ -325,25 +319,12 @@ export default function GuestChat() {
                     className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ht-cyan focus:border-transparent"
                     disabled={loading}
                   />
-                  <button
+                  <button aria-label="Send question"
                     type="submit"
                     disabled={loading || !question.trim()}
                     className="bg-ht-cyan hover:bg-ht-cyan-light text-white rounded-xl px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
-                      <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M3 11l18-8-8 18-2-7-8-3z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="currentColor"
-                />
-              </svg>
+                      <HTGlyph name="send" size={18} />
                   </button>
                 </div>
               </div>
@@ -377,7 +358,7 @@ export default function GuestChat() {
       {/* Toast Notification */}
       {showToast && (
         <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50">
-          <Save className="w-4 h-4" />
+          <HTGlyph name="save" className="w-4 h-4" />
           <span>{user ? 'Message saved to notes!' : 'Please register to save notes'}</span>
         </div>
       )}
@@ -388,7 +369,7 @@ export default function GuestChat() {
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Save className="w-8 h-8 text-ht-cyan" />
+                <HTGlyph name="save" className="w-8 h-8 text-ht-cyan" />
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Save to Notes

@@ -1,3 +1,4 @@
+import HTGlyph from "./HTGlyph";
 const formatAddress = (address) => {
   if (!address || typeof address !== "object") return "";
   return [
@@ -37,7 +38,7 @@ export default function PropertyCard({ property, onClick }) {
   } = property;
 
   const mainImage =
-    localImages?.[0] || "http://18.223.231.19:8005/400x300?text=No+Image";
+    localImages?.[0] || `${process.env.PUBLIC_URL || ""}/images/property-placeholder.svg`;
   const owner = owners[0] || null;
   const { phone, email } = getContactInfo(owner);
   const displayName = owner?.name?.surname || agent?.name || "Agent";
@@ -84,11 +85,6 @@ export default function PropertyCard({ property, onClick }) {
         <div className="flex items-center gap-1 text-md">
           {/* Phone */}
           <span
-            className={`material-symbols-outlined text-lg ${phone ? "" : ""}`}
-          >
-            call
-          </span>
-          <span
             className={`text-sm ${
               phone ? "underline text-black" : "underline"
             }`}
@@ -97,11 +93,7 @@ export default function PropertyCard({ property, onClick }) {
           </span>
 
           {/* Email */}
-          <span
-            className={`material-symbols-outlined text-lg ${email ? "" : ""}`}
-          >
-            mail
-          </span>
+          <HTGlyph name="mail" size={20} />
           <span
             className={`text-sm ${
               email ? "underline text-black" : "underline"

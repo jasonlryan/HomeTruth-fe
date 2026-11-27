@@ -1,179 +1,101 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Home,
-  Building2,
-  Search,
-  FileText,
-  File,
-  Calculator,
-  Settings,
-  User,
-  Sliders,
-  Bell,
-  Lock,
-  KeyRound,
-} from "lucide-react";
-import { getPartnerProgrammeAccessStatus } from "../api/api";
+import { mayaHomeDestination } from "../utils/demoEntry";
+import { localManualAskEnabled } from "../features/items/manualAskContext";
+import { useAuth } from '../context/AuthContext';
+import { controlCentreEnabled } from "../utils/localDemo";
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import HTGlyph from "./HTGlyph";
+import { HTIcon } from "./homepage/HomeTruth";
+import { getPartnerProgrammeAccessStatus } from '../api/api';
+import './sidebar.css';
+
+const iconBase = process.env.PUBLIC_URL + '/assets/brand/';
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const location = useLocation();
-  const [settingsOpen, setSettingsOpen] = useState(
-    location.pathname.startsWith("/settings")
-  );
+  const mayaHome = mayaHomeDestination(user);
+  const brandLabel = mayaHome ? "HomeTruth Control centre" : "HomeTruth dashboard";
+  const [narrow, setNarrow] = useState(() => window.innerWidth < 1024);
+  const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
+  const [settingsOpen, setSettingsOpen] = useState(location.pathname.startsWith('/settings'));
   const [hasPartnerAccess, setHasPartnerAccess] = useState(false);
-
   useEffect(() => {
-    setSettingsOpen(location.pathname.startsWith("/settings"));
-  }, [location.pathname]);
-
+    const media = window.matchMedia('(max-width: 1023px)');
+    const update = () => { setNarrow(media.matches); setCollapsed(media.matches); };
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  useEffect(() => { setSettingsOpen(location.pathname.startsWith('/settings')); }, [location.pathname]);
   useEffect(() => {
     let cancelled = false;
-    getPartnerProgrammeAccessStatus()
-      .then((hasAccess) => {
-        if (!cancelled) setHasPartnerAccess(hasAccess);
-      })
-      .catch(() => {
-        if (!cancelled) setHasPartnerAccess(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+    getPartnerProgrammeAccessStatus().then(value => { if (!cancelled) setHasPartnerAccess(value); }).catch(() => {});
+    return () => { cancelled = true; };
   }, []);
-
-  return (
-    <div className="hidden w-80 bg-white border-r p-4 lg:flex lg:flex-col">
-      <div className="flex items-center space-x-2 mb-6">
-        <img 
-          src="/assets/logo.png" 
-          alt="Home logo" 
-          className="w-45 h-12 cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => navigate("/dashboard")}
-        />
-      </div>
-
-      <nav className="space-y-2 text-sm text-gray-700">
-        <NavItem
-          icon={<Home size={20} />}
-          label="Dashboard"
-          onClick={() => navigate("/dashboard")}
-          active={location.pathname === "/dashboard"}
-        />
-        {hasPartnerAccess && (
-          <NavItem
-            icon={<KeyRound size={20} />}
-            label="Partner programmes"
-            onClick={() => navigate("/partner-programmes")}
-            active={location.pathname === "/partner-programmes"}
-          />
+  const go = path => { navigate(path); if (narrow) setCollapsed(true); };
+  const item = (icon, label, path, active = location.pathname === path) => (
+    <NavItem key={path} icon={icon} label={label}
+      collapsed={collapsed} active={active} onClick={() => go(path)} />
+  );
+  const handleKeys = event => {
+    if (!narrow || collapsed) return;
+    if (event.key === 'Escape') { setCollapsed(true); event.currentTarget.querySelector('[data-nav-toggle]').focus(); }
+    if (event.key === 'Tab') {
+      const controls = [...event.currentTarget.querySelectorAll('a[href], button:not([disabled])')];
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  };
+  return <div className="ht-sidebar-shell" data-collapsed={collapsed}>
+    {narrow && !collapsed && <button type="button" className="ht-sidebar-backdrop" tabIndex={-1} aria-label="Close navigation" onClick={event => { const toggle = event.currentTarget.parentElement.querySelector('[data-nav-toggle]'); setCollapsed(true); toggle.focus(); }} />}
+    <aside className="ht-sidebar ht-ui" onKeyDown={handleKeys} role={narrow && !collapsed ? 'dialog' : undefined}
+      aria-modal={narrow && !collapsed ? 'true' : undefined} aria-label="HomeTruth navigation">
+      <a href={mayaHome || "/dashboard"} className="ht-sidebar-brand" aria-label={brandLabel} title={brandLabel}>
+        <img src={collapsed ? "/assets/brand/hometruth-icon.svg" : "/assets/brand/hometruth-logo.svg"} alt="" width={collapsed ? 32 : 220} height={collapsed ? 32 : 42} />
+      </a>
+      <button type="button" data-nav-toggle className="ht-nav-item ht-nav-toggle" aria-expanded={!collapsed}
+        aria-controls="home-navigation" aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+        title={collapsed ? 'Expand navigation' : 'Collapse navigation'} onClick={() => setCollapsed(value => !value)}>
+        <HTIcon name={collapsed ? "expand" : "collapse"} size={24} assetBase={iconBase} />
+        {!collapsed && <span>Collapse navigation</span>}
+      </button>
+      <nav id="home-navigation" aria-label="Main navigation" className="ht-sidebar-items">
+        {!mayaHome && item('dashboard', 'Dashboard', '/dashboard')}
+        {controlCentreEnabled() && item('calendar', 'Control centre', mayaHome || '/control-centre', location.pathname === '/control-centre')}
+        {hasPartnerAccess && item('key', 'Partner programmes', '/partner-programmes')}
+        {item('home', 'Property profile', '/property-profile')}
+        {localManualAskEnabled && item('appliance', 'Appliances', '/appliances')}
+        {item('documents', 'Vault', '/documents')}
+        {item('note', 'Notebooks', '/saved-notes')}
+        {item('grid', 'Tools', '/tools', location.pathname === '/tools' || location.pathname.startsWith('/budget'))}
+        <NavItem icon="settings" label="Settings" collapsed={collapsed}
+          active={location.pathname.startsWith('/settings')} expanded={settingsOpen} controls="settings-navigation"
+          onClick={() => setSettingsOpen(value => !value)} />
+        {settingsOpen && <div id="settings-navigation" className="ht-sidebar-settings">
+          {item('user', 'Account', '/settings/account')}
+          {item('preferences', 'Preferences', '/settings/preferences')}
+          {item('notification', 'Notifications', '/settings/notifications')}
+          {item('lock', 'Data Privacy', '/settings/data-privacy')}
+        </div>}
+        {user?.role === 'admin' && (
+          <NavItem icon="lock" label="Admin tools"
+            collapsed={collapsed} active={location.pathname === '/admin' || location.pathname.startsWith('/admin/')} onClick={() => go('/admin')} />
         )}
-        <NavItem
-          icon={<Building2 size={20} />}
-          label="Property profile"
-          onClick={() => navigate("/property-profile")}
-          active={location.pathname === "/property-profile"}
-        />
-        <NavItem
-          icon={<Search size={20} />}
-          label="Ask HomeTruth"
-          onClick={() => navigate("/ask-ai")}
-          active={location.pathname === "/ask-ai"}
-        />
-        <NavItem
-          icon={<FileText size={20} />}
-          label="Notes"
-          onClick={() => navigate("/saved-notes")}
-          active={location.pathname === "/saved-notes"}
-        />
-       
-        <NavItem
-          icon={<Calculator size={20} />}
-          label="Budget Calculator"
-          onClick={() => navigate("/budget-chat")}
-          active={["/budget", "/budget-history", "/budget-home", "/budget-calculator", "/budget-chat"].includes(
-            location.pathname
-          )}
-        />
-         <NavItem
-          icon={<File size={20} />}
-          label="Documents"
-          onClick={() => navigate("/documents")}
-          active={location.pathname === "/documents"}
-        />
-
-        {/* Settings & Preferences */}
-        <div>
-          <NavItem
-            icon={<Settings size={20} />}
-            label="Settings"
-            onClick={() => setSettingsOpen(!settingsOpen)}
-            active={location.pathname.startsWith("/settings")}
-          />
-
-          {/* Submenu */}
-          {settingsOpen && (
-            <div className="ml-6 mt-2 space-y-1">
-              <SubNavItem
-                icon={<User size={16} />}
-                label="Account"
-                onClick={() => navigate("/settings/account")}
-                active={location.pathname === "/settings/account"}
-              />
-              <SubNavItem
-                icon={<Sliders size={16} />}
-                label="Preferences"
-                onClick={() => navigate("/settings/preferences")}
-                active={location.pathname === "/settings/preferences"}
-              />
-              <SubNavItem
-                icon={<Bell size={16} />}
-                label="Notifications"
-                onClick={() => navigate("/settings/notifications")}
-                active={location.pathname === "/settings/notifications"}
-              />
-              <SubNavItem
-                icon={<Lock size={16} />}
-                label="Data Privacy"
-                onClick={() => navigate("/settings/data-privacy")}
-                active={location.pathname === "/settings/data-privacy"}
-              />
-            </div>
-          )}
-        </div>
       </nav>
-    </div>
-  );
+    </aside>
+  </div>;
 }
 
-function NavItem({ icon, label, active, onClick }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`flex items-center px-4 py-4 rounded-lg cursor-pointer transition-colors duration-150 ${
-        active
-          ? "bg-sky-50 text-ht-cyan font-medium"
-          : "hover:bg-gray-100"
-      }`}
-    >
-      <div className="mr-2">{icon}</div>
-      <span>{label}</span>
-    </div>
-  );
-}
-
-function SubNavItem({ icon, label, active, onClick }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`flex items-center px-4 py-3 rounded cursor-pointer text-sm transition-colors duration-150 ${
-        active
-          ? "text-ht-cyan font-medium bg-sky-50"
-          : "hover:bg-gray-100 text-gray-700"
-      }`}
-    >
-      <div className="mr-2">{icon}</div>
-      <span>{label}</span>
-    </div>
-  );
+function NavItem({ icon, label, active, onClick, collapsed, expanded, controls }) {
+  return <button type="button" aria-label={label} title={collapsed ? label : undefined}
+    aria-current={active && expanded === undefined ? 'page' : undefined}
+    aria-expanded={expanded} aria-controls={controls} onClick={onClick}
+    className={`ht-nav-item ${active ? 'ht-nav-active' : ''}`}>
+    <span className="shrink-0" aria-hidden="true">
+      {["appliance", "calendar"].includes(icon) ? <HTGlyph name={icon} size={24} /> : <HTIcon name={icon} size={24} assetBase={iconBase} />}
+    </span>
+    <span className={collapsed ? 'ht-nav-tooltip' : ''} aria-hidden={collapsed ? 'true' : undefined}>{label}</span>
+  </button>;
 }

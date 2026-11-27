@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HomeTruth · Home record setup proposal</title>
+  <link rel="stylesheet" href="/admin/design-system/styles/tokens.css">
+  <link rel="stylesheet" href="/admin/design-system/styles/components.css">
+  <link rel="stylesheet" href="/admin/design-system/styles/navigation.css">
+  <link rel="stylesheet" href="prototype.css">
+  <script type="module" src="prototype.js"></script>
+</head>
+<body class="ht-ui">
+  <a class="skip-link" href="#prototype-main">Skip to content</a>
+  <div class="review-bar">
+    <p>UX proposal <span>HT-FLOW-001 · Demo data</span></p>
+    <div class="review-actions">
+      <label for="scenario">Preview state</label>
+      <select id="scenario">
+        <option value="new">New record</option>
+        <option value="existing">Existing record</option>
+        <option value="save-error">Save fails</option>
+        <option value="answer-unavailable">First answer unavailable</option>
+      </select>
+      <a href="journey.html">Run the full user flow</a>
+      <a href="#specification">Read the specification</a>
+    </div>
+  </div>
+
+  <div class="shell">
+    <aside class="workspace-nav">
+      <img class="brand" src="/assets/homepage/brand/hometruth-logo.svg" alt="HomeTruth">
+      <nav aria-label="Workspace">
+        <a id="nav-property" href="#property" class="ht-nav-item" aria-current="page">
+          <img src="/admin/design-system/assets/icons/ht-home.svg" alt="">Property profile
+        </a>
+        <a id="nav-answer" href="#answer" class="ht-nav-item">
+          <img src="/admin/design-system/assets/icons/ht-assistant.svg" alt="">Ask HomeTruth
+        </a>
+      </nav>
+    </aside>
+
+    <main id="prototype-main" class="workspace">
+      <div class="account-strip">Signed in as Alex</div>
+
+      <section id="property" class="workspace-content" aria-labelledby="property-title">
+        <header class="page-heading">
+          <h1 id="property-title" tabindex="-1">Start your home record</h1>
+          <p id="property-description">Add an address and tell us how you’re connected to the property.</p>
+        </header>
+
+        <div class="record-grid">
+          <form id="setup-form" class="ht-panel setup-form" novalidate>
+            <h2 class="icon-heading"><img src="/admin/design-system/assets/icons/ht-home.svg" alt="">Property details</h2>
+            <div class="ht-field">
+              <label for="address">Address line 1 <span class="required">Required</span></label>
+              <input id="address" name="addressLine1" autocomplete="address-line1" placeholder="e.g. 12 Example Road" required aria-describedby="address-error">
+              <small class="ht-error" id="address-error" hidden>Enter the first line of the address.</small>
+            </div>
+            <div class="ht-field postcode-field">
+              <label for="postcode">Postcode <span class="required">Optional</span></label>
+              <input id="postcode" name="postcode" autocomplete="postal-code">
+            </div>
+            <div class="ht-field">
+              <label for="relationship">Your relationship to the property <span class="required">Required</span></label>
+              <select id="relationship" name="relationshipType" required aria-describedby="relationship-hint relationship-error">
+                <option value="">Choose your relationship</option>
+                <option value="buyer">Buyer</option><option value="owner">Owner</option>
+                <option value="tenant">Tenant</option><option value="landlord">Landlord</option>
+                <option value="manager">Manager</option><option value="investor">Investor</option>
+                <option value="viewer">Viewer</option><option value="other">Other</option>
+              </select>
+              <small id="relationship-hint">Choose Buyer if you’re considering buying this property.</small>
+              <small class="ht-error" id="relationship-error" hidden>Choose your relationship to this property.</small>
+            </div>
+
+            <details class="extra-fields">
+              <summary class="icon-label">
+                <img src="/admin/design-system/assets/icons/ht-chevron-right.svg" alt="">
+                <span>Additional property details</span>
+              </summary>
+              <div class="extra-grid">
+                <div class="ht-field"><label for="address-extra">Address line 2</label><input id="address-extra" name="addressLine2" autocomplete="address-line2"></div>
+                <div class="ht-field"><label for="town">Town or city</label><input id="town" name="townCity" autocomplete="address-level2"></div>
+                <div class="ht-field"><label for="county">County</label><input id="county" name="county" autocomplete="address-level1"></div>
+                <div class="ht-field"><label for="country">Country code</label><input id="country" name="country" autocomplete="country" maxlength="2" value="GB"></div>
+                <div class="ht-field"><label for="type">Property type</label><select id="type" name="propertyType"><option value="unknown">Not sure yet</option><option value="house">House</option><option value="flat">Flat</option><option value="maisonette">Maisonette</option><option value="bungalow">Bungalow</option><option value="mixed_use">Mixed use</option></select></div>
+                <div class="ht-field"><label for="tenure">Tenure</label><select id="tenure" name="tenure"><option value="unknown">Not sure yet</option><option value="freehold">Freehold</option><option value="leasehold">Leasehold</option><option value="share_of_freehold">Share of freehold</option><option value="commonhold">Commonhold</option></select></div>
+              </div>
+            </details>
+            <p id="save-error" class="ht-error icon-label" role="alert" hidden>
+              <img src="/admin/design-system/assets/icons/ht-warning.svg" alt="">
+              <span>We couldn’t save the record. Your details are still here. Try again.</span>
+            </p>
+            <div class="save-row">
+              <button id="save" type="submit" class="ht-button record-action">
+                <img src="/admin/design-system/assets/icons/ht-save.svg" alt="">
+                <span id="save-label">Save home record</span>
+              </button>
+            </div>
+          </form>
+
+          <section id="saved-record" class="ht-panel saved-record" aria-labelledby="saved-address" hidden>
+            <p id="saved-status" class="ht-status" data-appearance="pill" data-tone="success" role="status" hidden>
+              <img src="/admin/design-system/assets/icons/ht-check.svg" alt="">Home record saved
+            </p>
+            <h2 id="saved-address" tabindex="-1"></h2>
+            <p id="saved-postcode"></p>
+            <dl><dt>Your relationship</dt><dd id="saved-relationship"></dd></dl>
+          </section>
+
+          <aside class="ht-panel answer-card" aria-labelledby="question-card-title">
+            <h2 id="question-card-title" class="icon-heading">
+              <img src="/admin/design-system/assets/icons/ht-assistant.svg" alt=""><span id="question-card-label">Your homepage question</span>
+            </h2>
+            <p class="question-copy">What should I ask after a survey flags a problem?</p>
+            <a class="question-link" href="#answer" id="continue-question">Continue your homepage question
+              <img src="/admin/design-system/assets/icons/ht-arrow-right.svg" alt="">
+            </a>
+            <p id="answer-notice" class="icon-label" role="status" hidden>
+              <img src="/admin/design-system/assets/icons/ht-info.svg" alt="">
+              <span>We couldn’t reopen your homepage answer. You can still set up the record.</span>
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="answer" class="workspace-content" aria-labelledby="answer-title" hidden>
+        <header class="page-heading"><h1 id="answer-title" tabindex="-1">Ask HomeTruth</h1></header>
+        <div class="answer-thread">
+          <p id="thread-question" class="guest-question">What should I ask after a survey flags a problem?</p>
+          <div id="thread-reply" class="ht-panel original-reply">
+            <p id="thread-reply-copy">Ask the surveyor which finding needs a follow-up before you commit. Find out what they observed, what they couldn’t inspect, and whether they recommend a specialist assessment.</p>
+          </div>
+          <p id="empty-thread" hidden>Your previous conversation is unavailable. Ask HomeTruth is still available for new questions.</p>
+          <a href="#property" class="question-link">
+            <img src="/admin/design-system/assets/icons/ht-arrow-left.svg" alt="">Back to your home record
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section class="specification" id="specification" aria-labelledby="spec-title">
+    <h2 id="spec-title">Home record setup specification</h2>
+    <p>Proposal for HT-FLOW-001, steps 4–5. The first signed-in screen asks for the minimum needed to save a record. Keep the homepage conversation available alongside the form.</p>
+    <div class="ht-scroll-table" tabindex="0" role="region" aria-label="Home record data and design mapping">
+      <table class="ht-table">
+        <thead><tr><th scope="col">On screen</th><th scope="col">Data and behaviour</th><th scope="col">Reference</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Property details</th><td>Address line 1 is required. Postcode is optional. Address line 2, town, county, country, property type and tenure sit under Additional property details. Country defaults to GB. Type and tenure can remain unknown.</td><td><a href="https://github.com/jasonlryan/hometruth/blob/744cba50804c9e2f249af2448636fd43ed78b314/docs/product/hometruth-domain-model.md#property-address">Property Address</a> · <a href="/admin/design-system/index.html#components">Form fields</a></td></tr>
+          <tr><th scope="row">Relationship</th><td>Send an explicit <code>relationshipType</code>. The Buying route can inform the hint. The user confirms their relationship.</td><td><a href="https://github.com/jasonlryan/hometruth/blob/744cba50804c9e2f249af2448636fd43ed78b314/docs/product/hometruth-domain-model.md#property-person">Property Person</a></td></tr>
+          <tr><th scope="row">Save home record</th><td>In the app, submit to <code>POST /api/property-records</code>. It saves the property, current address and user-confirmed relationship together for the signed-in user. While waiting, disable repeat submission. On failure, keep entries and offer retry. On success, show the saved address and relationship.</td><td><a href="https://github.com/jasonlryan/HomeTruth-be/blob/0e0969035eb4c8afae1f2a014ea3d605038f7fb0/services/propertyRecordService.js">Record service</a> · <a href="/admin/design-system/index.html#states">States and statuses</a></td></tr>
+          <tr><th scope="row">Continue your homepage question</th><td>Show the link when the authenticated conversation is available. Open the exact conversation ID in Ask HomeTruth. The answer remains a conversation, with its own provenance requirements if a claim is later saved as a property fact.</td><td><a href="/admin/user-flows#blueprints">HT-FLOW-001</a> · <a href="https://github.com/jasonlryan/HomeTruth-be/blob/0e0969035eb4c8afae1f2a014ea3d605038f7fb0/models/chatHistory.js">ChatHistory</a></td></tr>
+          <tr><th scope="row">Existing record or unavailable answer</th><td>Open the existing property record where available. A missing or failed conversation leaves setup available. Explain what happened alongside the answer panel and keep general navigation available.</td><td><a href="/admin/user-flows#ontology">Ontology and access</a> · <a href="/admin/design-system/index.html#navigation">Navigation</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</body>
+</html>

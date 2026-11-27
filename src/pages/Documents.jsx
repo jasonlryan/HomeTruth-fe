@@ -1,26 +1,27 @@
+import { controlCentreEnabled } from "../utils/localDemo";
+import HTGlyph from "../components/HTGlyph";
+import DocumentWorkspace from '../components/DocumentWorkspace';
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, FileText, MoreVertical, Sparkles } from "lucide-react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
-import { getUserDocuments, deleteDocument, uploadDocument, askDocumentAI, getDocumentPreview, getDocumentChats } from "../api/api";
+import { Status } from "../components/homepage/HomeTruth";
+import "../components/workspace.css";
+import { getUserDocuments, getFollowUpPassage, getUserDocumentRecord, deleteDocument, uploadDocument } from "../api/api";
 
 export default function Documents() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { state } = useLocation();
+  const followUpId = controlCentreEnabled() ? searchParams.get("followUp") : null;
+  const sourcePropertyId = Number(followUpId ? searchParams.get("propertyId") : state?.sourcePropertyId);
+  const fromControlCentre = Boolean(followUpId || state?.fromControlCentre);
+  const [passageResult, setPassageResult] = useState(null);
+  const hasSourceProperty = Number.isSafeInteger(sourcePropertyId) && sourcePropertyId > 0;
+  const returnState = followUpId && hasSourceProperty ? { sourcePropertyId, fromControlCentre: true } : state;
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("earliest"); // "earliest" | "latest" | "name"
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [showContextMenu, setShowContextMenu] = useState(null);
-  const [showAskAI, setShowAskAI] = useState(false);
-  const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [askAIQuestion, setAskAIQuestion] = useState("");
-  const [isAskingAI, setIsAskingAI] = useState(false);
-  const [chatHistory, setChatHistory] = useState([]);
-  const [chatPagination, setChatPagination] = useState({ page: 1, limit: 20, total: 0 });
-  const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(false);
-  const [documentPreview, setDocumentPreview] = useState(null);
-  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
-  const [previewError, setPreviewError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     category: [],
@@ -41,9 +42,11 @@ export default function Documents() {
   const filterRef = useRef(null);
   const sortRef = useRef(null);
   const contextMenuRef = useRef(null);
+  const requestVersion = useRef(0);
 
   // Fetch documents
   const fetchDocuments = useCallback(async () => {
+    const version = ++requestVersion.current;
     setLoading(true);
     setError(null);
     try {
@@ -59,6 +62,7 @@ export default function Documents() {
       if (filters.type.length > 0) params.type = filters.type[0];
 
       const response = await getUserDocuments(params);
+      if (version !== requestVersion.current) return;
 
       let documentsData = [];
       if (response?.data?.documents) documentsData = Array.isArray(response.data.documents) ? response.data.documents : [];
@@ -71,44 +75,69 @@ export default function Documents() {
         total: (response && (response.total || response.count)) || 0,
       }));
     } catch (e) {
+      if (version !== requestVersion.current) return;
       setError("Failed to fetch documents");
       setDocuments([]);
     } finally {
-      setLoading(false);
+      if (version === requestVersion.current) setLoading(false);
     }
   }, [searchQuery, sortBy, filters, pagination.page, pagination.limit]);
 
   useEffect(() => {
     fetchDocuments();
+    return () => { requestVersion.current += 1; };
   }, [fetchDocuments]);
 
-  // Handle preview parameter from URL
+  // Resolve deep links independently of the current list page/filter.
   useEffect(() => {
-    const previewId = searchParams.get('preview');
-    if (previewId && documents.length > 0) {
-      const documentToPreview = documents.find(doc => doc.id.toString() === previewId);
-      if (documentToPreview) {
-        handleDocumentClick(documentToPreview);
+    const id = searchParams.get('preview');
+    if (!id || searchParams.has('followUp')) { setSelectedDocument(null); return; }
+    const controller = new AbortController();
+    let active = true;
+    setSelectedDocument(current => String(current?.id) === id ? current : null);
+    getUserDocumentRecord(id, controller.signal).then(response => {
+      if (!active) return;
+      if (!response?.success || !response?.data?.id) throw new Error('Unavailable');
+      setSelectedDocument(response.data);
+    }).catch(err => {
+      if (active && err.code !== 'ERR_CANCELED') {
+        setSelectedDocument(null);
+        setError('This document could not be opened. It may be unavailable or outside your access.');
+      }
+    });
+    return () => { active = false; controller.abort(); };
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!followUpId || !hasSourceProperty) return;
+    const controller = new AbortController();
+    const resultKey = `${sourcePropertyId}:${followUpId}`;
+    async function openPassage() {
+      try {
+        const passage = await getFollowUpPassage(sourcePropertyId, followUpId, controller.signal);
+        const response = await getUserDocumentRecord(passage.documentId, controller.signal);
+        if (!response?.success || !response.data?.id) throw new Error("Document unavailable");
+        if (!controller.signal.aborted) setPassageResult({ resultKey, passage, document: response.data });
+      } catch {
+        if (!controller.signal.aborted) setPassageResult({ resultKey, error: true });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run when URL or documents change
-  }, [searchParams, documents]);
+    openPassage();
+    return () => controller.abort();
+  }, [followUpId, hasSourceProperty, sourcePropertyId]);
 
-  // Lock background scroll when Ask AI is open
-  useEffect(() => {
-    if (showAskAI) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => (document.body.style.overflow = prev);
-    }
-  }, [showAskAI]);
+  const activePassage = passageResult?.resultKey === `${sourcePropertyId}:${followUpId}` ? passageResult : null;
+  const openDocument = followUpId ? activePassage?.document : selectedDocument;
 
-  // ESC to close
-  useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && setShowAskAI(false);
-    if (showAskAI) window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [showAskAI]);
+  function closeWorkspace() {
+    setSelectedDocument(null);
+    setPassageResult(null);
+    const next = new URLSearchParams(searchParams);
+    next.delete("preview");
+    next.delete("followUp");
+    next.delete("propertyId");
+    setSearchParams(next, { replace: true, state: returnState });
+  }
 
   // Close context menu when clicking outside
   useEffect(() => {
@@ -209,13 +238,16 @@ export default function Documents() {
 
   const removeFile = (index) => setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
 
-  const handleDocumentClick = async (document) => {
-    setSelectedDocument(document);
-    setDocuments((prev) => prev.map((d) => ({ ...d, selected: d.id === document.id })));
-    setShowAskAI(true);
-    
-    // Load chat history for this document
-    await loadChatHistory(document.id);
+  const handleDocumentClick = (doc) => {
+    setSelectedDocument(doc);
+    if (followUpId || searchParams.get('preview') !== String(doc.id)) {
+      const next = new URLSearchParams(searchParams);
+      next.delete('followUp');
+      next.delete('propertyId');
+      next.set('preview', String(doc.id));
+      setSearchParams(next, { replace: true, state: returnState });
+    }
+    setShowContextMenu(null);
   };
 
   const handleContextMenu = (e, documentId) => {
@@ -223,127 +255,13 @@ export default function Documents() {
     setShowContextMenu(documentId);
   };
 
-  const handleOpenDocument = async (document) => {
-    setSelectedDocument(document);
-    setShowContextMenu(null);
-    setShowDocumentModal(true);
-    setDocumentPreview(null);
-    setPreviewError(null);
-    
-    // Fetch document preview
-    if (document?.id) {
-      setIsLoadingPreview(true);
-      try {
-        const preview = await getDocumentPreview(document.id);
-        setDocumentPreview(preview);
-      } catch (error) {
-       
-        setPreviewError(`Failed to load document preview: ${error.response?.data?.message || error.message}`);
-      } finally {
-        setIsLoadingPreview(false);
-      }
-    }
-  };
+  const handleOpenDocument = handleDocumentClick;
 
   const handleSortChange = (sortType) => {
     setSortBy(sortType);
     setShowSortDropdown(false);
   };
 
-
-  const handleCloseAskAI = () => {
-    setShowAskAI(false);
-    setAskAIQuestion("");
-    setChatHistory([]);
-  };
-
-  const loadChatHistory = async (documentId, page = 1) => {
-    setIsLoadingChatHistory(true);
-    try {
-      const response = await getDocumentChats(documentId, {
-        page,
-        limit: chatPagination.limit
-      });
-      
-      if (response?.data?.chats && Array.isArray(response.data.chats)) {
-        const formattedHistory = response.data.chats.map(chat => ({
-          id: chat.id,
-          question: chat.question || chat.user_message,
-          answer: chat.answer || chat.assistant_reply,
-          created_at: chat.created_at,
-          has_context: chat.has_context || false
-        }));
-        
-        setChatHistory(formattedHistory);
-        setChatPagination(prev => ({
-          ...prev,
-          page,
-          total: response.data.total || response.total || 0
-        }));
-      } else {
-        setChatHistory([]);
-      }
-    } catch (error) {
-      console.error("Error loading chat history:", error);
-      setChatHistory([]);
-    } finally {
-      setIsLoadingChatHistory(false);
-    }
-  };
-
-  const handleAskAISubmit = async () => {
-    if (!askAIQuestion.trim() || !selectedDocument?.id || isAskingAI) return;
-    
-    setIsAskingAI(true);
-    
-    try {
-      const response = await askDocumentAI(selectedDocument.id, askAIQuestion);
-      
-      // Handle new API response structure
-      if (response?.success && response?.data) {
-        const { current_answer } = response.data;
-        
-        // Add the new Q&A to chat history immediately
-        const newChatEntry = {
-          id: `temp_${Date.now()}`,
-          question: askAIQuestion,
-          answer: current_answer || "No response received",
-          created_at: new Date().toISOString(),
-          has_context: false
-        };
-        
-        setChatHistory(prev => [newChatEntry, ...prev]);
-        
-        // Clear the input field after successful response
-        setAskAIQuestion("");
-        
-        // Reload chat history to get the updated list from server
-        setTimeout(async () => {
-          await loadChatHistory(selectedDocument.id);
-        }, 1000);
-      } else {
-        // Fallback for old API structure
-        
-        // Add the new Q&A to chat history immediately
-        const newChatEntry = {
-          id: `temp_${Date.now()}`,
-          question: askAIQuestion,
-          answer: response?.data?.answer || response?.answer || "No response received",
-          created_at: new Date().toISOString(),
-          has_context: false
-        };
-        
-        setChatHistory(prev => [newChatEntry, ...prev]);
-        
-        // Clear the input field after successful response
-        setAskAIQuestion("");
-      }
-    } catch (error) {
-      console.error("Error asking AI:", error);
-    } finally {
-      setIsAskingAI(false);
-    }
-  };
 
   const filterOptions = {
     category: ["Financial", "Legal", "Maintenance", "Compliance", "Surveys & Reports", "Property Details"],
@@ -377,63 +295,75 @@ export default function Documents() {
     // fetchDocuments(); // if needed
   };
 
-  const getStatusColor = (status) => {
+  const getStatusTone = (status) => {
     switch ((status || "").toLowerCase()) {
       case "ready":
-        return "bg-green-100 text-green-800";
+        return "success";
       case "processing":
-        return "bg-purple-100 text-purple-800";
+        return "progress";
       case "expiring":
-        return "bg-yellow-100 text-yellow-800";
+        return "review";
       case "urgent":
       case "error":
-        return "bg-red-100 text-red-800";
+        return "error";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "neutral";
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="w-full max-w-[1440px] mx-auto px-8 py-8">
+      <div className="ht-workspace-page">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <PageTitle>Documents</PageTitle>
-          {/* <button
-            onClick={handleAskAIClick}
-            className="flex items-center gap-2 px-4 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light whitespace-nowrap"
-          >
-            <Sparkles className="w-4 h-4" />
-            Ask HomeTruth
-          </button> */}
-        </div>
+        <header className="ht-workspace-title-row">
+          <PageTitle>Vault</PageTitle>
+          {hasSourceProperty && (
+            <Link className="ht-workspace-control" to={fromControlCentre ? `/control-centre?propertyId=${sourcePropertyId}` : `/property-profile?propertyId=${sourcePropertyId}#property-next-actions`}>
+              <HTGlyph name="arrow-left" size={16} /> {fromControlCentre ? "Back to Control centre" : "Back to home record"}
+            </Link>
+          )}
+        </header>
+
+        {followUpId && (!hasSourceProperty || activePassage?.error) && (
+          <p role="alert" className="ht-workspace-state mb-4">The saved passage couldn’t be opened. The document may have been removed or may no longer be available to you.</p>
+        )}
+        {followUpId && hasSourceProperty && !activePassage && (
+          <p role="status" className="ht-workspace-state mb-4">Opening the saved passage…</p>
+        )}
 
         {/* Search + Filter + Sort */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-4">
             <div className="relative w-full sm:flex-1 sm:min-w-[18rem] sm:max-w-3xl">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <HTGlyph name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder="Search document..."
+                aria-label="Search documents"
+                placeholder="Search documents"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-ht-cyan"
+                className="ht-workspace-input w-full pl-10"
               />
             </div>
 
             {/* Filter */}
-            <div className="relative" ref={filterRef}>
+            <div className="relative" ref={filterRef} onKeyDown={event => {
+              if (event.key !== "Escape" || !showFilters) return;
+              setShowFilters(false);
+              filterRef.current.querySelector("button").focus();
+            }}>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 whitespace-nowrap"
+                aria-expanded={showFilters}
+                aria-controls="vault-filters"
+                className="ht-workspace-control"
               >
-                <Filter className="w-4 h-4" />
+                <HTGlyph name="filter" className="w-4 h-4" />
                 Filter
               </button>
 
               {showFilters && (
-                <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+                <div id="vault-filters" className="ht-panel ht-vault-filters">
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="text-xl font-bold text-gray-900">Filters</h2>
@@ -517,7 +447,7 @@ export default function Documents() {
                     </div>
 
                     <div className="flex justify-end mt-8">
-                      <button onClick={applyFilters} className="px-6 py-2 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light transition">
+                      <button onClick={applyFilters} className="ht-workspace-primary">
                         Apply
                       </button>
                     </div>
@@ -530,10 +460,11 @@ export default function Documents() {
             <div className="relative" ref={sortRef}>
               <button
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 whitespace-nowrap"
+                aria-expanded={showSortDropdown}
+                className="ht-workspace-control"
               >
                 Sort {sortBy === "earliest" ? "Earliest" : sortBy === "latest" ? "Latest" : "Name"}
-                <ChevronDown className="w-4 h-4" />
+                <HTGlyph name="chevron-down" className="w-4 h-4" />
               </button>
 
               {showSortDropdown && (
@@ -562,32 +493,20 @@ export default function Documents() {
           </div>
         </div>
 
-        {/* Upload area */}
-        <div
-          className={`border-2 border-dashed rounded-xl p-12 text-center bg-white mb-8 cursor-pointer transition-colors ${
-            isDragOver ? "border-blue-400 bg-blue-50" : "border-gray-300"
-          }`}
+        <section
+          aria-label="Upload to Vault"
+          className="ht-panel ht-vault-upload"
+          data-dragging={isDragOver}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
         >
-          <div className="flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-gray-400 text-7xl">upload</span>
-            </div>
-            <p className="text-gray-700 text-lg mb-2">Drag and drop your documents here</p>
-            <p className="text-gray-500 text-sm">Supports PDF, DOCX, JPG (max 10MB)</p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept=".pdf,.docx,.jpg,.jpeg"
-              onChange={handleFileInput}
-              className="hidden"
-            />
-          </div>
-        </div>
+          <HTGlyph name="upload" className="ht-workspace-muted" />
+          <p>Drag and drop documents here, or choose files.</p>
+          <p className="ht-workspace-muted">PDF, DOCX or JPG · up to 10 MB each</p>
+          <button type="button" className="ht-workspace-control" onClick={() => fileInputRef.current?.click()}>Choose files</button>
+          <input ref={fileInputRef} type="file" multiple accept=".pdf,.docx,.jpg,.jpeg" onChange={handleFileInput} hidden />
+        </section>
 
         {/* Uploaded (local) list */}
         {uploadedFiles.length > 0 && (
@@ -597,16 +516,12 @@ export default function Documents() {
               {uploadedFiles.map((file, index) => (
                 <div key={`uploaded-${file.name}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <HTGlyph name="document" size={20} className="text-gray-500" />
                     <span className="text-sm text-gray-700">{file.name}</span>
                     <span className="text-xs text-gray-500">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
                   </div>
-                  <button onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700 transition">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                  <button aria-label={`Remove ${file.name}`} onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700 transition">
+                    <HTGlyph name="close" size={16} />
                   </button>
                 </div>
               ))}
@@ -625,10 +540,10 @@ export default function Documents() {
         )}
 
         {/* Error / Success / Loading */}
-        {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"><p className="text-red-600">{error}</p></div>}
-        {successMessage && <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg"><p className="text-green-600">{successMessage}</p></div>}
+        {error && <p className="ht-workspace-state mb-4" role="alert">{error}</p>}
+        {successMessage && <p className="ht-workspace-state mb-4" role="status">{successMessage}</p>}
         {loading && (
-          <div className="flex flex-col justify-center items-center py-8">
+          <div className="ht-workspace-state" role="status">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mb-4"></div>
             <p className="text-gray-600">Loading documents...</p>
           </div>
@@ -638,42 +553,41 @@ export default function Documents() {
         {!loading && (
           <div className="space-y-4">
             {!Array.isArray(documents) || documents.length === 0 ? (
-              <div className="text-center py-8">
-                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <div className="ht-workspace-state text-center">
+                <HTGlyph name="document" className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500">No documents found</p>
               </div>
             ) : (
               documents.map((document) => (
                 <div
                   key={document.id}
-                  className={`flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:bg-sky-50 cursor-pointer ${
+                  className={`ht-panel flex flex-wrap items-center gap-2 ${
                     document.selected ? "bg-sky-50" : ""
                   }`}
-                  onClick={() => handleDocumentClick(document)}
                 >
-                  <FileText className="w-8 h-8 text-gray-400 mr-4" />
+                  <button type="button" aria-label={`Open ${document.name}`} onClick={() => handleDocumentClick(document)} className="flex min-w-[100px] flex-1 items-center text-left">
+                  <HTGlyph name="document" className="w-8 h-8 text-gray-400 mr-4" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 truncate">{document.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{document.doc_type || document.category || "Document"}</p>
                   </div>
+                  </button>
 
                   <div className="flex items-center gap-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(document.status)}`}>
-                      {document.status}
-                    </span>
+                    <Status tone={getStatusTone(document.status)} appearance="pill">{document.status || "Unknown"}</Status>
                     <span className="text-sm text-gray-500">
                       {document.created_at ? new Date(document.created_at).toLocaleDateString() : "No date"}
                     </span>
 
                     <div className="relative context-menu-container" ref={contextMenuRef}>
-                      <button
+                      <button aria-label="Document actions"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleContextMenu(e, document.id);
                         }}
                         className="p-1 hover:bg-gray-200 rounded"
                       >
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
+                        <HTGlyph name="more" className="w-4 h-4 text-gray-400" />
                       </button>
 
                       {showContextMenu === document.id && (
@@ -728,275 +642,9 @@ You’ve got 3 months of unlimited questions , explore freely while it’s activ
         </div>
       </div>
 
-      {/* Ask HomeTruth overlay */}
-      {showAskAI && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/30" onClick={handleCloseAskAI} />
-          <div
-            className="absolute right-0 top-0 h-full w-full sm:w-[28rem] lg:w-[32rem] bg-white border-l border-gray-200 shadow-2xl
-                       transform transition-transform duration-300 ease-out translate-x-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="font-chat h-full overflow-y-auto p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
-                  Ask HomeTruth about {selectedDocument ? selectedDocument.name : "Document"}
-                </h2>
-                <button onClick={handleCloseAskAI} className="text-gray-400 hover:text-gray-600" aria-label="Close">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <FileText className="w-8 h-8 text-gray-400" />
-                  <div>
-                    <h3 className="font-medium text-gray-900">{selectedDocument ? selectedDocument.name : "No document selected"}</h3>
-                    <p className="text-sm text-gray-500">
-                      {selectedDocument ? selectedDocument.doc_type || selectedDocument.category || "Document" : "Select a document"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Ask a Question related to your document:</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={askAIQuestion}
-                    onChange={(e) => setAskAIQuestion(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleAskAISubmit()}
-                    placeholder="e.g. 'When does my tenancy agreement expire?'"
-                    className="w-full px-4 py-3 pr-14 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-ht-cyan"
-                  />
-                  <button
-                    onClick={handleAskAISubmit}
-                    disabled={isAskingAI || !askAIQuestion.trim()}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-ht-cyan text-white rounded-full flex items-center justify-center hover:bg-ht-cyan-light transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isAskingAI ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    ) : (
-                    <Sparkles className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Chat History - No scroll, full display */}
-              {chatHistory.length > 0 && (
-                <div className="mb-6">
-                  <div className="space-y-4">
-                    {chatHistory.map((chat, index) => (
-                      <div key={chat.id || index} className="border-b border-gray-200 pb-4 last:border-b-0">
-                        <div className="mb-2">
-                          <p className="font-semibold text-gray-900">Q: {chat.question}</p>
-                        </div>
-                        <div className="mb-2">
-                          <p className="font-semibold text-gray-900">A: {chat.answer}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Loading Chat History */}
-              {isLoadingChatHistory && (
-                <div className="mb-6">
-                  <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan"></div>
-                    <span className="ml-2 text-gray-600">Loading chat history...</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Loading State */}
-              {isAskingAI && (
-                <div className="mb-6">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ht-cyan"></div>
-                      <span className="text-gray-600">Reviewing your question…</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Document Preview Modal */}
-      {showDocumentModal && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setShowDocumentModal(false)} />
-          <div
-            className="absolute inset-0 flex items-center justify-center p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-gray-400" />
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{selectedDocument?.name}</h2>
-                    <p className="text-sm text-gray-500">{selectedDocument?.doc_type || selectedDocument?.category || "Document"}</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setShowDocumentModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Modal Content */}
-              <div className="p-6">
-                {/* Document Preview Area */}
-                <div className="mb-6">
-                  <div className="bg-gray-100 rounded-lg h-96 flex items-center justify-center border-2 border-dashed border-gray-300 overflow-hidden">
-                    {isLoadingPreview ? (
-                      <div className="text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ht-cyan mx-auto mb-4"></div>
-                        <p className="text-gray-500">Loading document preview...</p>
-                      </div>
-                    ) : previewError ? (
-                      <div className="text-center">
-                        <FileText className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                        <p className="text-red-500 text-lg">Preview Error</p>
-                        <p className="text-red-400 text-sm">{previewError}</p>
-                      </div>
-                    ) : documentPreview ? (
-                      <div className="w-full h-full flex items-center justify-center">
-                        {documentPreview.imageUrl || documentPreview.image || documentPreview.preview_url ? (
-                          <img 
-                            src={documentPreview.imageUrl || documentPreview.image || documentPreview.preview_url} 
-                            alt="Document Preview" 
-                            className="max-w-full max-h-full object-contain"
-                          />
-                        ) : documentPreview.preview_content ? (
-                          <div className="p-4 text-left w-full h-full overflow-auto">
-                            <div className="whitespace-pre-wrap text-sm text-gray-700">
-                              {documentPreview.preview_content}
-                            </div>
-                          </div>
-                        ) : documentPreview.text || documentPreview.content ? (
-                          <div className="p-4 text-left w-full h-full overflow-auto">
-                            <div className="whitespace-pre-wrap text-sm text-gray-700">
-                              {documentPreview.text || documentPreview.content}
-                            </div>
-                          </div>
-                        ) : documentPreview.url || documentPreview.previewUrl ? (
-                          <iframe 
-                            src={documentPreview.url || documentPreview.previewUrl} 
-                            className="w-full h-full border-0"
-                            title="Document Preview"
-                          />
-                        ) : (
-                          <div className="text-center">
-                            <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                            <p className="text-gray-500 text-lg">Document Preview</p>
-                            <p className="text-gray-400 text-sm">Preview format not supported</p>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-500 text-lg">First Page Preview</p>
-                        <p className="text-gray-400 text-sm">Document preview will be available here</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Document Details */}
-                <div className="mb-6">
-                  <div className="space-y-3">
-                    {/* Document Name */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-900 font-medium">{selectedDocument?.name}</span>
-                      <span className="text-gray-600">{selectedDocument?.doc_type || selectedDocument?.category || "Document"}</span>
-                    </div>
-                    
-                    {/* Status */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Status</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedDocument?.status)}`}>
-                        {selectedDocument?.status || "Ready"}
-                      </span>
-                    </div>
-                    
-                    {/* File Size */}
-                    {selectedDocument?.file_size && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">File Size</span>
-                        <span className="text-gray-900">{selectedDocument.file_size}</span>
-                      </div>
-                    )}
-                    
-                    {/* File Type */}
-                    {selectedDocument?.file_type && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">File Type</span>
-                        <span className="text-gray-900">{selectedDocument.file_type}</span>
-                      </div>
-                    )}
-                    
-                    {/* Tags */}
-                    {selectedDocument?.tags && Array.isArray(selectedDocument.tags) && selectedDocument.tags.length > 0 && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Tags</span>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedDocument.tags.map((tag, index) => (
-                            <span key={`tag-${selectedDocument.id}-${index}`} className="px-2 py-1 bg-sky-50 text-ht-cyan text-xs rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Added Date */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-500">Added</span>
-                      <span className="text-gray-900">
-                        {selectedDocument?.created_at ? new Date(selectedDocument.created_at).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric', 
-                          year: 'numeric' 
-                        }) : "No date"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-3">
-                  <button
-                    onClick={() => {
-                      setShowDocumentModal(false);
-                      setShowAskAI(true);
-                    }}
-                    className="flex items-center gap-2 px-6 py-3 bg-ht-cyan text-white rounded-lg hover:bg-ht-cyan-light active:bg-ht-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ht-cyan transition-colors"
-                  >
-                    <Sparkles className="w-5 h-5" />
-                    Ask HomeTruth
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {openDocument && (
+        <DocumentWorkspace key={followUpId ? `follow-up-${followUpId}` : openDocument.id} document={openDocument}
+          allowPassages={controlCentreEnabled()} propertyId={hasSourceProperty ? sourcePropertyId : undefined} savedPassage={activePassage?.passage} onClose={closeWorkspace} />
       )}
     </div>
   );

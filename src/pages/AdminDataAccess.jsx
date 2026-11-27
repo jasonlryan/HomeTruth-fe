@@ -1,15 +1,5 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  Search,
-  Download,
-  ChevronLeft,
-  ChevronRight,
-  X,
-  User,
-  FileText,
-  MessageSquare,
-  Filter,
-} from "lucide-react";
 import {
   getAdminUsers,
   getAdminUserDetail,
@@ -70,11 +60,11 @@ function UserDetailDrawer({ userId, onClose }) {
       <div className="relative w-full max-w-lg bg-white shadow-xl overflow-y-auto">
         <div className="sticky top-0 bg-white border-b px-5 py-4 flex items-center justify-between z-10">
           <h2 className="text-lg font-semibold text-gray-900">User Details</h2>
-          <button
+          <button aria-label="Close user details"
             onClick={onClose}
             className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X size={18} />
+            <HTGlyph name="close" size={18} />
           </button>
         </div>
 
@@ -92,7 +82,7 @@ function UserDetailDrawer({ userId, onClose }) {
               {/* Profile */}
               <section>
                 <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <User size={16} /> Profile
+                  <HTGlyph name="user" size={16} /> Profile
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
                   <Row label="Name" value={`${user.first_name || ""} ${user.last_name || ""}`.trim() || "—"} />
@@ -108,7 +98,7 @@ function UserDetailDrawer({ userId, onClose }) {
               {/* Activity Summary */}
               <section>
                 <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <MessageSquare size={16} /> Activity Summary
+                  <HTGlyph name="assistant" size={16} /> Activity Summary
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-teal-50 rounded-lg p-3 text-center">
@@ -142,7 +132,7 @@ function UserDetailDrawer({ userId, onClose }) {
               {user.quiz_answers && user.quiz_answers.length > 0 && (
                 <section>
                   <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <FileText size={16} /> Quiz Answers ({user.quiz_answers.length})
+                    <HTGlyph name="document" size={16} /> Quiz Answers ({user.quiz_answers.length})
                   </h3>
                   <div className="space-y-2">
                     {user.quiz_answers.map((qa, idx) => (
@@ -298,7 +288,7 @@ export default function AdminDataAccess() {
         <div className="flex flex-wrap items-center gap-3">
           {/* Search */}
           <div className="relative flex-1 min-w-[220px]">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <HTGlyph name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search by name or email…"
@@ -310,7 +300,7 @@ export default function AdminDataAccess() {
 
           {/* Plan filter */}
           <div className="flex items-center gap-2">
-            <Filter size={14} className="text-gray-400" />
+            <HTGlyph name="filter" size={14} className="text-gray-400" />
             <select
               value={planFilter}
               onChange={(e) => setPlanFilter(e.target.value)}
@@ -326,18 +316,20 @@ export default function AdminDataAccess() {
           <div className="flex items-center gap-2 ml-auto">
             <button
               onClick={() => handleExport("csv")}
+              aria-label="Export CSV"
               disabled={exporting}
               className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
-              <Download size={14} />
+              <HTGlyph name="download" size={14} />
               CSV
             </button>
             <button
               onClick={() => handleExport("json")}
+              aria-label="Export JSON"
               disabled={exporting}
               className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
-              <Download size={14} />
+              <HTGlyph name="download" size={14} />
               JSON
             </button>
           </div>
@@ -441,12 +433,12 @@ export default function AdminDataAccess() {
               {pagination.total}
             </p>
             <div className="flex items-center gap-1">
-              <button
+              <button aria-label="Previous page"
                 onClick={() => fetchUsers(pagination.page - 1)}
                 disabled={pagination.page <= 1}
                 className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                <ChevronLeft size={18} />
+                <HTGlyph name="chevron-left" size={18} />
               </button>
               {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => {
                 let pageNum;
@@ -473,12 +465,12 @@ export default function AdminDataAccess() {
                   </button>
                 );
               })}
-              <button
+              <button aria-label="Next page"
                 onClick={() => fetchUsers(pagination.page + 1)}
                 disabled={pagination.page >= pagination.totalPages}
                 className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                <ChevronRight size={18} />
+                <HTGlyph name="chevron-right" size={18} />
               </button>
             </div>
           </div>

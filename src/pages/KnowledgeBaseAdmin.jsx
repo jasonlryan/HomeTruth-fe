@@ -1,5 +1,7 @@
+import IndexedRecords from "./IndexedRecords";
+import HTGlyph from "../components/HTGlyph";
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { uploadDocument, addKnowledgeBaseEntry, getKnowledgeBaseDocuments, getKnowledgeBaseStats, deleteKnowledgeBaseDocument, getKnowledgeBaseDocumentPreview, downloadKnowledgeBaseDocument } from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import jsPDF from "jspdf";
@@ -8,7 +10,6 @@ export default function KnowledgeBaseAdmin() {
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [kbRecords] = useState(1215); // This would come from an API call
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [urlInputs, setUrlInputs] = useState([""]);
@@ -34,11 +35,6 @@ export default function KnowledgeBaseAdmin() {
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState("");
   const [deletingDocId, setDeletingDocId] = useState(null);
-  const [previewDocId, setPreviewDocId] = useState(null);
-  const [previewContent, setPreviewContent] = useState(null);
-  const [previewLoading, setPreviewLoading] = useState(false);
-  const [previewError, setPreviewError] = useState("");
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [docToDelete, setDocToDelete] = useState(null);
   const [allDocuments, setAllDocuments] = useState([]); // Store all documents for searching
@@ -605,7 +601,7 @@ export default function KnowledgeBaseAdmin() {
       }
       
       // Calculate total pages if total count is provided
-      const total = response?.data?.total || response?.total || response?.count || documentsData.length;
+      const total = response?.data?.total_count ?? response?.data?.total ?? response?.total ?? response?.count ?? documentsData.length;
       setTotalPages(Math.ceil(total / limit));
     } catch (error) {
       console.error("Error fetching documents:", error);
@@ -626,63 +622,6 @@ export default function KnowledgeBaseAdmin() {
     // If there's a search query, apply it
     if (searchQuery.trim()) {
       handleSearch();
-    }
-  };
-
-  const _handlePreviewDocument = async (doc) => {
-    const docId = doc.id || doc.document_id || doc.document_hash;
-    if (!docId) {
-      setSubmitError("Document ID not found.");
-      setTimeout(() => setSubmitError(""), 5000);
-      return;
-    }
-
-    setPreviewDocId(docId);
-    setPreviewContent(null);
-    setPreviewError("");
-    setPreviewLoading(true);
-    setShowPreviewModal(true);
-
-    try {
-      const response = await getKnowledgeBaseDocumentPreview(docId);
-      const previewData = response?.data || response;
-      
-      // Handle different preview data formats
-      if (previewData.preview_content || previewData.content || previewData.text) {
-        setPreviewContent({
-          type: 'text',
-          content: previewData.preview_content || previewData.content || previewData.text,
-        });
-      } else if (previewData.preview_url || previewData.url || previewData.image_url) {
-        setPreviewContent({
-          type: 'url',
-          url: previewData.preview_url || previewData.url || previewData.image_url,
-        });
-      } else if (previewData.file_url || previewData.download_url) {
-        // If we have a file URL, we can embed it or show download link
-        setPreviewContent({
-          type: 'file',
-          url: previewData.file_url || previewData.download_url,
-          filename: doc.title || 'document',
-        });
-      } else {
-        // Fallback: show document metadata
-        setPreviewContent({
-          type: 'metadata',
-          metadata: doc,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching document preview:", error);
-      setPreviewError(getErrorMessage(error, "Failed to load document preview. The document may not be available for preview."));
-      
-      // Fallback: show document metadata if preview fails
-      setPreviewContent({
-        type: 'metadata',
-        metadata: doc,
-      });
-    } finally {
-      setPreviewLoading(false);
     }
   };
 
@@ -1008,91 +947,41 @@ export default function KnowledgeBaseAdmin() {
 
   const quickActions = [
     {
-      id: 1,
-      title: "Bulk Upload",
-      description: "Queue multiple documents for ingestion (coming soon).",
-      icon: "menu_book",
-      onClick: () => console.log("Bulk Upload clicked"),
-      comingSoon: true,
-    },
-    {
-      id: 2,
-      title: "Document Library",
-      description: "Review uploaded files, chunk counts, and manage deletions.",
+      title: "Source documents",
+      description: "Review uploaded sources and manage deletions.",
       icon: "folder",
       onClick: handleDocumentLibraryClick,
-      comingSoon: false,
     },
     {
-      id: 3,
-      title: "View Stats",
-      description: "Monitor Pinecone capacity and recent ingestion activity.",
+      title: "Index statistics",
+      description: "Check indexing capacity and recent ingestion activity.",
       icon: "database",
       onClick: handleViewStatsClick,
-      comingSoon: false,
-    },
-    {
-      id: 4,
-      title: "Export Data",
-      description: "Download knowledge records for offline review (coming soon).",
-      icon: "download",
-      comingSoon: true,
-    },
-    {
-      id: 5,
-      title: "Reporting Dashboard",
-      description: "View product metrics, usage charts, and recent activity.",
-      icon: "bar_chart",
-      onClick: () => navigate("/admin/dashboard"),
-      comingSoon: false,
-    },
-    {
-      id: 6,
-      title: "User Data Access",
-      description: "Search, inspect, and export user records and onboarding data.",
-      icon: "group",
-      onClick: () => navigate("/admin/data-access"),
-      comingSoon: false,
-    },
-    {
-      id: 7,
-      title: "Article Management",
-      description: "Create, edit, and publish content for the Home Truths section.",
-      icon: "article",
-      onClick: () => navigate("/admin/articles"),
-      comingSoon: false,
-    },
-    {
-      id: 8,
-      title: "Partner Programmes",
-      description: "Configure shared B2B programmes, campaigns, cohorts, and lifecycle states.",
-      icon: "corporate_fare",
-      onClick: () => navigate("/admin/partner-programmes"),
-      comingSoon: false,
     },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 px-8 py-8">
       {/* Header Section */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-lg bg-ht-purple flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-xl">database</span>
+            <HTGlyph name="database" size={20} className="text-white " />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Knowledge Base Admin - STAGING</h1>
+            <h1 className="text-2xl font-bold text-gray-900">RAG</h1>
             <p className="text-gray-500 text-sm mt-0.5">
-              Manage the RAG knowledge base for HomeTruth assistant.
+              Inspect the shared Qdrant index used by Ask HomeTruth.
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link to="/" className="text-sm text-[var(--color-accent)] underline">View public site</Link>
           <button
             onClick={handleAddKnowledge}
             className="bg-ht-purple hover:bg-ht-purple-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-base">add</span>
+            <HTGlyph name="add" size={16} />
             Add Knowledge
           </button>
           <button
@@ -1102,7 +991,7 @@ export default function KnowledgeBaseAdmin() {
             }}
             className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
-            <span className="material-symbols-outlined text-base">logout</span>
+            <HTGlyph name="logout" size={16} />
             Logout
           </button>
         </div>
@@ -1114,7 +1003,7 @@ export default function KnowledgeBaseAdmin() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           {/* Form Header */}
           <div className="flex items-center gap-3 mb-6">
-            <span className="material-symbols-outlined text-ht-purple text-2xl">upload</span>
+            <HTGlyph name="upload" size={24} className="text-ht-purple " />
             <h2 className="text-xl font-semibold text-gray-900">Add New Knowledge</h2>
           </div>
 
@@ -1130,7 +1019,7 @@ export default function KnowledgeBaseAdmin() {
                   onClick={handleAddUrlField}
                   className="text-xs text-ht-purple hover:text-ht-purple-light bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded transition-colors flex items-center gap-1"
                 >
-                  <span className="material-symbols-outlined text-sm">add</span>
+                  <HTGlyph name="add" size={16} />
                   Add URL
                 </button>
               </div>
@@ -1151,7 +1040,7 @@ export default function KnowledgeBaseAdmin() {
                         className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                         title="Remove URL"
                       >
-                        <span className="material-symbols-outlined text-base">delete</span>
+                        <HTGlyph name="delete" size={16} />
                       </button>
                     )}
                   </div>
@@ -1304,7 +1193,7 @@ export default function KnowledgeBaseAdmin() {
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-sm">add</span>
+                    <HTGlyph name="add" size={16} />
                     {tag}
                   </button>
                 ))}
@@ -1338,11 +1227,11 @@ export default function KnowledgeBaseAdmin() {
                       className="inline-flex items-center gap-1 px-3 py-1 bg-purple-50 text-ht-purple rounded-full text-xs font-medium"
                     >
                       {tag}
-                      <button
+                      <button aria-label="Remove tag"
                         onClick={() => handleRemoveTag(tag)}
                         className="hover:text-purple-900"
                       >
-                        <span className="material-symbols-outlined text-sm">close</span>
+                        <HTGlyph name="close" size={16} />
                       </button>
                     </span>
                   ))}
@@ -1392,27 +1281,25 @@ export default function KnowledgeBaseAdmin() {
         </div>
       ) : (
         <>
+          <IndexedRecords />
           {/* Quick Actions Section */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="mb-5">
               <h2 className="text-lg font-semibold text-gray-900 mb-1">Quick Actions</h2>
               <p className="text-gray-500 text-sm">
-                Switch between workspace tools without leaving the page.
+                Manage sources, ingestion and indexing.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {quickActions.map((action) => (
                 <button
-                  key={action.id}
+                  key={action.title}
                   onClick={action.onClick}
-                  disabled={action.comingSoon}
                   className="bg-white border border-gray-200 rounded-lg p-5 text-left hover:shadow-md transition-shadow hover:border-purple-300 disabled:opacity-75 disabled:cursor-not-allowed"
                 >
                   <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mb-3">
-                    <span className="material-symbols-outlined text-gray-600 text-xl">
-                      {action.icon}
-                    </span>
+                    <HTGlyph name={action.icon} size={20} className="text-gray-600" />
                   </div>
                   <h3 className="text-base font-semibold text-gray-900 mb-1.5">
                     {action.title}
@@ -1425,14 +1312,14 @@ export default function KnowledgeBaseAdmin() {
             </div>
           </div>
 
-          {/* Document Library Section */}
+          {/* Source documents Section */}
           {showDocumentLibrary && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-ht-purple text-2xl">folder</span>
+                  <HTGlyph name="folder" size={24} className="text-ht-purple " />
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Document Library</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Source documents</h2>
                     <p className="text-sm text-gray-600 mt-1">
                       Browse uploaded knowledge files, inspect metadata, and delete specific documents when they go out of date.
                     </p>
@@ -1444,14 +1331,14 @@ export default function KnowledgeBaseAdmin() {
                     disabled={documentsLoading}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
-                    <span className="material-symbols-outlined text-base">refresh</span>
+                    <HTGlyph name="refresh" size={16} />
                     Refresh
                   </button>
                   <button
                     onClick={() => setShowDocumentLibrary(false)}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-base">close</span>
+                    <HTGlyph name="close" size={16} />
                     Hide
                   </button>
                 </div>
@@ -1460,16 +1347,10 @@ export default function KnowledgeBaseAdmin() {
               {/* Search Knowledge Base Section */}
               <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 mb-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="material-symbols-outlined text-gray-500 text-lg">search</span>
+                  <HTGlyph name="search" size={20} className="text-gray-500 " />
                   <h3 className="text-base font-semibold text-gray-900">Search Documents</h3>
                 </div>
                 
-                <div className="mb-3">
-                  <p className="text-gray-600 text-xs">
-                    KB records: <span className="font-semibold text-gray-900">{kbRecords.toLocaleString()}</span>
-                  </p>
-                </div>
-
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -1498,7 +1379,7 @@ export default function KnowledgeBaseAdmin() {
                       }}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                     >
-                      <span className="material-symbols-outlined text-base">close</span>
+                      <HTGlyph name="close" size={16} />
                       Clear
                     </button>
                   )}
@@ -1536,7 +1417,7 @@ export default function KnowledgeBaseAdmin() {
                 </div>
               ) : (isSearching && filteredDocuments.length === 0) ? (
                 <div className="text-center py-12">
-                  <span className="material-symbols-outlined text-6xl text-gray-300 mb-4 block">search_off</span>
+                  <HTGlyph name="search-empty" size={48} className="text-gray-300 mb-4 block" />
                   <p className="text-gray-500 text-lg mb-2">No documents found</p>
                   <p className="text-gray-400 text-sm">No documents match your search query "{searchQuery}".</p>
                   <button
@@ -1552,7 +1433,7 @@ export default function KnowledgeBaseAdmin() {
                 </div>
               ) : documents.length === 0 ? (
                 <div className="text-center py-12">
-                  <span className="material-symbols-outlined text-6xl text-gray-300 mb-4 block">folder_off</span>
+                  <HTGlyph name="folder-empty" size={48} className="text-gray-300 mb-4 block" />
                   <p className="text-gray-500 text-lg mb-2">No documents found</p>
                   <p className="text-gray-400 text-sm">Documents uploaded to the knowledge base will appear here.</p>
                 </div>
@@ -1587,7 +1468,7 @@ export default function KnowledgeBaseAdmin() {
                           <div className="flex-1 min-w-0">
                             {/* Document Title and ID */}
                             <div className="flex items-start gap-2 mb-3">
-                              <span className="material-symbols-outlined text-gray-600 text-xl mt-0.5">description</span>
+                              <HTGlyph name="document" size={20} className="text-gray-600  mt-0.5" />
                               <div className="flex-1 min-w-0">
                                 <h3 className="text-sm font-semibold text-gray-900 mb-1">
                                   {doc.title || "Untitled"}
@@ -1602,14 +1483,14 @@ export default function KnowledgeBaseAdmin() {
                             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600">
                               {/* Chunks */}
                               <div className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">link</span>
+                                <HTGlyph name="link" size={16} />
                                 <span>{doc.chunks_count || 0} chunks</span>
                               </div>
 
                               {/* Namespace/Tags */}
                               {doc.entry_method === "url_scrape" || doc.source_url ? (
                                 <div className="flex items-center gap-1 flex-wrap">
-                                  <span className="material-symbols-outlined text-sm">link</span>
+                                  <HTGlyph name="link" size={16} />
                                   {doc.entry_method === "url_scrape" ? (
                                     <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">urls</span>
                                   ) : doc.tags && doc.tags.length > 0 ? (
@@ -1634,20 +1515,20 @@ export default function KnowledgeBaseAdmin() {
 
                               {/* Processed Date */}
                               <div className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">calendar_today</span>
+                                <HTGlyph name="calendar" size={16} />
                                 <span>{formatDate(doc.processed_at_raw || doc.created_at)}</span>
                               </div>
 
                               {/* File Type */}
                               <div className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">description</span>
+                                <HTGlyph name="document" size={16} />
                                 <span>{doc.file_type || doc.file_extension || "—"}</span>
                               </div>
 
                               {/* Source URL */}
                               {doc.source_url && (
                                 <div className="flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-sm">public</span>
+                                  <HTGlyph name="globe" size={16} />
                                   <a
                                     href={doc.source_url.startsWith("http") ? doc.source_url : `https://${doc.source_url}`}
                                     target="_blank"
@@ -1673,7 +1554,7 @@ export default function KnowledgeBaseAdmin() {
                               onClick={() => handleDownloadDocument(doc)}
                               className="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded text-xs font-medium transition-colors flex items-center gap-1.5"
                             >
-                              <span className="material-symbols-outlined text-sm">download</span>
+                              <HTGlyph name="download" size={16} />
                               Download
                             </button>
                             <button
@@ -1688,7 +1569,7 @@ export default function KnowledgeBaseAdmin() {
                                 </>
                               ) : (
                                 <>
-                                  <span className="material-symbols-outlined text-sm">delete</span>
+                                  <HTGlyph name="delete" size={16} />
                                   Delete
                                 </>
                               )}
@@ -1743,7 +1624,7 @@ export default function KnowledgeBaseAdmin() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-ht-purple text-2xl">database</span>
+                  <HTGlyph name="database" size={24} className="text-ht-purple " />
                   <h2 className="text-xl font-semibold text-gray-900">Knowledge Base Stats</h2>
                 </div>
                 <div className="flex items-center gap-3">
@@ -1757,14 +1638,14 @@ export default function KnowledgeBaseAdmin() {
                     disabled={statsLoading}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
-                    <span className="material-symbols-outlined text-base">refresh</span>
+                    <HTGlyph name="refresh" size={16} />
                     Refresh
                   </button>
                   <button
                     onClick={() => setShowStats(false)}
                     className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-base">close</span>
+                    <HTGlyph name="close" size={16} />
                     Hide
                   </button>
                 </div>
@@ -1867,164 +1748,6 @@ export default function KnowledgeBaseAdmin() {
             </div>
           )}
 
-          {/* Preview Modal */}
-          {showPreviewModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Document Preview</h2>
-                    {previewDocId && (
-                      <p className="text-xs text-gray-500 mt-1 font-mono">ID: {previewDocId}</p>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => {
-                      setShowPreviewModal(false);
-                      setPreviewDocId(null);
-                      setPreviewContent(null);
-                      setPreviewError("");
-                    }}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-2xl">close</span>
-                  </button>
-                </div>
-                <div className="p-6 overflow-y-auto flex-1">
-                  {previewLoading ? (
-                    <div className="flex items-center justify-center py-12">
-                      <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ht-purple mx-auto mb-4"></div>
-                        <p className="text-gray-600">Loading preview...</p>
-                      </div>
-                    </div>
-                  ) : previewError ? (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                      <p className="text-red-600 text-sm">{previewError}</p>
-                    </div>
-                  ) : previewContent ? (
-                    <>
-                      {previewContent.type === 'text' && (
-                        <div className="bg-gray-50 rounded-lg p-4">
-                          <div className="whitespace-pre-wrap text-sm text-gray-700 font-mono max-h-[60vh] overflow-y-auto">
-                            {previewContent.content}
-                          </div>
-                        </div>
-                      )}
-                      {previewContent.type === 'url' && (
-                        <div className="w-full h-[60vh] border border-gray-200 rounded-lg overflow-hidden">
-                          {previewContent.url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                            <img 
-                              src={previewContent.url} 
-                              alt="Document Preview" 
-                              className="w-full h-full object-contain"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'block';
-                              }}
-                            />
-                          ) : (
-                            <iframe 
-                              src={previewContent.url} 
-                              className="w-full h-full border-0"
-                              title="Document Preview"
-                              onError={() => {
-                                setPreviewError("Failed to load preview URL. The document may not be accessible.");
-                              }}
-                            />
-                          )}
-                          <div style={{ display: 'none' }} className="p-4 text-center text-gray-500">
-                            Failed to load preview. <a href={previewContent.url} target="_blank" rel="noopener noreferrer" className="text-ht-cyan hover:underline">Open in new tab</a>
-                          </div>
-                        </div>
-                      )}
-                      {previewContent.type === 'file' && (
-                        <div className="text-center py-8">
-                          <p className="text-gray-600 mb-4">Document file available for download</p>
-                          <a
-                            href={previewContent.url}
-                            download={previewContent.filename}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-ht-purple text-white rounded-lg hover:bg-ht-purple-light transition-colors"
-                          >
-                            <span className="material-symbols-outlined text-base">download</span>
-                            Download {previewContent.filename}
-                          </a>
-                        </div>
-                      )}
-                      {previewContent.type === 'metadata' && (
-                        <div className="space-y-4">
-                          <div className="bg-gray-50 rounded-lg p-4">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-3">Document Metadata</h3>
-                            <div className="space-y-2 text-sm">
-                              <div className="flex">
-                                <span className="font-medium text-gray-700 w-32">Title:</span>
-                                <span className="text-gray-600">{previewContent.metadata.title || 'N/A'}</span>
-                              </div>
-                              <div className="flex">
-                                <span className="font-medium text-gray-700 w-32">Document ID:</span>
-                                <span className="text-gray-600 font-mono text-xs">{previewContent.metadata.document_id || previewContent.metadata.document_hash || previewContent.metadata.id || 'N/A'}</span>
-                              </div>
-                              {previewContent.metadata.source_url && (
-                                <div className="flex">
-                                  <span className="font-medium text-gray-700 w-32">Source URL:</span>
-                                  <a 
-                                    href={previewContent.metadata.source_url.startsWith("http") ? previewContent.metadata.source_url : `https://${previewContent.metadata.source_url}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-ht-cyan hover:underline truncate max-w-md"
-                                  >
-                                    {previewContent.metadata.source_url}
-                                  </a>
-                                </div>
-                              )}
-                              {previewContent.metadata.category && (
-                                <div className="flex">
-                                  <span className="font-medium text-gray-700 w-32">Category:</span>
-                                  <span className="text-gray-600">{previewContent.metadata.category}</span>
-                                </div>
-                              )}
-                              {previewContent.metadata.tags && previewContent.metadata.tags.length > 0 && (
-                                <div className="flex">
-                                  <span className="font-medium text-gray-700 w-32">Tags:</span>
-                                  <div className="flex flex-wrap gap-2">
-                                    {previewContent.metadata.tags.map((tag, idx) => (
-                                      <span key={idx} className="px-2 py-1 bg-purple-50 text-ht-purple rounded text-xs">
-                                        {tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                              <div className="flex">
-                                <span className="font-medium text-gray-700 w-32">Chunks:</span>
-                                <span className="text-gray-600">{previewContent.metadata.chunks_count || 0}</span>
-                              </div>
-                              {previewContent.metadata.processed_at_raw || previewContent.metadata.created_at ? (
-                                <div className="flex">
-                                  <span className="font-medium text-gray-700 w-32">Processed:</span>
-                                  <span className="text-gray-600">{formatDate(previewContent.metadata.processed_at_raw || previewContent.metadata.created_at)}</span>
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            Preview content is not available for this document. You can view the metadata above or download the document.
-                          </p>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-gray-500">No preview available</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Delete Confirmation Modal */}
           {showDeleteModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -2032,7 +1755,7 @@ export default function KnowledgeBaseAdmin() {
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-red-600 text-2xl">warning</span>
+                      <HTGlyph name="warning" size={24} className="text-red-600 " />
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold text-gray-900">Delete Document</h2>
@@ -2075,7 +1798,7 @@ export default function KnowledgeBaseAdmin() {
                         </>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-sm">delete</span>
+                          <HTGlyph name="delete" size={16} />
                           Delete
                         </>
                       )}

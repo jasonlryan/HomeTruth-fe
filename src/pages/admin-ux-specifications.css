@@ -1,0 +1,24 @@
+.ht-ux-specifications {
+  width: min(1120px, 92%);
+  margin-inline: auto;
+  padding-block: var(--space-8);
+}
+
+.ht-ux-specifications * {font-family: inherit}
+.ht-ux-specifications header {margin-bottom: var(--space-6)}
+.ht-ux-specifications h1 {font-size: clamp(32px, 5vw, 44px);margin: var(--space-3) 0}
+.ht-ux-specifications h2 {font-size: 26px;margin: 0 0 var(--space-3)}
+.ht-ux-specifications h3 {font-size: 20px;margin-block: var(--space-6) var(--space-2)}
+.ht-ux-specifications a {color: var(--route-ink);text-decoration: underline;text-underline-offset: 3px}
+.ht-ux-specifications p {margin-block: var(--space-2);overflow-wrap: anywhere}
+.ht-ux-specifications nav {display: flex;flex-wrap: wrap;gap: var(--space-2) var(--space-4);margin-top: var(--space-4)}
+.ht-ux-specifications nav .ht-nav-item {width:auto;text-decoration:none}
+.ht-ux-specifications section {padding: clamp(16px, 3vw, 32px);margin-bottom: var(--space-4);scroll-margin-top: var(--space-2)}
+.ht-ux-specifications .ht-blueprint {margin-top: var(--space-6)}
+.ht-blueprint table {min-width: 440px}
+.ht-blueprint td {vertical-align: top}
+.ht-blueprint td code {overflow-wrap: anywhere}
+.ht-blueprint ul {list-style: disc;padding-inline-start: var(--space-6)}
+.ht-blueprint li + li {margin-top: var(--space-2)}
+.ht-ontology-links {display: grid;gap: var(--space-3);margin-top: var(--space-4)}
+.ht-ontology-links dd {color: var(--reading-ink)}

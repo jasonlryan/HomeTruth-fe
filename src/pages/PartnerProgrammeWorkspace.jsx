@@ -1,15 +1,6 @@
 import PartnerEvidencePanel from "../components/PartnerEvidencePanel";
+import HTGlyph from "../components/HTGlyph";
 import { useCallback, useEffect, useState } from "react";
-import {
-  AlertTriangle,
-  BarChart3,
-  Building2,
-  CheckCircle2,
-  ClipboardList,
-  FileLock2,
-  RefreshCw,
-  ShieldCheck,
-} from "lucide-react";
 import {
   getPartnerProgramme,
   getPartnerProgrammeAudit,
@@ -81,7 +72,7 @@ function AuditPanel({ entry, onClose }) {
         </div>
         <button type="button" className={secondaryButton} onClick={onClose}>Close audit</button>
       </div>
-      {error && <div role="alert" className="mt-4 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] p-3 text-sm"><AlertTriangle size={17} />{error}</div>}
+      {error && <div role="alert" className="mt-4 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] p-3 text-sm"><HTGlyph name="warning" size={17} />{error}</div>}
       {loading ? (
         <p className="mt-5 text-sm text-[var(--color-text-muted)]">Loading audit evidence…</p>
       ) : events.length ? (
@@ -119,32 +110,32 @@ function ProgrammeAccessCard({ entry, selectedAudit, onAudit, onOpen, busy }) {
             <p className="mt-1 text-sm text-[var(--color-text-muted)]">{entry.partner?.name} · {entry.partner?.partnerType?.replaceAll("_", " ")}</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {canOpen && <button type="button" className={primaryButton} disabled={busy} onClick={() => onOpen(entry)}>{busy ? <RefreshCw size={16} className="animate-spin" /> : <Building2 size={16} />} Open programme</button>}
-            {canAudit && <button type="button" className={secondaryButton} onClick={() => onAudit(selectedAudit ? null : entry)}><ClipboardList size={16} /> {selectedAudit ? "Hide audit" : "View audit"}</button>}
+            {canOpen && <button type="button" className={primaryButton} disabled={busy} onClick={() => onOpen(entry)}>{busy ? <HTGlyph name="refresh" size={16} className="animate-spin" /> : <HTGlyph name="building" size={16} />} Open programme</button>}
+            {canAudit && <button type="button" className={secondaryButton} onClick={() => onAudit(selectedAudit ? null : entry)}><HTGlyph name="task" size={16} /> {selectedAudit ? "Hide audit" : "View audit"}</button>}
           </div>
         </div>
 
         {!state.operational && (
           <div className="mt-5 flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_8%,var(--color-surface-default))] p-4 text-sm text-[var(--color-text-default)]">
-            <AlertTriangle className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} /> Operational and reporting access is unavailable while this programme is not active.{canAudit ? " Your role can still review historical audit evidence." : " Historical audit remains limited to authorised programme managers and privacy auditors."}
+            <HTGlyph name="warning" className="mt-0.5 flex-none text-[var(--color-action-primary)]" size={18} /> Operational and reporting access is unavailable while this programme is not active.{canAudit ? " Your role can still review historical audit evidence." : " Historical audit remains limited to authorised programme managers and privacy auditors."}
           </div>
         )}
 
         <div className="mt-5 grid gap-3 md:grid-cols-3">
           <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
-            <ShieldCheck size={19} className="text-[var(--color-success)]" />
+            <HTGlyph name="consent" size={19} className="text-[var(--color-success)]" />
             <h3 className="mt-3 font-bold text-[var(--color-text-default)]">Current capabilities</h3>
             <ul className="mt-2 space-y-1 text-sm text-[var(--color-text-muted)]">
               {entry.capabilities?.length ? entry.capabilities.map((capability) => <li key={capability}>{capabilityLabel(capability)}</li>) : <li>No operational capabilities</li>}
             </ul>
           </section>
           <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
-            <BarChart3 size={19} className="text-[var(--color-accent)]" />
+            <HTGlyph name="analytics" size={19} className="text-[var(--color-accent)]" />
             <h3 className="mt-3 font-bold text-[var(--color-text-default)]">Aggregate evidence</h3>
             <p className="mt-2 text-sm leading-5 text-[var(--color-text-muted)]">Review monthly campaign evidence below. Reporting requires programme approval, current consent and privacy thresholds.</p>
           </section>
           <section className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-4">
-            <FileLock2 size={19} className="text-[var(--color-secondary)]" />
+            <HTGlyph name="document-locked" size={19} className="text-[var(--color-secondary)]" />
             <h3 className="mt-3 font-bold text-[var(--color-text-default)]">Always excluded</h3>
             <p className="mt-2 text-sm leading-5 text-[var(--color-text-muted)]">Individual homeowner, property, document, task, profile, chat and event records.</p>
           </section>
@@ -214,26 +205,26 @@ export default function PartnerProgrammeWorkspace() {
               <h1 className="mt-1 text-3xl font-bold text-[var(--color-text-default)]">Your partner programmes</h1>
               <p className="mt-3 max-w-3xl leading-6 text-[var(--color-text-muted)]">Access is assigned per programme and enforced by HomeTruth. Partner value comes from privacy-protected aggregate evidence—not access to a homeowner’s record.</p>
             </div>
-            <button type="button" className={secondaryButton} onClick={load} disabled={loading}><RefreshCw size={17} className={loading ? "animate-spin" : ""} /> Refresh access</button>
+            <button type="button" className={secondaryButton} onClick={load} disabled={loading}><HTGlyph name="refresh" size={17} className={loading ? "animate-spin" : ""} /> Refresh access</button>
           </div>
         </header>
 
         <section className={`${surface} mt-5 flex items-start gap-4 p-5`} aria-label="Privacy boundary">
-          <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-success)_12%,var(--color-surface-default))] text-[var(--color-success)]"><ShieldCheck size={22} /></span>
+          <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-success)_12%,var(--color-surface-default))] text-[var(--color-success)]"><HTGlyph name="consent" size={22} /></span>
           <div><h2 className="font-bold text-[var(--color-text-default)]">Aggregate-only by default</h2><p className="mt-1 text-sm leading-6 text-[var(--color-text-muted)]">Every programme is isolated. Access to one programme never grants access to another, and no role shown here permits individual homeowner data.</p></div>
         </section>
 
-        {notice && <div role="status" className="mt-5 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-success)] bg-[color-mix(in_srgb,var(--color-success)_8%,var(--color-surface-default))] p-4 text-sm"><CheckCircle2 size={18} className="text-[var(--color-success)]" />{notice}</div>}
-        {error && <div role="alert" className="mt-5 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_8%,var(--color-surface-default))] p-4 text-sm"><AlertTriangle size={18} className="text-[var(--color-action-primary)]" />{error}</div>}
+        {notice && <div role="status" className="mt-5 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-success)] bg-[color-mix(in_srgb,var(--color-success)_8%,var(--color-surface-default))] p-4 text-sm"><HTGlyph name="success" size={18} className="text-[var(--color-success)]" />{notice}</div>}
+        {error && <div role="alert" className="mt-5 flex gap-2 rounded-[var(--radius-md)] border border-[var(--color-action-primary)] bg-[color-mix(in_srgb,var(--color-action-primary)_8%,var(--color-surface-default))] p-4 text-sm"><HTGlyph name="warning" size={18} className="text-[var(--color-action-primary)]" />{error}</div>}
 
         <section className="mt-6" aria-labelledby="assigned-programmes">
           <h2 id="assigned-programmes" className="text-xl font-bold text-[var(--color-text-default)]">Assigned programmes</h2>
           {loading ? (
-            <div className={`${surface} mt-4 flex min-h-48 items-center justify-center text-[var(--color-text-muted)]`}><RefreshCw size={18} className="mr-2 animate-spin" /> Loading governed access</div>
+            <div className={`${surface} mt-4 flex min-h-48 items-center justify-center text-[var(--color-text-muted)]`}><HTGlyph name="refresh" size={18} className="mr-2 animate-spin" /> Loading governed access</div>
           ) : programmes.length ? (
             <div className="mt-4 grid gap-5">{programmes.map((entry) => <ProgrammeAccessCard key={entry.programme.id} entry={entry} selectedAudit={auditId === entry.programme.id} onAudit={(selected) => setAuditId(selected?.programme.id || null)} onOpen={openProgramme} busy={busyId === entry.programme.id} />)}</div>
           ) : (
-            <div className={`${surface} mt-4 flex min-h-56 flex-col items-center justify-center p-8 text-center`}><FileLock2 size={32} className="text-[var(--color-secondary)]" /><h3 className="mt-4 text-lg font-bold text-[var(--color-text-default)]">No partner programme access</h3><p className="mt-2 max-w-lg text-sm leading-6 text-[var(--color-text-muted)]">Your account has no active programme assignment. A HomeTruth operator must grant access to a verified account; administrator or homeowner status does not grant it automatically.</p></div>
+            <div className={`${surface} mt-4 flex min-h-56 flex-col items-center justify-center p-8 text-center`}><HTGlyph name="document-locked" size={32} className="text-[var(--color-secondary)]" /><h3 className="mt-4 text-lg font-bold text-[var(--color-text-default)]">No partner programme access</h3><p className="mt-2 max-w-lg text-sm leading-6 text-[var(--color-text-muted)]">Your account has no active programme assignment. A HomeTruth operator must grant access to a verified account; administrator or homeowner status does not grant it automatically.</p></div>
           )}
         </section>
       </div>

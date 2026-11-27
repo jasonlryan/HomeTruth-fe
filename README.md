@@ -1,3 +1,35 @@
+# HomeTruth frontend
+
+## Current environment — 19 November 2026
+
+HomeTruth currently runs locally only. There is no hosted staging or production
+environment. Repository folder names ending in `-staging` are historical names,
+not deployment destinations. GitHub `main` is source control, not a deployment.
+An optimised frontend production build does not create a production environment.
+
+| Service | Local address |
+| --- | --- |
+| Frontend | http://localhost:3000 |
+| API | http://localhost:8005 |
+| MySQL | 127.0.0.1:3306, database `hometruth` |
+| Qdrant | http://localhost:6333 |
+
+Old team server addresses and staging scripts are retired. Do not use archived
+configuration or old tickets as connection instructions. Before introducing a
+hosted environment, provision separate credentials and storage, verify backup
+restoration, rehearse pending migrations on a database copy, and validate the
+actual deployed versions. Never overwrite the local database during setup.
+
+For a new checkout, copy `.env.example` to `.env`, install dependencies with
+`npm ci`, and run `npm start`. Do not overwrite an existing environment file.
+`npm run build` produces an optimised local artifact and does not deploy it.
+
+Create React App gives shell variables and `.env.development.local` precedence
+over `.env` during development. Review those overrides if an address differs.
+The optional `start:branch-preview` script uses a separate local port and proxies
+API requests to localhost:8005. Backend credentials never belong in frontend env
+files. The legacy extension login link also opens localhost:3000.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -11,6 +43,56 @@ Reference ticket IDs in branch names, commit messages, pull requests, and implem
 All codebase changes must start from a ticket and include an implementation log
 in that ticket. See `../HomeTruth-tickets/README.md` for the shared ways of
 working.
+
+## User flow blueprints
+
+- [HT-FLOW-001 · First answer to home record](docs/user-flows/HT-FLOW-001.md)
+
+## Local homeowner demo
+
+The Buying, Improving and Selling question chooser is enabled by
+`REACT_APP_HOMEPAGE_QUESTIONS=true`. The selected-home Control centre is
+enabled by `REACT_APP_CONTROL_CENTRE_ENABLED=true`. A standard build leaves
+these flags off.
+
+To rehearse against the local HomeTruth backend, add the synthetic Maya
+account to the frontend checkout’s ignored `.env.local`:
+
+```sh
+HOMETRUTH_LOCAL_MAYA_EMAIL=maya.demo@example.invalid
+HOMETRUTH_LOCAL_MAYA_PASSWORD=<the local demo fixture password>
+```
+
+Then run this from the frontend checkout:
+
+```sh
+HOST=127.0.0.1 PORT=3014 BROWSER=none \
+  HOMETRUTH_PREVIEW_API_PROXY=true REACT_APP_API_BASE_URL= \
+  REACT_APP_HOMEPAGE_QUESTIONS=true REACT_APP_CONTROL_CENTRE_ENABLED=true \
+  REACT_APP_HOMEOWNER_DEMO=true REACT_APP_LOCAL_APPLIANCE_FLOW=true npm start
+```
+
+- Open `/login?switch=1` and choose **Log in as Maya** to go to Control centre.
+  Direct demo entry to equipment is at `/demo?to=appliances`.
+- From **Appliances**, open the washer, then ask **get me my washing machine
+  manual** in the top bar. An exact Vault match can be opened or linked to that
+  appliance. A manufacturer lookup requires confirmation.
+- The optional **Admin login · localhost only** shortcut needs
+  `REACT_APP_LOCAL_ADMIN_LOGIN=true` and `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` pointing
+  to a private local env file with `LOCAL_ADMIN_EMAIL` and `LOCAL_ADMIN_PASSWORD`.
+  At `/login?switch=1`, the shortcut uses the normal login API and opens
+  `/admin/operations`. You can use it again while the explicitly configured
+  loopback demo server is running.
+- For a separate frontend rehearsal, set both `PORT` and
+  `REACT_APP_LOCAL_DEMO_PORT` to the same free loopback port. The API proxy
+  defaults to 8005 for core, 8015 for Ask and 8014 for appliances. For a single
+  consolidated backend, point `HOMETRUTH_LOCAL_CORE_API_PORT`,
+  `HOMETRUTH_LOCAL_ASK_API_PORT`, and `HOMETRUTH_LOCAL_ITEMS_API_PORT` to its port.
+  `HOMETRUTH_LOCAL_SURVEY_API_PORT` can route Vault passages and follow-ups to a
+  separate local backend while testing.
+
+Use only synthetic data and the local development database. Keep fixture
+credentials in private env files.
 
 ## Coming Soon Mode
 
@@ -103,3 +185,72 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Isolated investor Data Room (HT-360)
+
+The Admin Data Room is available on the configured loopback development
+origin only. Start the investor demo API against the separately seeded
+Brighton demo database first. Set `REACT_APP_LOCAL_INVESTOR_DATA_ROOM=true`
+and `HOMETRUTH_LOCAL_INVESTOR_API_PORT` to that API's listening port alongside
+the local demo flags above. Keep `REACT_APP_API_BASE_URL` empty. In this mode,
+login and all API calls use the same investor API, including the admin login
+shortcut. Sign in as the seed's `admin.demo@example.invalid` account. For the
+optional shortcut, point `HOMETRUTH_LOCAL_ADMIN_ENV_FILE` at a private local
+env file whose `LOCAL_ADMIN_EMAIL` is the seeded address and whose
+`LOCAL_ADMIN_PASSWORD` is the seed's `ADMIN_PASSWORD`.
+
+The backend contract is admin-authorised and restricts both portfolio
+read endpoints to the isolated demo database and Brighton dataset. Maya has no
+Brighton portfolio fact and must be excluded by the API:
+
+- `GET /api/admin/investor-demo/portfolio?plan=all|free|pro&q=&page=1&limit=25`
+  returns `{data:{totals:{all,free,pro},total,page,limit,records:[{id,ownerName,address,plan,propertyType,listedDocumentCount}]}}`.
+  The tier totals cover the whole Brighton dataset. The total reflects filters.
+- `GET /api/admin/investor-demo/portfolio/:id` returns
+  `{data:{id,ownerName,address,plan,propertyType,listedDocuments,ledgerEntries}}`.
+  Listed documents are names. Each ledger entry retains
+  `{date,category,description,vendor,amount,status}` from the seed.
+
+After signing in, open `/admin/data-room`. Check All homes (1,000), Free (557)
+and Pro (443). Select All homes, search for John Doe and open his record to
+see 13 ledger entries. A search for Maya Demo should return zero results.
+
+#### Data Room downloads and Admin Resources
+
+The full Brighton portfolio and the selected home's ledger are downloaded
+from the authenticated, isolated demo API:
+
+- `GET /api/admin/investor-demo/portfolio/export?format=csv|json` returns
+  `text/csv` or `application/json`. Use the source fields
+  `id,name,email,address,postcode,propertyType,plan,documents`, followed by
+  `dataset_id,demo_only`. JSON retains its array of rows and array of
+  document names. The CSV documents field is a JSON array. The full export
+  stays independent of the current list filters and excludes Maya Demo.
+- `GET /api/admin/investor-demo/portfolio/:id/ledger/export` returns
+  `text/csv`. Use `date,category,description,vendor,amount,status,dataset_id,demo_only`
+  in source order. John Doe's ledger contains 13 rows.
+- Both exports require explicit Brighton provenance on every row, use the
+  demo API's existing database and admin guards, and reject non-portfolio
+  records. The list/detail responses concatenate the address and omit
+  the source email, separate postcode, source ID and provenance fields
+  required for full exports.
+
+Admin Resources links to the original Styleguide HTML explainers for
+document ingestion, profiling, the HomeTruth Report for partners, and
+blockchain and ledger strategy. Only their logo and app navigation links
+were adapted.
+
+On the isolated demo origin, Admin Resources also includes the nine Styleguide
+sample cards. The title deed and Brighton survey have original text previews.
+The separate Manchester survey Markdown is downloadable from the survey
+preview. The other seven cards contain catalogue details only.
+
+The read-only Demo knowledge page uses the isolated API's Styleguide snapshot.
+`GET /api/admin/investor-demo/knowledge?q=&page=1&limit=25` returns
+`{data:{total,page,limit,records:[{id,name,namespace,chunkCount}]}}`.
+`GET /api/admin/investor-demo/knowledge/:id` returns
+`{data:{id,name,namespace,chunkCount,chunks:[{text}]}}`. Search matches plain
+text in names and excerpts.
+
+The ledger sums recorded amounts by payment state. The anchoring control changes
+the display in the current browser only and sends no transaction.

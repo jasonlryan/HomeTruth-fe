@@ -1,0 +1,44 @@
+.ht-admin-demo-cards,
+.ht-admin-source-pages {
+  margin-block-start: var(--space-4);
+}
+
+.ht-admin-source-pages {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.ht-admin-source-pages p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ht-admin-sample h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.ht-admin-sample svg { flex: none; }
+.ht-admin-sample p { overflow-wrap: anywhere; }
+
+.ht-admin-sample ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin-block: var(--space-3);
+}
+
+.ht-admin-knowledge-list {
+  list-style: none;
+  padding: 0;
+  margin-block: var(--space-4);
+}
+
+.ht-admin-knowledge-list li {
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-border-default);
+  overflow-wrap: anywhere;
+}

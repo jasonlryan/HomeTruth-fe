@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { HTIcon } from "./homepage/HomeTruth";
+
+const iconBase = process.env.PUBLIC_URL + "/assets/brand/";
 
 export default function Topbar() {
   const { logout } = useAuth();
@@ -46,17 +49,23 @@ export default function Topbar() {
 
 
   return (
-    <div className="flex items-center justify-between px-5 py-2 bg-white border-b relative">
-      <div className="text-ht-dark text-base font-medium">Hi, {userName}!</div>
-      <div className="flex items-center gap-4 min-h-[2.25rem]">
+    <div className="ht-ui flex flex-wrap items-center justify-between gap-2 px-4 py-2 bg-white border-b relative">
+      <div>Hi, {userName}!</div>
+      <div className="flex flex-wrap items-center gap-2 min-h-[2.25rem]">
+        <NavLink to="/ask-ai" className="ht-button" data-variant="secondary">
+          <HTIcon name="assistant" size={20} assetBase={iconBase} /> Ask HomeTruth
+        </NavLink>
         <div className="relative flex items-center justify-center h-9" ref={dropdownRef}>
-          <span
-            className="material-symbols-outlined text-ht-mid-grey cursor-pointer hover:text-ht-cyan transition !text-[20px] inline-flex items-center justify-center"
+          <button
+            type="button"
+            className="ht-button"
+            data-variant="text"
+            aria-label="Notifications"
+            aria-expanded={showNotificationDropdown}
             onClick={toggleNotificationDropdown}
-            title="Notifications"
           >
-            notifications
-          </span>
+            <HTIcon name="notification" size={20} assetBase={iconBase} />
+          </button>
 
           {/* Notification Dropdown */}
           {showNotificationDropdown && (
@@ -66,7 +75,6 @@ export default function Topbar() {
               </div>
               <div className="max-h-96 overflow-y-auto">
                 <div className="p-8 text-center text-gray-500">
-                  <span className="material-symbols-outlined text-4xl mb-2 block">notifications_none</span>
                   <p className="text-sm">No notifications</p>
                 </div>
               </div>

@@ -13,10 +13,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = token;
     }
-    // Add ngrok-skip-browser-warning header for ngrok URLs
-    if (API_BASE_URL && API_BASE_URL.includes("ngrok")) {
-      config.headers["ngrok-skip-browser-warning"] = "true";
-    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -60,37 +56,6 @@ export const registerUser = async ({ email, password, confirmPassword, first_nam
   }
 
   const res = await api.post("/api/auth/register", payload);
-  return res.data;
-};
-
-// --- Admin Login API ---
-export const adminLogin = async ({ email, password, remember_me = false }) => {
-  const res = await api.post("/api/auth/admin/login", { 
-    email, 
-    password, 
-    remember_me 
-  });
-
-  const token = res.data?.data?.token;
-  const userId = res.data?.data?.user?.id;
-  const userRole = res.data?.data?.user?.role;
-
-  if (token) {
-    localStorage.setItem("token", token);
-  } else {
-    console.warn("Token not found in response", res.data);
-  }
-
-  if (userId) {
-    localStorage.setItem("userId", userId);
-  } else {
-    console.warn("User ID not found in response", res.data);
-  }
-
-  if (userRole) {
-    localStorage.setItem("user_role", userRole);
-  }
-
   return res.data;
 };
 
@@ -289,21 +254,39 @@ export const askAIChat = async (
 };
 
 export const getAIChatConversations = async () => {
-  const res = await api.get("/api/ai_chat/conversations");
-  return res.data?.data ?? res.data;
+  const conversations = new Map();
+  let page = 1;
+  let data;
+  do {
+    const res = await api.get("/api/ai_chat/conversations", { params: { page, limit: 100 } });
+    data = res.data?.data ?? res.data;
+    for (const conversation of data.conversations || []) {
+      conversations.set(conversation.conversation_id, conversation);
+    }
+    page += 1;
+  } while (data.hasMore);
+  return { ...data, conversations: Array.from(conversations.values()) };
 };
 
-
 export const getAIChatHistory = async (conversationId) => {
-  const res = await api.get("/api/ai_chat/history", {
-    params: { conversation_id: conversationId },
-  });
-  const conversations = res.data?.data?.conversations || {};
-  const raw = conversations[conversationId]?.messages || [];
+  const messages = new Map();
+  let page = 1;
+  let data;
+  do {
+    const res = await api.get("/api/ai_chat/history", {
+      params: { conversation_id: conversationId, page, limit: 100 },
+    });
+    data = res.data?.data || {};
+    for (const message of data.conversations?.[conversationId]?.messages || []) {
+      messages.set(message.id, message);
+    }
+    page += 1;
+  } while (data.hasMore);
+  const raw = Array.from(messages.values());
 
   raw.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-  const chats = raw.flatMap(({ id, userMessage, assistantReply, createdAt }) => {
+  const chats = raw.flatMap(({ id, userMessage, assistantReply, createdAt, actions }) => {
     const time = new Date(createdAt).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -325,6 +308,7 @@ export const getAIChatHistory = async (conversationId) => {
         id,
         role: "assistant",
         content: assistantReply,
+        actions,
         time,
         chatHistoryId: id, // Store the backend chat_history_id explicitly
       });
@@ -503,6 +487,11 @@ export const getPropertyTasks = async (propertyId, params = {}) => {
   return res.data?.data || [];
 };
 
+export const createPropertyFollowUp = async (propertyId, payload) => {
+  const res = await api.post(`/api/property-records/${propertyId}/tasks`, payload);
+  return res.data?.data;
+};
+
 export const generatePropertyTasks = async (propertyId) => {
   const res = await api.post(`/api/property-records/${propertyId}/tasks/generate`);
   return res.data?.data;
@@ -601,10 +590,10 @@ export const uploadDocument = async (formData) => {
   return res.data;
 };
 
-export const askDocumentAI = async (documentId, question) => {
+export const askDocumentAI = async (documentId, question, signal) => {
   const res = await api.post(`/api/user-documents/${documentId}/chat`, {
     question,
-  });
+  }, { signal });
   return res.data;
 };
 
@@ -632,6 +621,13 @@ export const getDocumentPreview = async (documentId) => {
 };
 
 // --- Knowledge Base Admin APIs ---
+export const getIndexedRecords = async (cursor) => {
+  const res = await api.get("/api/documents/knowledge/records", {
+    params: cursor == null ? {} : { cursor },
+  });
+  return res.data;
+};
+
 export const addKnowledgeBaseEntry = async (payload) => {
   const res = await api.post("/api/documents/knowledge", payload);
   return res.data;
@@ -888,3 +884,84 @@ export const exportPartnerEvidence = async (programmeId, params = {}) => {
   const res = await api.get(`/api/partner/programmes/${programmeId}/evidence/export`, { params });
   return res.data;
 };
+// Authenticated preview payload: JSON text/image or raw file bytes.
+export const getDocumentPreviewFile = async (documentId, signal) => {
+  const res = await api.get(`/api/user-documents/${documentId}/preview`, { responseType: 'blob', signal });
+  return res.data;
+};
+
+export const getUserDocumentRecord = async (id, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(id)}`, { signal });
+  return res.data;
+};
+// Selected-home physical records (HT-341). These endpoints require the HT-341 backend.
+const itemPath = homeId => `/api/property-records/${homeId}/items`;
+export const getHomeItems = async homeId => (await api.get(itemPath(homeId))).data.data;
+export const getHomeItem = async (homeId, itemId) => (await api.get(`${itemPath(homeId)}/${itemId}`)).data.data;
+export const createHomeItem = async (homeId, payload) => (await api.post(itemPath(homeId), payload)).data.data;
+export const updateHomeItem = async (homeId, itemId, payload) => (await api.patch(`${itemPath(homeId)}/${itemId}`, payload)).data.data;
+export const identifyHomeItem = async (homeId, formData) => (await api.post(`${itemPath(homeId)}/identify`, formData)).data.data;
+export const keepVaultManual = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/vault-manual`, payload)).data.data;
+const manufacturerManualPath = (homeId, itemId) => `${itemPath(homeId)}/${itemId}/manufacturer-manual`;
+export const checkManufacturerManual = async (homeId, itemId) => (await api.get(manufacturerManualPath(homeId, itemId))).data.data;
+export const registerManufacturerManual = async (homeId, itemId, payload) => (await api.post(manufacturerManualPath(homeId, itemId), payload)).data.data;
+export const attachItemEvidence = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/evidence`, payload)).data.data;
+export const detachItemEvidence = async (homeId, itemId, evidenceId) => (await api.delete(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}`)).data.data;
+export const findItemManual = async (homeId, itemId, requestKey) => (await api.post(`${itemPath(homeId)}/${itemId}/manual-search`, {requestKey}, {timeout:110000})).data.data;
+export const getApplianceAgentResult = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/agent/latest`)).data.data;
+export const saveAgentManual = async (homeId,itemId,runId,candidateIndex) => (await api.post(`${itemPath(homeId)}/${itemId}/agent/${runId}/save-manual`,{candidateIndex,confirmed:true},{timeout:110000})).data.data;
+export const askItemAI = async (homeId, itemId, payload) => (await api.post(`${itemPath(homeId)}/${itemId}/ask`, payload)).data.data;
+export const getItemAnswers = async (homeId,itemId) => (await api.get(`${itemPath(homeId)}/${itemId}/answers`)).data.data;
+export const saveItemAnswer = async (homeId,itemId,token) => (await api.post(`${itemPath(homeId)}/${itemId}/answers`,{token})).data.data;
+export const deleteItemAnswer = async (homeId,itemId,answerId) => (await api.delete(`${itemPath(homeId)}/${itemId}/answers/${answerId}`)).data.data;
+
+export const getItemEvidenceFile = async (homeId,itemId,evidenceId) => (await api.get(`${itemPath(homeId)}/${itemId}/evidence/${evidenceId}/file`,{responseType:'blob'})).data;
+
+
+export const getSurveyPdfPage = async (documentId, page, signal) => {
+  const res = await api.get(`/api/user-documents/${encodeURIComponent(documentId)}/pdf-page`, { params: { page }, signal });
+  return res.data?.data;
+};
+
+export const getFollowUpPassage = async (propertyId, taskId, signal) => {
+  const res = await api.get(`/api/property-records/${encodeURIComponent(propertyId)}/tasks/${encodeURIComponent(taskId)}/passage`, { signal });
+  return res.data?.data;
+};
+
+const investorPortfolioPath = "/api/admin/investor-demo/portfolio";
+
+export async function getInvestorPortfolio(params, signal) {
+  const response = await api.get(investorPortfolioPath, { baseURL: "", params, signal });
+  return response.data?.data;
+}
+
+export async function getInvestorProperty(id, signal) {
+  const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
+  return response.data?.data;
+}
+
+export async function downloadInvestorPortfolio(format) {
+  const response = await api.get(`${investorPortfolioPath}/export`, {
+    baseURL: "", params: { format }, responseType: "blob",
+  });
+  return response.data;
+}
+
+export async function downloadInvestorLedger(id) {
+  const response = await api.get(`${investorPortfolioPath}/${encodeURIComponent(id)}/ledger/export`, {
+    baseURL: "", responseType: "blob",
+  });
+  return response.data;
+}
+
+const demoKnowledgePath = "/api/admin/investor-demo/knowledge";
+
+export async function getDemoKnowledge(params, signal) {
+  const response = await api.get(demoKnowledgePath, { baseURL: "", params, signal });
+  return response.data.data;
+}
+
+export async function getDemoKnowledgeDocument(id, signal) {
+  const response = await api.get(`${demoKnowledgePath}/${encodeURIComponent(id)}`, { baseURL: "", signal });
+  return response.data.data;
+}

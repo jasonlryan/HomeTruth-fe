@@ -1,0 +1,119 @@
+/* Shared layout and controls for signed-in workspaces. */
+.ht-workspace-page {
+  width: min(1120px, 100%);
+  margin-inline: auto;
+  padding: var(--space-8) clamp(var(--space-4), 3vw, var(--space-8));
+}
+.ht-workspace-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.ht-workspace-input {
+  min-height: 42px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-default);
+  color: var(--color-text-default);
+  padding: var(--space-2) var(--space-3);
+}
+.ht-workspace-muted {
+  color: color-mix(
+    in srgb,
+    var(--color-text-default) 75%,
+    var(--color-surface-default)
+  );
+}
+.ht-workspace-control,
+.ht-workspace-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border-default);
+  font-size: 0.875rem;
+  color: var(--color-text-default);
+  background: var(--color-surface-default);
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+.ht-workspace-control:hover {
+  border-color: var(--color-accent);
+}
+.ht-workspace-primary {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-text-on-dark);
+}
+.ht-workspace-primary:hover {
+  background: color-mix(in srgb, var(--color-secondary) 88%, var(--ht-black));
+}
+.ht-workspace-control:focus-visible,
+.ht-workspace-primary:focus-visible,
+.ht-workspace-link:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+.ht-workspace-control:disabled,
+.ht-workspace-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.ht-workspace-selected {
+  background: color-mix(
+    in srgb,
+    var(--color-accent) 12%,
+    var(--color-surface-default)
+  );
+  border-color: var(--color-accent);
+}
+.ht-workspace-state {
+  color: var(--reading-ink);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-default);
+}
+.ht-workspace-state[role="alert"] {
+  color: var(--status-error-ink);
+  border-color: currentColor;
+}
+.ht-workspace-link {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.ht-vault-filters {
+  position: absolute;
+  z-index: 20;
+  inset-inline-start: 0;
+  top: calc(100% + var(--space-2));
+  width: min(384px, calc(100vw - 72px - 2 * var(--space-4)));
+}
+.ht-vault-upload {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  padding: var(--space-6);
+  border-style: dashed;
+  text-align: center;
+}
+.ht-vault-upload[data-dragging="true"] {
+  border-color: var(--color-accent);
+  background: var(--surface-subtle);
+}
+@media (min-width: 1024px) {
+  .ht-vault-filters {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+}

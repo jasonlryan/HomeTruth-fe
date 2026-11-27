@@ -1,3 +1,5 @@
+@import "./components/homepage/styles/navigation.css";
+
 /* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -114,8 +116,22 @@ code {
 }
 
 /* Default app typography */
-* {
+body {
   font-family: var(--font-base);
+}
+
+.ht-app-shell {
+  --system-chat-font-stack: var(--font-reading);
+  --color-text-muted: var(--reading-ink);
+}
+
+.ht-app-shell :is(h1, h2, h3, h4) {
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+
+.ht-app-shell .ht-page-title {
+  font-size: clamp(26px, 4vw, 32px);
 }
 
 /* Shared chat font utility for all chat experiences */
@@ -198,3 +214,17 @@ code {
 .article-body .ql-align-center  { text-align: center; }
 .article-body .ql-align-right   { text-align: right; }
 .article-body .ql-align-justify { text-align: justify; }
+
+/* Keep inline icons on the first text baseline, even when a label wraps. */
+:is(button, a, [role="tab"], [role="button"], h1, h2, h3, span.inline-flex).items-center:has(> svg):not(.flex-col, .flex-col-reverse, .flex-wrap, .flex-row-reverse),
+:is(.ht-workspace-control, .ht-workspace-primary):has(> svg) {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: first baseline;
+  align-content: center;
+}
+
+:is(button, a, [role="tab"], [role="button"], h1, h2, h3, span.inline-flex).inline-flex.items-center:has(> svg):not(.flex-col, .flex-col-reverse, .flex-wrap, .flex-row-reverse),
+:is(.ht-workspace-control, .ht-workspace-primary):has(> svg) {
+  display: inline-grid;
+}

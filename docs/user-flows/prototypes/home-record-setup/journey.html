@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HomeTruth · First answer to home record flow</title>
+  <link rel="stylesheet" href="/admin/design-system/styles/tokens.css">
+  <link rel="stylesheet" href="/admin/design-system/styles/components.css">
+  <link rel="stylesheet" href="/admin/design-system/styles/navigation.css">
+  <link rel="stylesheet" href="prototype.css">
+  <link rel="stylesheet" href="journey.css">
+  <script type="module" src="journey.js"></script>
+</head>
+<body class="ht-ui">
+  <a class="skip-link" href="#flow-main">Skip to content</a>
+  <div class="review-bar">
+    <p>Flow prototype <span>HT-FLOW-001 · Demo data</span></p>
+    <div class="review-actions">
+      <a href="index.html">Open signed-in page states</a>
+      <a href="#flow-notes">Flow and data notes</a>
+    </div>
+  </div>
+  <header class="flow-header">
+    <a href="journey.html"><img src="/assets/homepage/brand/hometruth-logo.svg" alt="HomeTruth"></a>
+  </header>
+  <main id="flow-main" class="flow-main">
+    <nav aria-label="Journey progress">
+      <ol class="flow-progress">
+        <li data-progress="question" aria-current="step">Ask a question</li>
+        <li data-progress="first-answer">First answer</li>
+        <li data-progress="account">Account handoff</li>
+        <li>Home record</li>
+      </ol>
+    </nav>
+    <section class="ht-panel flow-step" id="question" aria-labelledby="question-title">
+      <h1 id="question-title" tabindex="-1">Ask HomeTruth</h1>
+      <form id="guest-question-form">
+        <fieldset class="ht-routes">
+          <legend>What are you doing?</legend>
+          <div class="ht-route-list">
+            <label class="ht-route"><input type="radio" name="route" value="buy" aria-label="Buying a home" checked><span aria-hidden="true"><img src="/admin/design-system/assets/icons/ht-buy.svg" alt="">Buying</span></label>
+            <label class="ht-route"><input type="radio" name="route" value="improve" aria-label="Improving my home"><span aria-hidden="true"><img src="/admin/design-system/assets/icons/ht-own.svg" alt="">Improving</span></label>
+            <label class="ht-route"><input type="radio" name="route" value="sell" aria-label="Preparing to sell"><span aria-hidden="true"><img src="/admin/design-system/assets/icons/ht-sell.svg" alt="">Selling</span></label>
+          </div>
+        </fieldset>
+        <p class="flow-prompt" id="sample-question">What should I ask after a survey flags a problem?</p>
+        <button class="ht-button" data-variant="cyan" type="submit">Ask HomeTruth</button>
+      </form>
+    </section>
+
+    <section class="ht-panel flow-step" id="first-answer" aria-labelledby="first-answer-title" hidden>
+      <h1 id="first-answer-title" tabindex="-1">Your question</h1>
+      <p class="flow-prompt" id="asked-question"></p>
+      <p id="first-reply"></p>
+      <div class="flow-actions">
+        <button id="show-account-options" class="ht-button record-action" type="button" aria-controls="record-handoff" aria-expanded="false">
+          <img src="/admin/design-system/assets/icons/ht-home.svg" alt="">Start a home record
+        </button>
+        <a href="#question">Ask another question</a>
+      </div>
+      <section class="ht-panel flow-handoff" id="record-handoff" aria-labelledby="handoff-title" hidden>
+        <h2 id="handoff-title" tabindex="-1">Start a home record</h2>
+        <p>Add an address and keep the documents and records you want to come back to. You can continue this question after signing in.</p>
+        <div class="flow-actions">
+          <a href="#account" class="ht-button" data-variant="secondary" data-account-choice="register">Create an account</a>
+          <a href="#account" class="ht-button" data-variant="secondary" data-account-choice="login">Log in</a>
+        </div>
+      </section>
+    </section>
+
+    <section class="ht-panel flow-step" id="account" aria-labelledby="account-title" hidden>
+      <h1 id="account-title" tabindex="-1">Log in to HomeTruth</h1>
+      <p id="account-description">In the app, login takes you to the property profile. Continue here with a demo account.</p>
+      <div class="flow-actions">
+        <a id="open-setup" class="ht-button record-action" href="index.html">Continue to property setup</a>
+        <a id="demo-registration" class="ht-button record-action" href="#welcome" hidden>Continue with a demo account</a>
+        <a id="open-existing" class="ht-button" data-variant="secondary" href="index.html">Open an existing home record</a>
+      </div>
+      <p><a href="#first-answer">Back to the answer</a></p>
+    </section>
+    <section class="ht-panel flow-step" id="welcome" aria-labelledby="welcome-title" hidden>
+      <h1 id="welcome-title" tabindex="-1">Welcome to HomeTruth</h1>
+      <p>Your homepage question is ready to continue. Start with the property you want to keep a record of.</p>
+      <div class="flow-actions">
+        <a id="finish-welcome" class="ht-button record-action" href="index.html">Continue to property setup</a>
+        <a href="#first-answer">Back to the answer</a>
+      </div>
+    </section>
+  </main>
+
+  <section id="flow-notes" class="specification" aria-labelledby="flow-notes-title">
+    <h2 id="flow-notes-title">Flow and data notes</h2>
+    <ol>
+      <li><strong>Ask as a guest.</strong> The route changes the sample question. The guest conversation carries the question and reply. A property address is optional at this point.</li>
+      <li><strong>Choose to save a record.</strong> Login resumes the journey for an existing user. Account creation adds the welcome step before property setup. The prototype simulates these steps with a demo account.</li>
+      <li><strong>Start or return to a home record.</strong> A new record requires an address and a confirmed relationship. An existing record opens directly. Both paths keep the original answer available when it was recovered.</li>
+      <li><strong>Save or continue the question.</strong> Saving keeps the address and relationship together. Reopening the question takes you back to the same conversation. You can do this before or after saving.</li>
+    </ol>
+    <p><a href="/admin/user-flows#blueprints">Read HT-FLOW-001</a> · <a href="/admin/user-flows#ontology">Ontology reference</a> · <a href="/admin/design-system/index.html#homepage-journey">Design-system patterns</a></p>
+  </section>
+</body>
+</html>

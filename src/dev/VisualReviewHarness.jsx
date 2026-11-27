@@ -1,6 +1,6 @@
+import HTGlyph from "../components/HTGlyph";
 import { useEffect } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ShieldCheck, UserRound, Wrench } from "lucide-react";
 import api from "../api/api";
 import { useAuth } from "../context/AuthContext";
 
@@ -1486,7 +1486,7 @@ export default function VisualReviewHarness() {
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-sky-50 text-ht-cyan">
-            <Wrench size={22} />
+            <HTGlyph name="repair" size={22} />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Visual Review Harness</h1>
@@ -1499,7 +1499,7 @@ export default function VisualReviewHarness() {
         <div className="grid gap-6 md:grid-cols-2">
           <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center gap-2">
-              <UserRound className="text-ht-cyan" size={20} />
+              <HTGlyph name="user" className="text-ht-cyan" size={20} />
               <h2 className="text-lg font-semibold text-gray-900">User Screens</h2>
             </div>
             <div className="grid gap-2">
@@ -1519,7 +1519,7 @@ export default function VisualReviewHarness() {
 
           <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center gap-2">
-              <ShieldCheck className="text-ht-purple" size={20} />
+              <HTGlyph name="consent" className="text-ht-purple" size={20} />
               <h2 className="text-lg font-semibold text-gray-900">Admin Screens</h2>
             </div>
             <div className="grid gap-2">

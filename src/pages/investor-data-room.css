@@ -1,0 +1,76 @@
+.ht-investor-room > header p,
+.ht-investor-ledger header p {
+  color: var(--color-text-muted);
+  margin-block: var(--space-2) 0;
+}
+
+.ht-investor-room .ht-badge { margin-inline-start: var(--space-2); }
+
+.ht-investor-filters,
+.ht-investor-search,
+.ht-investor-pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ht-investor-filters legend {
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.ht-investor-filters button[aria-pressed="true"] {
+  background: var(--surface-subtle);
+  border-color: var(--color-accent);
+}
+
+.ht-investor-search {
+  align-items: flex-end;
+  margin-block: var(--space-5);
+}
+
+.ht-investor-search .ht-field { flex: 1 1 16rem; }
+.ht-investor-table { max-width: 100%; overflow-x: auto; }
+.ht-investor-table table { width: 100%; border-collapse: collapse; text-align: left; }
+.ht-investor-table th,
+.ht-investor-table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border-default);
+  vertical-align: baseline;
+}
+
+.ht-investor-owner { text-align: left; text-decoration: underline; color: var(--reading-ink); }
+.ht-investor-pages,
+.ht-investor-ledger { margin-top: var(--space-5); }
+.ht-investor-ledger h2 { margin: 0; }
+.ht-investor-ledger h3 { margin-block: var(--space-5) var(--space-3); }
+
+.ht-investor-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ht-investor-ledger .ht-investor-exports {
+  margin-bottom: var(--space-3);
+}
+
+.ht-investor-ledger-summary {
+  margin-block: var(--space-4);
+  padding-block-end: var(--space-4);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.ht-investor-spend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-block-end: var(--space-4);
+}
+
+.ht-investor-spend dd {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}

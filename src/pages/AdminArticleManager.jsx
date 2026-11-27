@@ -1,3 +1,4 @@
+import HTGlyph from "../components/HTGlyph";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -12,22 +13,6 @@ import {
   publishArticle,
   unpublishArticle,
 } from "../api/api";
-import {
-  ArrowLeft,
-  Plus,
-  Edit3,
-  Trash2,
-  Eye,
-  EyeOff,
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Upload,
-  X,
-  Save,
-  Send,
-  FileText,
-} from "lucide-react";
 
 const CATEGORIES = [
   { value: "article", label: "Article" },
@@ -288,13 +273,13 @@ export default function AdminArticleManager() {
           onClick={() => setView("list")}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
         >
-          <ArrowLeft size={18} />
+          <HTGlyph name="arrow-left" size={18} />
           <span className="text-sm font-medium">Back to Articles</span>
         </button>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-4xl">
           <div className="flex items-center gap-3 mb-6">
-            <FileText className="text-ht-purple" size={24} />
+            <HTGlyph name="document" className="text-ht-purple" size={24} />
             <h2 className="text-xl font-semibold text-gray-900">
               {editingId ? "Edit Article" : "Create New Article"}
             </h2>
@@ -380,7 +365,7 @@ export default function AdminArticleManager() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Featured Image</label>
               <div className="flex items-start gap-4">
                 <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium cursor-pointer transition-colors">
-                  <Upload size={16} />
+                  <HTGlyph name="upload" size={16} />
                   Choose Image
                   <input
                     type="file"
@@ -396,14 +381,14 @@ export default function AdminArticleManager() {
                       alt="Preview"
                       className="w-32 h-20 object-cover rounded-lg border border-gray-200"
                     />
-                    <button
+                    <button aria-label="Remove featured image"
                       onClick={() => {
                         setImagePreview(null);
                         setFormData((p) => ({ ...p, featured_image: null }));
                       }}
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"
                     >
-                      <X size={14} />
+                      <HTGlyph name="close" size={14} />
                     </button>
                   </div>
                 )}
@@ -442,7 +427,7 @@ export default function AdminArticleManager() {
                 disabled={submitting}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                <Save size={16} />
+                <HTGlyph name="save" size={16} />
                 {submitting ? "Saving..." : "Save as Draft"}
               </button>
               <button
@@ -450,7 +435,7 @@ export default function AdminArticleManager() {
                 disabled={submitting}
                 className="flex items-center gap-2 px-5 py-2.5 bg-ht-purple hover:bg-ht-purple-light text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                <Send size={16} />
+                <HTGlyph name="send" size={16} />
                 {submitting ? "Publishing..." : "Publish"}
               </button>
               <button
@@ -473,11 +458,11 @@ export default function AdminArticleManager() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate("/admin/knowledge-base")}
+          <button aria-label="Back to Admin"
+            onClick={() => navigate("/admin")}
             className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
           >
-            <ArrowLeft size={18} className="text-gray-600" />
+            <HTGlyph name="arrow-left" size={18} className="text-gray-600" />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Article Management</h1>
@@ -490,7 +475,7 @@ export default function AdminArticleManager() {
           onClick={openCreateForm}
           className="bg-ht-purple hover:bg-ht-purple-light text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
         >
-          <Plus size={16} />
+          <HTGlyph name="add" size={16} />
           New Article
         </button>
       </div>
@@ -499,7 +484,7 @@ export default function AdminArticleManager() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex-1 min-w-[200px] relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <HTGlyph name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               value={searchQuery}
@@ -553,7 +538,7 @@ export default function AdminArticleManager() {
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-16">
-            <FileText size={48} className="mx-auto text-gray-300 mb-4" />
+            <HTGlyph name="document" size={48} className="mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500 text-lg mb-2">No articles found</p>
             <p className="text-gray-400 text-sm">Create your first article to get started.</p>
           </div>
@@ -593,7 +578,7 @@ export default function AdminArticleManager() {
                             />
                           ) : (
                             <div className="w-10 h-10 rounded bg-gray-100 flex items-center justify-center">
-                              <FileText size={16} className="text-gray-400" />
+                              <HTGlyph name="document" size={16} className="text-gray-400" />
                             </div>
                           )}
                           <div className="min-w-0">
@@ -630,7 +615,7 @@ export default function AdminArticleManager() {
                             className="p-2 text-gray-500 hover:text-ht-cyan hover:bg-sky-50 rounded-lg transition-colors"
                             title="Edit"
                           >
-                            <Edit3 size={16} />
+                            <HTGlyph name="edit" size={16} />
                           </button>
                           <button
                             onClick={() => handlePublishToggle(article)}
@@ -642,9 +627,9 @@ export default function AdminArticleManager() {
                             title={article.status === "published" ? "Unpublish" : "Publish"}
                           >
                             {article.status === "published" ? (
-                              <EyeOff size={16} />
+                              <HTGlyph name="hidden" size={16} />
                             ) : (
-                              <Eye size={16} />
+                              <HTGlyph name="visible" size={16} />
                             )}
                           </button>
                           <button
@@ -652,7 +637,7 @@ export default function AdminArticleManager() {
                             className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete"
                           >
-                            <Trash2 size={16} />
+                            <HTGlyph name="delete" size={16} />
                           </button>
                         </div>
                       </td>
@@ -669,19 +654,19 @@ export default function AdminArticleManager() {
                   Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} articles)
                 </p>
                 <div className="flex items-center gap-2">
-                  <button
+                  <button aria-label="Previous page"
                     onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
                     disabled={pagination.page === 1}
                     className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    <ChevronLeft size={16} />
+                    <HTGlyph name="chevron-left" size={16} />
                   </button>
-                  <button
+                  <button aria-label="Next page"
                     onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
                     disabled={pagination.page >= pagination.totalPages}
                     className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    <ChevronRight size={16} />
+                    <HTGlyph name="chevron-right" size={16} />
                   </button>
                 </div>
               </div>
@@ -696,7 +681,7 @@ export default function AdminArticleManager() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                <Trash2 size={20} className="text-red-600" />
+                <HTGlyph name="delete" size={20} className="text-red-600" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Delete Article</h3>

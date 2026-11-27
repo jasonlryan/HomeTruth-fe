@@ -1,8 +1,13 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import ManualAskAction from "../features/items/ManualAskAction";
+import { isManualAction, localManualAskEnabled, readManualContext, rememberManualContext } from "../features/items/manualAskContext";
+import HTGlyph from "../components/HTGlyph";
+import { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import PageTitle from "../components/PageTitle";
+import { HTIcon } from "../components/homepage/HomeTruth";
 import {
   askAIChat,
   getAIChatConversations,
@@ -59,11 +64,33 @@ function PropertyContextNotice({ context, onClear }) {
   );
 }
 
+function moveConversation(pane, top, frameRef) {
+  cancelAnimationFrame(frameRef.current);
+  const target = Math.min(top, pane.scrollHeight - pane.clientHeight);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    pane.scrollTop = target;
+    return;
+  }
+
+  const initial = pane.scrollTop;
+  let lastPosition = initial;
+  let startedAt;
+  const advance = time => {
+    if (Math.abs(pane.scrollTop - lastPosition) > 1) return;
+    startedAt ??= time;
+    const progress = Math.min(1, (time - startedAt) / 220);
+    pane.scrollTop = initial + (target - initial) * (1 - (1 - progress) ** 3);
+    lastPosition = pane.scrollTop;
+    if (progress < 1) frameRef.current = requestAnimationFrame(advance);
+  };
+  frameRef.current = requestAnimationFrame(advance);
+}
+
 // Reusable assistant bubble that renders Markdown safely.
 // - Links open in new tab (target/rel set on <a>)
 // - No raw HTML allowed (avoids XSS)
 // - GFM enabled (lists, tables, autolink literals, etc.)
-function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false, streamingText = "" }) {
+function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false, streamingText = "", action }) {
   const displayText = isStreaming && streamingText ? streamingText : text;
 
   return (
@@ -117,8 +144,10 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
         <span className="inline-block w-2 h-4 bg-gray-600 ml-1 animate-pulse" />
       )}
 
+      {!isStreaming && action}
+
       {/* Save button at bottom right */}
-      <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-300">
+      {!isStreaming && <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-300">
         <button
           onClick={() => onSave(messageId)}
           title={isSaved ? "Saved response" : "Save response"}
@@ -127,20 +156,17 @@ function AssistantBubble({ text, messageId, onSave, isSaved, isStreaming = false
             } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300`}
           disabled={isSaved}
         >
-          <img
-            src={isSaved ? "/assets/saved.svg" : "/assets/Notsaved.svg"}
-            alt=""
-            aria-hidden="true"
-            className="w-[10px] h-[14px]"
-          />
+          <HTGlyph name="bookmark" size={16} className={isSaved ? "text-ht-cyan" : undefined} />
         </button>
-      </div>
+      </div>}
     </div>
   );
 }
 
 export default function AskAI() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [propertyContext, setPropertyContext] = useState(() =>
     getPropertyContextFromLocation(location)
   );
@@ -441,10 +467,18 @@ export default function AskAI() {
     return pairs;
   }, [messages]);
 
-  const scrollRef = useRef(null);
+  const conversationRef = useRef(null);
+  const conversationContentRef = useRef(null);
+  const latestAnswerRef = useRef(null);
+  const placeAnswerRef = useRef(null);
+  const scrollFrameRef = useRef(0);
   const inputRef = useRef(null);
-  const prevMsgCountRef = useRef(0);
   const streamingIntervalRef = useRef(null);
+  const activeAnswerRef = useRef(null);
+  const historyRequestRef = useRef(0);
+  const [canJumpToLatest, setCanJumpToLatest] = useState(false);
+  const [jumpHasFocus, setJumpHasFocus] = useState(false);
+  const hasMessages = messages.length > 0;
   const restoredSessionRef = useRef(null);
 
   // const questionLimit = 5; // Commented out - removed 5 question limit per session
@@ -524,6 +558,7 @@ export default function AskAI() {
   useEffect(() => {
     const id =
       location.state?.conversationId ||
+      (localManualAskEnabled ? new URLSearchParams(location.search).get("conversation") : null) ||
       (typeof sessionStorage !== "undefined" ? sessionStorage.getItem("ask_ai_open_conversation_id") : null) ||
       null;
     const claimId = id && String(id).trim() !== "" ? id : null;
@@ -546,7 +581,6 @@ export default function AskAI() {
           const sessionId = claimId || "guest-restored";
           const questions = restoredMessages.filter((m) => m.role === "user").map((m) => m.content);
           setMessages(restoredMessages);
-          prevMsgCountRef.current = restoredMessages.length;
           const newSession = {
             id: sessionId,
             title: questions[0]
@@ -570,10 +604,9 @@ export default function AskAI() {
       const hasRestoredMessages = restoredMessages.length > 0;
       loadConversationHistory(claimId, { silent: hasRestoredMessages })
         .then((apiMsgs) => {
-          if (apiMsgs.length === 0 && restoredMessages.length > 0) {
+          if (apiMsgs?.length === 0 && restoredMessages.length > 0) {
             const questions = restoredMessages.filter((m) => m.role === "user").map((m) => m.content);
             setMessages(restoredMessages);
-            prevMsgCountRef.current = restoredMessages.length;
             setSessions((prev) => {
               const existing = prev.find((s) => s.id === claimId);
               if (existing) {
@@ -613,32 +646,68 @@ export default function AskAI() {
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const updateJumpToLatest = useCallback(() => {
+    const pane = conversationRef.current;
+    setCanJumpToLatest(Boolean(pane && pane.scrollHeight - pane.scrollTop - pane.clientHeight > 4));
+  }, []);
+
   useEffect(() => {
-    const isNewMsg = messages.length > prevMsgCountRef.current;
-    if (isNewMsg) {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-      prevMsgCountRef.current = messages.length;
+    updateJumpToLatest();
+    const pane = conversationRef.current;
+    const content = conversationContentRef.current;
+    if (!pane || !content) return;
+
+    const observer = new ResizeObserver(updateJumpToLatest);
+    observer.observe(pane);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [hasMessages, isLoadingHistory, updateJumpToLatest]);
+
+  useLayoutEffect(() => {
+    const placement = placeAnswerRef.current;
+    const pane = conversationRef.current;
+    const answer = latestAnswerRef.current;
+    if (!placement || !pane || !answer) return;
+    placeAnswerRef.current = null;
+
+    if (placement.restoreInputFocus) inputRef.current?.focus({ preventScroll: true });
+    const visibleBottom = pane.getBoundingClientRect().top + pane.clientTop + pane.clientHeight;
+    const openingHeight = Math.min(84, pane.clientHeight / 2);
+    const adjustment = answer.getBoundingClientRect().top + openingHeight - visibleBottom;
+    if (adjustment > 1) {
+      moveConversation(pane, pane.scrollTop + adjustment, scrollFrameRef);
     }
-    if (!questionLimitReached) inputRef.current?.focus();
-  }, [messages, questionLimitReached]);
+  }, [messages]);
+
+  const stopConversationMotion = useCallback(() => cancelAnimationFrame(scrollFrameRef.current), []);
+
+  const jumpToLatest = () => {
+    const pane = conversationRef.current;
+    if (!pane) return;
+    inputRef.current?.focus({ preventScroll: true });
+    moveConversation(pane, pane.scrollHeight, scrollFrameRef);
+  };
 
   // Cleanup streaming interval on unmount
   useEffect(() => {
     return () => {
+      activeAnswerRef.current = null;
+      historyRequestRef.current += 1;
+      stopConversationMotion();
       if (streamingIntervalRef.current) {
         clearInterval(streamingIntervalRef.current);
         streamingIntervalRef.current = null;
       }
-      setStreamingMessageId(null);
-      setStreamingText("");
     };
-  }, []);
+  }, [stopConversationMotion]);
 
   const loadConversationHistory = async (sessionId, options = {}) => {
     const { silent = false } = options;
+    const request = ++historyRequestRef.current;
     if (!silent) setIsLoadingHistory(true);
     try {
       const msgs = await getAIChatHistory(sessionId);
+      if (request !== historyRequestRef.current) return null;
       const questions = msgs.filter((m) => m.role === "user").map((m) => m.content);
       setSessions((prev) => {
         const existing = prev.find((s) => s.id === sessionId);
@@ -663,19 +732,19 @@ export default function AskAI() {
         ];
       });
       setMessages(msgs);
-      prevMsgCountRef.current = msgs.length;
       return msgs;
     } catch (err) {
+      if (request !== historyRequestRef.current) return null;
       console.error(err);
       setMessages([]);
       return [];
     } finally {
-      if (!silent) setIsLoadingHistory(false);
+      if (request === historyRequestRef.current) setIsLoadingHistory(false);
     }
   };
 
   // Function to simulate typing effect
-  const streamText = (fullText, messageId) => {
+  const streamText = (fullText, messageId, onComplete) => {
     // Clear any existing interval
     if (streamingIntervalRef.current) {
       clearInterval(streamingIntervalRef.current);
@@ -691,24 +760,23 @@ export default function AskAI() {
       if (currentIndex < words.length) {
         const currentText = words.slice(0, currentIndex + 1).join(" ");
         setStreamingText(currentText);
-        // Auto-scroll as text streams
-        setTimeout(() => {
-          scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        }, 0);
         currentIndex++;
       } else {
         clearInterval(streamInterval);
         streamingIntervalRef.current = null;
+        onComplete();
       }
     }, 30); // Adjust speed: lower = faster, higher = slower (30ms per word)
 
     streamingIntervalRef.current = streamInterval;
-    return streamInterval;
   };
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
-    if (!input.trim() || questionLimitReached || isAnswering) return;
+    if (!input.trim() || questionLimitReached || activeAnswerRef.current !== null) return;
+    stopConversationMotion();
+    const questionId = Date.now();
+    activeAnswerRef.current = questionId;
     setIsAnswering(true);
 
     const time = new Date().toLocaleTimeString([], {
@@ -717,23 +785,34 @@ export default function AskAI() {
     });
 
     const tempUserMsg = {
-      id: Date.now(),
+      id: questionId,
+      uiId: questionId,
       role: "user",
       content: input,
       time,
     };
 
     const loadingMsg = {
-      id: Date.now() + 1,
+      id: questionId + 1,
       role: "assistant",
       content: "__typing__",
       time,
     };
 
+    placeAnswerRef.current = {
+      restoreInputFocus: !messages.length && inputRef.current?.parentElement?.contains(document.activeElement),
+    };
     setMessages((prev) => [...prev, tempUserMsg, loadingMsg]);
     setInput("");
 
     try {
+      const selected = localManualAskEnabled && readManualContext(user?.id);
+      const homeId = propertyContext?.id || selected?.homeId;
+      const refersToWasher = /\b(?:washers?|washing machines?)\b/i.test(input);
+      const manualScope = {
+        homeId,
+        itemId: refersToWasher && String(homeId) === String(selected?.homeId) ? selected?.itemId : null
+      };
       const result = await askAIChat(
         input,
         currentSessionId,
@@ -741,6 +820,7 @@ export default function AskAI() {
         false,
         propertyContext?.id || null
       );
+      if (activeAnswerRef.current !== questionId) return;
 
       const latestHistory = result.chatHistory?.[result.chatHistory.length - 1];
       // Use the chat_history_id from backend - this is the ID we need for saving
@@ -751,6 +831,7 @@ export default function AskAI() {
 
       const userMsg = {
         id: userMessageId,
+        uiId: tempUserMsg.id,
         role: "user",
         content: latestHistory?.userMessage || input,
         time,
@@ -759,10 +840,21 @@ export default function AskAI() {
 
       const fullResponse = latestHistory?.assistantReply || result.reply || "";
 
+      const actions = result.actions || latestHistory?.actions;
+      if (localManualAskEnabled && chatHistoryId && isManualAction(actions)) {
+        rememberManualContext(user?.id, manualScope, chatHistoryId);
+        const params = new URLSearchParams(location.search);
+        if (result.conversation_id && params.get("conversation") !== String(result.conversation_id)) {
+          params.set("conversation", result.conversation_id);
+          navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+        }
+      }
       const assistantMsg = {
         id: assistantMessageId,
         role: "assistant",
         content: fullResponse,
+        actions,
+        manualScope,
         time,
         chatHistoryId: chatHistoryId, // Store the backend chat_history_id for saving
       };
@@ -804,17 +896,16 @@ export default function AskAI() {
         content: "", // Start with empty content, will be filled by streaming
       };
 
-      setMessages((prev) => prev.slice(0, -1).concat([userMsg, streamingAssistantMsg]));
+      setMessages((prev) => prev.map(message => {
+        if (message === tempUserMsg) return userMsg;
+        if (message === loadingMsg) return streamingAssistantMsg;
+        return message;
+      }));
 
-      // Start streaming the response
-      const streamInterval = streamText(fullResponse, assistantMessageId);
-
-      // Clean up interval and finalize message when streaming completes
-      const estimatedTime = fullResponse.split(" ").length * 30 + 100;
-      setTimeout(() => {
+      const finishAnswer = () => {
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantMessageId && m.role === "assistant"
+            m === streamingAssistantMsg
               ? { ...m, content: fullResponse }
               : m
           )
@@ -822,16 +913,16 @@ export default function AskAI() {
         setStreamingMessageId(null);
         setStreamingText("");
         setIsAnswering(false);
-        if (streamInterval) {
-          clearInterval(streamInterval);
-          streamingIntervalRef.current = null;
-        }
-      }, estimatedTime);
+        activeAnswerRef.current = null;
+      };
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) finishAnswer();
+      else streamText(fullResponse, assistantMessageId, finishAnswer);
 
       if (!currentSessionId && result.conversation_id) {
         setCurrentSessionId(result.conversation_id.toString());
       }
     } catch (err) {
+      if (activeAnswerRef.current !== questionId) return;
       console.error("Chat error", err);
       setMessages((prev) =>
         prev.map((m) =>
@@ -841,6 +932,7 @@ export default function AskAI() {
         )
       );
       setIsAnswering(false);
+      activeAnswerRef.current = null;
     }
   };
 
@@ -968,11 +1060,11 @@ export default function AskAI() {
 
       // If the deleted session was the current one, clear it
       if (sessionToDelete === currentSessionId) {
+        resetAnswerDelivery();
         setMessages([]);
         setInput("");
         setCurrentSessionId(null);
         clearPropertyContext();
-        prevMsgCountRef.current = 0;
       }
 
       // Close confirmation modal
@@ -994,13 +1086,12 @@ export default function AskAI() {
     setSessionToDelete(null);
   };
 
-  const handleNewSession = () => {
-    setMessages([]);
-    setInput("");
-    setSaveError(null);
-    setSaveSuccess(null);
-    setCurrentSessionId(null);
-    clearPropertyContext();
+  const resetAnswerDelivery = () => {
+    stopConversationMotion();
+    historyRequestRef.current += 1;
+    setIsLoadingHistory(false);
+    activeAnswerRef.current = null;
+    placeAnswerRef.current = null;
     setIsAnswering(false);
     setStreamingText("");
     setStreamingMessageId(null);
@@ -1009,9 +1100,17 @@ export default function AskAI() {
       clearInterval(streamingIntervalRef.current);
       streamingIntervalRef.current = null;
     }
+  };
+
+  const handleNewSession = () => {
+    resetAnswerDelivery();
+    setMessages([]);
+    setInput("");
+    setSaveError(null);
+    setSaveSuccess(null);
+    setCurrentSessionId(null);
+    clearPropertyContext();
     // Preserve persisted saved note state across sessions
-    // Reset message count ref for scrolling
-    prevMsgCountRef.current = 0;
     // Focus input field for new session
     setTimeout(() => {
       inputRef.current?.focus();
@@ -1019,6 +1118,8 @@ export default function AskAI() {
   };
 
   const handleSessionSelect = (sessionId) => {
+    if (sessionId === currentSessionId) return;
+    resetAnswerDelivery();
     setCurrentSessionId(sessionId);
     clearPropertyContext();
     loadConversationHistory(sessionId);
@@ -1062,7 +1163,7 @@ export default function AskAI() {
           <div className="flex-shrink-0 px-4 py-3 text-xs text-gray-500 flex items-center justify-between">
             <div className="flex flex-col space-y-1">
               <div className="flex items-center space-x-2">
-                <span className="material-symbols-outlined text-gray-400 text-sm">schedule</span>
+                <HTGlyph name="clock" size={16} className="text-gray-400 " />
                 <span>Chat history will be deleted after 7 days.</span>
               </div>
               <span
@@ -1077,17 +1178,13 @@ export default function AskAI() {
               className="text-gray-400 hover:text-gray-600 transition-colors"
               title={isChatHistoryVisible ? "Hide sidebar" : "Show sidebar"}
             >
-              <img
-                src="/assets/expand.png"
-                alt={isChatHistoryVisible ? "Hide sidebar" : "Show sidebar"}
-                className="w-5 h-5"
-              />
+              <HTGlyph name="collapse" size={20} />
             </button>
           </div>
 
           <div className="flex-shrink-0 px-4 pb-2">
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">search</span>
+              <HTGlyph name="search" size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 " />
               <input
                 type="text"
                 placeholder="Search Chats"
@@ -1139,9 +1236,7 @@ export default function AskAI() {
                           onClick={(e) => handleDeleteSession(s.id, e)}
                           title="Delete session"
                         >
-                          <span className="material-symbols-outlined text-sm">
-                            delete
-                          </span>
+                          <HTGlyph name="delete" size={16} />
                         </button>
                       )}
                     </div>
@@ -1216,11 +1311,7 @@ export default function AskAI() {
                 className="w-fit rounded-lg p-2 transition-all flex items-center justify-center"
                 title="Show sidebar"
               >
-                <img
-                  src="/assets/expand.png"
-                  alt="Show sidebar"
-                  className="w-5 h-5"
-                />
+                <HTGlyph name="expand" size={20} />
               </button>
             )}
             <PageTitle>Ask HomeTruth</PageTitle>
@@ -1309,12 +1400,13 @@ export default function AskAI() {
                         handleSubmit();
                       }}
                       disabled={questionLimitReached}
+                      aria-label="Send question"
                       className={`absolute top-1/2 right-3 -translate-y-1/2 h-8 w-8 rounded-full text-white flex items-center justify-center ${questionLimitReached
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-ht-cyan"
                         }`}
                     >
-                      →
+                      <HTGlyph name="send" size={16} />
                     </button>
                   </div>
 
@@ -1334,20 +1426,7 @@ export default function AskAI() {
                       style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className={`size-4 transition-colors ${searchWeb ? "text-white" : "text-gray-600"}`}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
-                          />
-                        </svg>
+                        <HTGlyph name="globe" size={16} />
                         <span className="font-medium">Search the web</span>
                       </div>
                       <div className={`flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full text-xs font-bold transition-all ${searchWeb
@@ -1363,14 +1442,7 @@ export default function AskAI() {
 
               <div className="bg-gradient-to-r from-sky-50 to-gray-50 border border-sky-100 rounded-xl p-4 mb-4 shrink-0">
                 <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-ht-cyan flex-shrink-0"
-                  >
-                    <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
-                  </svg>
+                  <HTGlyph name="suggestion" size={20} className="text-ht-cyan flex-shrink-0" />
                   <p className="text-sm font-medium text-ht-dark">
                     You've got 3 months of unlimited questions, explore freely while it's active!
                   </p>
@@ -1391,16 +1463,7 @@ export default function AskAI() {
 
               {/* <div className="bg-sky-50 border border-sky-100 text-ht-cyan text-sm p-4 rounded-lg shrink-0">
                 <div className="flex items-center space-x-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      fill="var(--ht-cyan)"
-                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-112c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
-                    />
-                  </svg>{" "}
+                  <HTGlyph name="info" size={20} />{" "}
                   <p className="font-medium text-gray-600">Welcome to Ask HomeTruth!</p>
                 </div>
 
@@ -1442,48 +1505,66 @@ export default function AskAI() {
                   )}
               </div>
 
-              <div className="bg-white rounded-3xl p-4 mb-4 overflow-y-auto max-h-[580px]">
-                {qaPairs.map((pair) => (
-                  <div key={pair.id} className="mb-6 relative">
-                    <div className="flex justify-end">
-                      <div className="bg-ht-cyan p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
-                        {pair.question.content}
+              <div ref={conversationRef} aria-label="Conversation" role="region" tabIndex={0}
+                className="bg-white rounded-3xl p-4 mb-4 overflow-y-auto max-h-[580px] [overflow-anchor:none]"
+                onScroll={updateJumpToLatest} onWheelCapture={stopConversationMotion}
+                onTouchStartCapture={stopConversationMotion} onPointerDownCapture={stopConversationMotion}
+                onKeyDownCapture={event => {
+                  if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) stopConversationMotion();
+                }}>
+                <div ref={conversationContentRef}>
+                  {qaPairs.map((pair, index) => (
+                    <div key={pair.question.uiId ?? pair.id} className="mb-6 relative">
+                      <div className="flex justify-end">
+                        <div className="bg-ht-cyan p-3 rounded-xl max-w-[70%] whitespace-pre-wrap text-white">
+                          {pair.question.content}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex justify-end">
-                      <div className="text-xs text-gray-400 mt-1">
+                      <div className="flex justify-end">
+                        <div className="text-xs text-gray-400 mt-1">
+                          {pair.question.time}
+                        </div>
+                      </div>
+
+                      <div ref={index === qaPairs.length - 1 ? latestAnswerRef : undefined}
+                        className={`flex justify-start mt-2 items-start space-x-2 ${pair.question.uiId || pair.answer.content === "__typing__" ? "min-h-[84px]" : ""}`}>
+                        {pair.answer.content === "__typing__" || (streamingMessageId === pair.answer.id && !streamingText) ? (
+                          <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] whitespace-pre-wrap">
+                            <span role="status" className="text-gray-600">Answering…</span>
+                          </div>
+                        ) : (
+                          <AssistantBubble
+                            text={pair.answer.content}
+                            messageId={pair.answer.id}
+                            onSave={() => toggleSaveQAPair(pair.id)}
+                            isSaved={isQAPairSaved(pair)}
+                            action={localManualAskEnabled && isManualAction(pair.answer.actions) &&
+                              <ManualAskAction key={pair.answer.id}
+                                scope={pair.answer.manualScope ?? readManualContext(user?.id, pair.answer.chatHistoryId)} />}
+                            isStreaming={streamingMessageId === pair.answer.id}
+                            streamingText={streamingMessageId === pair.answer.id ? streamingText : ""}
+                          />
+                        )}
+
+                      </div>
+
+                      <div className="text-xs text-gray-400 mt-1 ml-1">
                         {pair.question.time}
                       </div>
                     </div>
-
-                    <div className="flex justify-start mt-2 items-start space-x-2">
-                      {pair.answer.content === "__typing__" ? (
-                        <div className="bg-gray-100 p-3 rounded-xl max-w-[70%] whitespace-pre-wrap">
-                          <span className="text-gray-600 italic">Thinking...</span>
-                        </div>
-                      ) : (
-                        <AssistantBubble
-                          text={pair.answer.content}
-                          messageId={pair.answer.id}
-                          onSave={() => toggleSaveQAPair(pair.id)}
-                          isSaved={isQAPairSaved(pair)}
-                          isStreaming={streamingMessageId === pair.answer.id}
-                          streamingText={streamingMessageId === pair.answer.id ? streamingText : ""}
-                        />
-                      )}
-
-                    </div>
-
-                    <div className="text-xs text-gray-400 mt-1 ml-1">
-                      {pair.question.time}
-                    </div>
-                  </div>
-                ))}
-
-                <div ref={scrollRef} />
+                  ))}
+                </div>
               </div>
 
-              <div className="shrink-0">
+              <div className="shrink-0 relative">
+                {(canJumpToLatest || jumpHasFocus) && (
+                  <div className="ht-ui absolute right-2 bottom-full z-10 mb-1">
+                    <button type="button" className="ht-button" data-variant="secondary"
+                      onFocus={() => setJumpHasFocus(true)} onBlur={() => setJumpHasFocus(false)} onClick={jumpToLatest}>
+                      <HTIcon name="arrow-down" assetBase={process.env.PUBLIC_URL + "/assets/brand/"} /> Jump to latest
+                    </button>
+                  </div>
+                )}
                 <div className="rounded-3xl border border-gray-200 bg-white p-3 flex flex-col gap-3 shadow-sm">
                   <PropertyContextNotice
                     context={propertyContext}
@@ -1499,7 +1580,8 @@ export default function AskAI() {
                         if (e.key === "Enter") handleSubmit();
                       }}
                       placeholder="Ask a property question..."
-                      disabled={questionLimitReached || isAnswering}
+                      disabled={questionLimitReached}
+                      readOnly={isAnswering}
                       className="w-full text-base bg-white h-14 pl-4 pr-12 focus:outline-none disabled:cursor-not-allowed rounded-full border border-gray-300"
                     />
 
@@ -1510,14 +1592,16 @@ export default function AskAI() {
                         e.stopPropagation();
                         handleSubmit();
                       }}
-                      disabled={questionLimitReached || isAnswering}
+                      aria-label="Send question"
+                      disabled={questionLimitReached}
+                      aria-disabled={isAnswering}
                       className={`absolute top-1/2 right-4 -translate-y-1/2 h-8 w-8 rounded-full text-white flex items-center justify-center transition
                         ${questionLimitReached || isAnswering
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-ht-cyan"
                         }`}
                     >
-                      →
+                      <HTGlyph name="send" size={16} />
                     </button>
                   </div>
 
@@ -1537,20 +1621,7 @@ export default function AskAI() {
                       style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className={`size-4 transition-colors ${searchWeb ? "text-white" : "text-gray-600"}`}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
-                          />
-                        </svg>
+                        <HTGlyph name="globe" size={16} />
                         <span className="font-medium">Search the web</span>
                       </div>
                       <div className={`flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full text-xs font-bold transition-all ${searchWeb
@@ -1566,14 +1637,7 @@ export default function AskAI() {
 
               <div className="bg-gradient-to-r from-sky-50 to-gray-50 border border-sky-100 rounded-xl p-4 mt-4 shrink-0">
                 <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-ht-cyan flex-shrink-0"
-                  >
-                    <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
-                  </svg>
+                  <HTGlyph name="suggestion" size={20} className="text-ht-cyan flex-shrink-0" />
                   <p className="text-sm font-medium text-ht-dark">
                     You've got 3 months of unlimited questions, explore freely while it's active!
                   </p>
@@ -1623,28 +1687,13 @@ export default function AskAI() {
               onClick={() => setSaveSuccess(null)}
               aria-label="Close"
             >
-              ✕
+              <HTGlyph name="close" size={20} />
             </button>
 
             {/* Success Icon */}
             <div className="flex items-center justify-center mb-4">
               <div className="bg-green-100 p-3 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  className="text-green-500"
-                >
-                  <path
-                    d="M6.75 9L8.25 10.5L11.25 7.5M15.75 9C15.75 12.7279 12.7279 15.75 9 15.75C5.27208 15.75 2.25 12.7279 2.25 9C2.25 5.27208 5.27208 2.25 9 2.25C12.7279 2.25 15.75 5.27208 15.75 9Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="success" size={20} className="text-green-500" />
               </div>
             </div>
 
@@ -1678,21 +1727,7 @@ export default function AskAI() {
             {/* Icon */}
             <div className="flex items-center justify-center mb-4">
               <div className="bg-sky-50 p-2 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="24"
-                  viewBox="0 0 18 24"
-                  fill="none"
-                >
-                  <path
-                    d="M6 3.83333H4C2.89543 3.83333 2 4.878 2 6.16667V20.1667C2 21.4554 2.89543 22.5 4 22.5H14C15.1046 22.5 16 21.4554 16 20.1667V6.16667C16 4.878 15.1046 3.83333 14 3.83333H12M6 3.83333C6 5.122 6.89543 6.16667 8 6.16667H10C11.1046 6.16667 12 5.122 12 3.83333M6 3.83333C6 2.54467 6.89543 1.5 8 1.5H10C11.1046 1.5 12 2.54467 12 3.83333M6 14.3333H12M6 19H10"
-                    stroke="var(--ht-cyan)"
-                    strokeWidth="2.3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="checklist" size={24} />
               </div>
             </div>
 
@@ -1718,18 +1753,7 @@ export default function AskAI() {
             >
               Upgrade to Pro
               <span className="text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="16"
-                  viewBox="0 0 18 16"
-                  fill="none"
-                >
-                  <path
-                    d="M9.65625 3.3125C10.0125 3.09375 10.25 2.69687 10.25 2.25C10.25 1.55937 9.69063 1 9 1C8.30937 1 7.75 1.55937 7.75 2.25C7.75 2.7 7.9875 3.09375 8.34375 3.3125L6.55312 6.89375C6.26875 7.4625 5.53125 7.625 5.03438 7.22813L2.25 5C2.40625 4.79063 2.5 4.53125 2.5 4.25C2.5 3.55938 1.94062 3 1.25 3C0.559375 3 0 3.55938 0 4.25C0 4.94062 0.559375 5.5 1.25 5.5H1.27188L2.7 13.3562C2.87188 14.3062 3.7 15 4.66875 15H13.3313C14.2969 15 15.125 14.3094 15.3 13.3562L16.7281 5.5H16.75C17.4406 5.5 18 4.94062 18 4.25C18 3.55938 17.4406 3 16.75 3C16.0594 3 15.5 3.55938 15.5 4.25C15.5 4.53125 15.5938 4.79063 15.75 5L12.9656 7.22813C12.4688 7.625 11.7312 7.4625 11.4469 6.89375L9.65625 3.3125Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <HTGlyph name="premium" size={18} />
               </span>
             </button>
           </div>
@@ -1764,28 +1788,13 @@ export default function AskAI() {
               onClick={cancelDeleteSession}
               aria-label="Close"
             >
-              ✕
+              <HTGlyph name="close" size={20} />
             </button>
 
             {/* Warning Icon */}
             <div className="flex items-center justify-center mb-4">
               <div className="bg-red-100 p-3 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="text-red-500"
-                >
-                  <path
-                    d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <HTGlyph name="warning" size={24} className="text-red-500" />
               </div>
             </div>
 

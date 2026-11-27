@@ -1,3 +1,5 @@
+import "../../components/workspace.css";
+import HTGlyph from "../../components/HTGlyph";
 import { useState } from "react";
 import PageTitle from "../../components/PageTitle";
 import { changePassword } from "../../api/api";
@@ -121,11 +123,11 @@ export default function AccountSettings() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen mt-4 mb-20">
+    <div className="ht-workspace-page space-y-6">
       <div className="max-w-7xl mx-auto px-4 space-y-6 mt-4">
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 flex items-center justify-center bg-sky-50 text-ht-cyan rounded-full">
-            <img src="/assets/settings/account.svg" alt="" className="w-5 h-5" />
+            <HTGlyph name="user" size={20} />
           </div>
           <PageTitle>Account</PageTitle>
         </div>
@@ -198,7 +200,7 @@ export default function AccountSettings() {
           {success && (
             <div className="mt-3 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
               <div className="flex items-center">
-                <span className="material-symbols-outlined text-green-500 mr-2">check_circle</span>
+                <HTGlyph name="success" size={24} className="text-green-500 mr-2" />
                 {success}
               </div>
             </div>
@@ -208,7 +210,7 @@ export default function AccountSettings() {
           {error && (
             <div className="mt-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
               <div className="flex items-center">
-                <span className="material-symbols-outlined text-red-500 mr-2">error</span>
+                <HTGlyph name="error" size={24} className="text-red-500 mr-2" />
                 {error}
               </div>
             </div>

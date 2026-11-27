@@ -1,0 +1,214 @@
+import { useState } from "react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import DocumentWorkspace from "./DocumentWorkspace";
+import {
+  getDocumentChats,
+  getDocumentPreviewFile,
+  askDocumentAI,
+} from "../api/api";
+jest.mock("../api/api", () => ({
+  getDocumentChats: jest.fn(),
+  getDocumentPreviewFile: jest.fn(),
+  askDocumentAI: jest.fn(),
+}));
+jest.mock("react-router-dom", () => ({ Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a> }), { virtual: true });
+jest.mock("react-markdown", () => ({
+  __esModule: true,
+  default: ({ children }) => <div>{children}</div>,
+}));
+jest.mock("remark-gfm", () => ({ __esModule: true, default: () => {} }));
+beforeEach(() => {
+  jest.clearAllMocks();
+  URL.createObjectURL = jest.fn(() => "blob:preview");
+  URL.revokeObjectURL = jest.fn();
+  getDocumentPreviewFile.mockResolvedValue(
+    new Blob(["pdf"], { type: "application/pdf" }),
+  );
+  getDocumentChats.mockResolvedValue({
+    data: {
+      chats: [
+        {
+          id: 1,
+          user_message: "Existing question",
+          assistant_reply: "Source-limited answer",
+        },
+      ],
+    },
+  });
+  askDocumentAI.mockResolvedValue({
+    success: true,
+    data: { current_answer: "Payment is not recorded." },
+  });
+});
+test("one workspace retains preview and questions across tab switches", async () => {
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      onClose={() => {}}
+    />,
+  );
+  await screen.findByTitle("Preview of survey.pdf");
+  fireEvent.click(screen.getByRole("tab", { name: "Chat with Document" }));
+  expect(await screen.findByText("Existing question")).toBeVisible();
+  fireEvent.change(screen.getByLabelText("Ask about survey.pdf"), {
+    target: { value: "Was it paid?" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Ask" }));
+  expect(await screen.findByText("Payment is not recorded.")).toBeVisible();
+  fireEvent.click(screen.getByRole("tab", { name: "Preview" }));
+  expect(screen.getByTitle("Preview of survey.pdf")).toHaveAttribute(
+    "src",
+    "blob:preview",
+  );
+  expect(getDocumentPreviewFile).toHaveBeenCalledTimes(1);
+});
+test("Escape closes, restores focus, and revokes authenticated preview", async () => {
+  function Harness() {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <button onClick={() => setOpen(true)}>Open source</button>
+        {open && (
+          <DocumentWorkspace
+            document={{ id: 21, name: "survey.pdf" }}
+            onClose={() => setOpen(false)}
+          />
+        )}
+      </>
+    );
+  }
+  render(<Harness />);
+  const trigger = screen.getByRole("button", { name: "Open source" });
+  trigger.focus();
+  fireEvent.click(trigger);
+  await screen.findByTitle("Preview of survey.pdf");
+  fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(trigger).toHaveFocus();
+  expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:preview");
+});
+test("preview failure keeps document chat available and preserves failed question", async () => {
+  getDocumentPreviewFile.mockRejectedValue(new Error("not available"));
+  askDocumentAI.mockRejectedValue(new Error("offline"));
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      onClose={() => {}}
+    />,
+  );
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "file preview could not be loaded",
+  );
+  fireEvent.click(screen.getByRole("tab", { name: "Chat with Document" }));
+  fireEvent.change(screen.getByLabelText("Ask about survey.pdf"), {
+    target: { value: "Question retained" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Ask" }));
+  await waitFor(() =>
+    expect(screen.getByText(/Your question is still here/)).toBeVisible(),
+  );
+  expect(screen.getByLabelText("Ask about survey.pdf")).toHaveValue(
+    "Question retained",
+  );
+});
+test("renders the actual backend JSON text preview without a false file download", async () => {
+  getDocumentPreviewFile.mockResolvedValue({
+    type: "application/json",
+    text: async () =>
+      JSON.stringify({
+        success: true,
+        data: {
+          preview_type: "text",
+          preview_content: "Observed staining; cause not established.",
+          has_full_content: true,
+        },
+      }),
+  });
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      onClose={() => {}}
+    />,
+  );
+  expect(
+    await screen.findByText("Observed staining; cause not established."),
+  ).toBeVisible();
+  expect(
+    screen.queryByText("Download source document"),
+  ).not.toBeInTheDocument();
+});
+test("focus wraps only through active-tab controls, never the inactive tab or background", async () => {
+  const geometry = jest
+    .spyOn(HTMLElement.prototype, "getClientRects")
+    .mockReturnValue([{}]);
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      onClose={() => {}}
+    />,
+  );
+  await screen.findByTitle("Preview of survey.pdf");
+  const close = screen.getByRole("button", { name: "Close document" });
+  close.focus();
+  fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
+  expect(
+    screen.getByRole("link", { name: "Download source document" }),
+  ).toHaveFocus();
+  fireEvent.keyDown(
+    screen.getByRole("link", { name: "Download source document" }),
+    { key: "Tab" },
+  );
+  expect(close).toHaveFocus();
+  geometry.mockRestore();
+});
+
+test("loads older questions without hiding current history or duplicating rows", async () => {
+  getDocumentChats
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Recent question" }], pagination: { has_next_page: true } } })
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Recent question" }, { id: 1, user_message: "Older question" }], pagination: { has_next_page: false } } });
+  render(<DocumentWorkspace document={{ id: 21, name: "survey.pdf" }} initialTab="chat" onClose={() => {}} />);
+  fireEvent.click(screen.getByRole("tab", { name: "Chat with Document" }));
+  const more = await screen.findByRole("button", { name: "Load older questions" });
+  fireEvent.click(more);
+  expect(await screen.findByText("Older question")).toBeVisible();
+  expect(screen.getAllByText("Recent question")).toHaveLength(1);
+  expect(getDocumentChats).toHaveBeenLastCalledWith(21, { page: 2, limit: 100 });
+  expect(screen.queryByRole("button", { name: "Load older questions" })).not.toBeInTheDocument();
+});
+
+
+test("a pending older page cannot populate a different document", async () => {
+  let resolveOlder;
+  getDocumentChats
+    .mockResolvedValueOnce({ data: { chats: [{ id: 2, user_message: "Home A question" }], pagination: { has_next_page: true } } })
+    .mockImplementationOnce(() => new Promise(resolve => { resolveOlder = resolve; }))
+    .mockResolvedValueOnce({ data: { chats: [{ id: 3, user_message: "Home B question" }], pagination: { has_next_page: false } } });
+  const { rerender } = render(<DocumentWorkspace document={{ id: 21, name: "A.pdf" }} initialTab="chat" onClose={() => {}} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Load older questions" }));
+  rerender(<DocumentWorkspace document={{ id: 22, name: "B.pdf" }} initialTab="chat" onClose={() => {}} />);
+  expect(await screen.findByText("Home B question")).toBeVisible();
+  await act(async () => {
+    resolveOlder({ data: { chats: [{ id: 1, user_message: "Older Home A question" }], pagination: { has_next_page: true } } });
+  });
+  expect(screen.queryByText("Older Home A question")).not.toBeInTheDocument();
+  expect(screen.queryByText("Home A question")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Load older questions" })).not.toBeInTheDocument();
+});
+
+test("a saved source opens the correct page and highlights only the selected wording", async () => {
+  const selection = "staining below the gutter";
+  const text = `The survey noted ${selection}. No measurements were made.`;
+  const start = text.indexOf(selection);
+  render(
+    <DocumentWorkspace
+      document={{ id: 21, name: "survey.pdf" }}
+      savedPassage={{ available: true, text, start, end: start + selection.length, pageNumber: 2 }}
+      onClose={() => {}}
+    />
+  );
+  expect(screen.getByRole("tab", { name: "Passages" })).toHaveAttribute("aria-selected", "true");
+  expect(screen.getByText(selection).tagName).toBe("MARK");
+  await waitFor(() => expect(screen.getByTitle("Preview of survey.pdf")).toBeInTheDocument());
+  fireEvent.click(screen.getByRole("button", { name: "View PDF page" }));
+  expect(screen.getByTitle("Preview of survey.pdf")).toHaveAttribute("src", "blob:preview#page=2");
+});
