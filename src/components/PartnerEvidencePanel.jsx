@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, RefreshCw } from "lucide-react";
+import HTGlyph from "./HTGlyph";
 import {
   exportPartnerEvidence,
   getPartnerEvidence,
@@ -159,7 +159,7 @@ export default function PartnerEvidencePanel({ entry }) {
             onClick={load}
             disabled={loading || !month}
           >
-            <RefreshCw size={16} />
+            <HTGlyph name="refresh" size={16} />
             {loading ? "Loading evidence…" : "Load evidence"}
           </button>
           {canExport && report?.state === "available" && (
@@ -169,7 +169,7 @@ export default function PartnerEvidencePanel({ entry }) {
               onClick={download}
               disabled={exporting || loading}
             >
-              <Download size={16} />
+              <HTGlyph name="download" size={16} />
               {exporting ? "Exporting…" : "Download review pack"}
             </button>
           )}
